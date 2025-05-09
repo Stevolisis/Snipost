@@ -3,6 +3,7 @@ import "../globals.css";
 import Header from "@/components/appComponents/Header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/appComponents/Sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function Section1Layout({ children }) {
         <Header/>
         <SidebarProvider>
           <AppSidebar className="mt-18"/>
+          <Toaster />
             <main className="font-[var(--font-inter)] w-full">
               <SidebarTrigger />
               {children}

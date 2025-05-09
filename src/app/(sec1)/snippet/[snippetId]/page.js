@@ -1,10 +1,28 @@
+"use client"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowBigDown, ArrowBigUp, Bookmark, CircleDollarSign, MessageCircle } from 'lucide-react';
-import React, { use } from 'react'
+import { ArrowBigDown, ArrowBigUp, BookCopy, Bookmark, CircleDollarSign, MessageCircle } from 'lucide-react';
+import React, { use, useState } from 'react'
 import Link from 'next/link';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
+import { CodeLanguage } from '@/components/appComponents/CodeLanguage';
+import { toast } from 'sonner';
+import dynamic from 'next/dynamic';
+const SyntaxHighlighter = dynamic(
+  () => import('react-syntax-highlighter').then((mod) => {
+    return mod.Prism;
+  }),
+  {
+    ssr: false, // Disable server-side rendering
+    loading: () => (
+      <pre className=" p-4 rounded-md overflow-x-auto">
+        Loading code snippet...
+      </pre>
+    )
+  }
+);
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const page = ({params}) => {
     const { snippetId } = use(params);
@@ -61,7 +79,26 @@ const page = ({params}) => {
         netVotes: 0,
         bookmarks: []
     };
+  const [copiedBlocks, setCopiedBlocks] = useState({});
 
+  async function handleCopy(content, blockId) {
+    try {
+        await navigator.clipboard.writeText(content);
+        setCopiedBlocks(prev => ({ ...prev, [blockId]: true }));
+        
+        toast("Copied!!", {
+            description: "Copied to clipboard"
+        });
+
+        setTimeout(() => {
+            setCopiedBlocks(prev => ({ ...prev, [blockId]: false }));
+        }, 1000);
+    } catch (err) {
+        toast("Error!!", {
+            description: "Failed to copy to clipboard"
+        });
+    }
+  }
 
   return (
     <div className='px-5 flex flex-col md:flex-row gap-5'>
@@ -120,6 +157,60 @@ const page = ({params}) => {
 
                 </CardContent>
             </Card>
+
+            <div className='flex flex-col gap-y-10 mt-6'>
+                {
+                    snippet.codeBlocks.map((code,i)=>(
+                        <Card key={i} className=" rounded-bl-sm rounded-br-sm">
+                            <CardHeader className="flex justify-between items-center">
+                                <div><h3 className=' hover:underline hover:text-primary transition-colors duration-150 cursor-pointer'>{code.name}</h3></div>
+
+                                <div className='flex items-center gap-x-2'>
+                                    <div>
+                                        <CodeLanguage language={code.language.toLowerCase()}/>
+                                    </div>
+                                    <div>
+                                        <Button variant={"outline"}>
+                                            <BookCopy />
+                                        </Button>
+                                    </div>
+                                    <div>
+                                        <Button 
+                                            variant="outline"
+                                            onClick={() => handleCopy(code.content, code._id)} // Pass unique ID
+                                        >
+                                            {copiedBlocks[code._id] ? "Copied" : "Copy"}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardHeader>
+
+                            <CardContent>
+                                <div className='pt-4'>
+                                    <SyntaxHighlighter
+                                        language={code.language.toLowerCase()}
+                                        style={atomDark}
+                                        customStyle={{
+                                            margin: 0,
+                                            padding: '0.75rem',
+                                            borderRadius: '0.5rem',
+                                            fontSize: '0.875rem',
+                                            background: '#1e1e1e',
+                                            maxHeight: '350px',
+                                            overflowX: 'scroll',
+                                            scrollbarWidth: 'thin',
+                                            scrollbarColor: '#4b5563 transparent'
+                                        }}
+                                        showLineNumbers={true}
+                                    >
+                                        {code.content}
+                                    </SyntaxHighlighter>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))
+                }
+            </div>
         </div>
 
         <div className='md:flex-[1] md:max-w-[400px] flex flex-col gap-y-3'>
@@ -157,13 +248,13 @@ const page = ({params}) => {
 
             {
                 snippet.collaborators.length === 0 &&
-                <Card key={snippet._id} className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+                <Card className="hidden sm:block w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
                     <CardHeader className="text-xl">Collaborators</CardHeader>
                     <Separator/>
                     <CardContent className="flex items-center flex-wrap gap-y-2">
                         {
-                            [1,2,3,4,5].map((y) => (
-                                <Link href=""  className='flex flex-col gap-2 -ml-2'>
+                            [1,2,3,4,5].map((i) => (
+                                <Link href="/#" key={i} className='flex flex-col gap-2 -ml-2'>
                                     <Image 
                                         src={"/profile.png"}
                                         alt='collaborators'
