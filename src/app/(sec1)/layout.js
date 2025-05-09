@@ -31,7 +31,7 @@ export default function Section1Layout({ children }) {
         <Header/>
         <SidebarProvider>
           <AppSidebar className="mt-18"/>
-            <main className="font-[var(--font-inter)] font-[]">
+            <main className="font-[var(--font-inter)] w-full">
               <SidebarTrigger />
               {children}
             </main>
