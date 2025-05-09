@@ -231,7 +231,7 @@ return (
                         alt={snippet.user.name}
                         width={32}
                         height={32}
-                        className="rounded-full"
+                        className="rounded-full min-h-[25px] aspect-square object-cover"
                       />
                     <div>
                         <Link href={`/profile/${snippet.user._id}`} className="text-sm font-semibold text-foreground hover:underline">
@@ -244,7 +244,7 @@ return (
                     </div>
                     
                     <div className='-mb-6 py-3'>
-                        <Link href={`/profile/${snippet._id}`} className="text-2xl  line-clamp-2 text-foreground 
+                        <Link href={`/snippet/${snippet._id}`} className="text-2xl  line-clamp-2 text-foreground 
                         font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
                             {snippet.title}
                         </Link>
