@@ -256,8 +256,8 @@ return (
                   <p className="text-sm text-muted-foreground line-clamp-3">{snippet.description}</p>
 
                   <div className="mt-2 flex flex-wrap gap-2">
-                      {snippet.tags.map((tag, index) => (
-                      <Button variant="outline" size={"sm"} className='text-xs text-muted-foreground'>#{tag}</Button>
+                      {snippet.tags.map((tag, i) => (
+                        <Button variant="outline" size={"sm"} key={i} className='text-xs text-muted-foreground'>#{tag}</Button>
                       ))}
                   </div>
 
@@ -285,22 +285,31 @@ return (
                   <div className='flex gap-x-2 items-center justify-between pt-3'>
                     <div className='flex gap-x-2 items-center'>
                       <div className='flex items-center gap-x-2 mr-3'>
-                        <Button variant={"outline"} size={'sm'}> <ArrowBigUp/> </Button>
-                        <p>{snippet.upvoteCount}</p>
+                        <Button variant={"outline"} size={'sm'}> 
+                          <ArrowBigUp/> 
+                          <p>{snippet.upvoteCount}</p>
+                        </Button>
+                        
                         <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
                       </div>
 
                       <div>
-                        <Button variant={"outline"}> <MessageCircle/> </Button>
+                        <Button variant={"outline"}> 
+                          <MessageCircle/> 
+                          <p>{snippet.commentNo}</p>
+                        </Button>
                       </div>
 
                       <div>
-                        <Button variant={"outline"}> <Bookmark/> </Button>
+                        <Button variant={"outline"}> 
+                          <Bookmark/> 
+                          <p>{snippet.bookmarks.length}</p>
+                        </Button>
                       </div>
                     </div>
 
                     <div>
-                      <Button variant={"link"}> <CircleDollarSign size={28}/> </Button>
+                      <Button variant={"link"}> <CircleDollarSign/> </Button>
                     </div>
                   </div>
 
