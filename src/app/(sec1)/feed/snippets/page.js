@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowBigDown, ArrowBigUp, Bookmark, CircleDollarSign, MessageCircle, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
@@ -222,7 +223,7 @@ return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
         
         {snippets.map((snippet) => (
-          <Card key={snippet._id} className="w-full">
+          <Card key={snippet._id} className="w-full hover:shadow-md hover:border-gray-600 transition-colors duration-200">
               <CardHeader>
                     <div className="flex items-center gap-2">
                       <Image
@@ -271,7 +272,9 @@ return (
                               fontSize: '0.875rem',
                               background: '#1e1e1e',
                               maxHeight: '350px',
-                              overflowX: 'scroll'
+                              overflowX: 'scroll',
+                              scrollbarWidth: 'thin',
+                              scrollbarColor: '#4b5563 transparent'
                           }}
                           showLineNumbers={true}
                       >
@@ -279,8 +282,26 @@ return (
                       </SyntaxHighlighter>
                   </div>
 
-                  <div>
+                  <div className='flex gap-x-2 items-center justify-between pt-3'>
+                    <div className='flex gap-x-2 items-center'>
+                      <div className='flex items-center gap-x-2 mr-3'>
+                        <Button variant={"outline"} size={'sm'}> <ArrowBigUp/> </Button>
+                        <p>{snippet.upvoteCount}</p>
+                        <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
+                      </div>
 
+                      <div>
+                        <Button variant={"outline"}> <MessageCircle/> </Button>
+                      </div>
+
+                      <div>
+                        <Button variant={"outline"}> <Bookmark/> </Button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Button variant={"link"}> <CircleDollarSign size={28}/> </Button>
+                    </div>
                   </div>
 
               </CardContent>
