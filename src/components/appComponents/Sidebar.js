@@ -35,6 +35,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { useRouter } from 'next/navigation';
 
 // This is sample data.
 const data = {
@@ -136,6 +137,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }) {
+  const router = useRouter();
   const [activeItem, setActiveItem] = useState({
     url: '/feed/snippets'
   })
@@ -186,7 +188,7 @@ export function AppSidebar({ ...props }) {
             </SidebarMenuItem>
           </SidebarMenu>
 
-          <Button>
+          <Button onClick={()=>router.push("/snippet-editor")}>
             <Plus/>
             <p>Create Post</p>
           </Button>
