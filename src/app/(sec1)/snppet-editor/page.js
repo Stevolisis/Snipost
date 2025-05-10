@@ -24,7 +24,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { Users, X } from 'lucide-react';
+import { MultiSelect } from '@/components/appComponents/MultiSelect';
+
+
 
 const SnippetEditor = () => {
   const [title, setTitle] = useState("");
@@ -36,6 +39,13 @@ const SnippetEditor = () => {
   ]);
   const [folder, setFolder] = useState("");
   const [type, setType] = useState("public");
+const frameworksList = [
+  { value: "react", label: "React", icon: Users },
+  { value: "angular", label: "Angular", icon: Users },
+  { value: "vue", label: "Vue", icon: Users },
+  { value: "svelte", label: "Svelte", icon: Users },
+  { value: "ember", label: "Ember", icon: Users },
+];
 
   const handleAddCodeBlock = () => {
     setCodeBlocks([...codeBlocks, { name: "", language: "javascript", content: "" }]);
@@ -55,17 +65,6 @@ const SnippetEditor = () => {
     setCodeBlocks(newCodeBlocks);
   };
 
-  const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()]);
-      setTagInput("");
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
-
   const handlePublish = () => {
     const snippetData = {
       title,
@@ -75,16 +74,13 @@ const SnippetEditor = () => {
       folder,
       type
     };
-
     console.log("Publishing snippet:", snippetData);
-    // Here you would typically send this data to your backend API
-    // Example: await api.post('/snippets', snippetData);
   };
 
   return (
     <div className="flex justify-center">
       <Card className="px-6 bg-transparent w-[97%] md:w-[80%]">
-        <div className="my-4">
+        <div className="">
           <Input 
             placeholder="Title" 
             value={title}
@@ -92,7 +88,7 @@ const SnippetEditor = () => {
           />
         </div>
 
-        <div className="my-4">
+        <div className="">
           <Textarea 
             placeholder="Description" 
             className="h-32" 
@@ -101,32 +97,19 @@ const SnippetEditor = () => {
           />
         </div>
 
-        <div className="my-4">
-          <div className="flex gap-2 mb-2">
-            <Input
-              placeholder="Add tags (JavaScript, Python, etc.)"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
+        <div className="">
+            <MultiSelect
+                options={frameworksList}
+                onValueChange={setTags}
+                defaultValue={tags}
+                placeholder="Select Tag"
+                variant="inverted"
+                animation={2}
+                maxCount={3}
             />
-            <Button onClick={handleAddTag}>Add</Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {tags.map(tag => (
-              <div key={tag} className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
-                <span>{tag}</span>
-                <button 
-                  onClick={() => handleRemoveTag(tag)}
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div className="my-4">
+        <div className="">
           <Select value={type} onValueChange={setType}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Visibility Status" />
@@ -140,7 +123,7 @@ const SnippetEditor = () => {
             </SelectContent>
           </Select>
 
-          <Select value={folder} onValueChange={setFolder} className="w-full mt-6">
+          {/* <Select value={folder} onValueChange={setFolder} className="w-full mt-6">
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Folder" />
             </SelectTrigger>
@@ -148,14 +131,14 @@ const SnippetEditor = () => {
               <SelectGroup>
                 <SelectLabel>Folder</SelectLabel>
                 <SelectItem value="681a8ee804258036305755ec">My Folder</SelectItem>
-                {/* Add more folders as needed */}
               </SelectGroup>
             </SelectContent>
-          </Select>
+          </Select> */}
+          
         </div>
 
         {codeBlocks.map((block, index) => (
-          <Card key={index} className="rounded-bl-sm rounded-br-sm mb-4">
+          <Card key={index} className="">
             <CardHeader className="flex justify-between items-center">
               <div className="flex-1">
                 <Input
