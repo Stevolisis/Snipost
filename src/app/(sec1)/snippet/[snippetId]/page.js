@@ -23,6 +23,7 @@ const SyntaxHighlighter = dynamic(
   }
 );
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import CommentBox from '@/components/appComponents/CommentBox';
 
 const page = ({params}) => {
     const { snippetId } = use(params);
@@ -104,7 +105,7 @@ const page = ({params}) => {
     <div className='px-5 flex flex-col md:flex-row gap-5'>
         
         <div className='flex-grow md:flex-[2]'>
-            <Card key={snippet._id} className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+            <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
                 <CardHeader>
                         <div className='-mb-6 py-3'>
                             <Link href={`/snippet/${snippet._id}`} className="text-2xl  line-clamp-2 text-foreground 
@@ -166,7 +167,7 @@ const page = ({params}) => {
                                 <div><h3 className=' hover:underline hover:text-primary transition-colors duration-150 cursor-pointer'>{code.name}</h3></div>
 
                                 <div className='flex items-center gap-x-2'>
-                                    <div>
+                                    <div className="hidden md:block">
                                         <CodeLanguage language={code.language.toLowerCase()}/>
                                     </div>
                                     <div>
@@ -211,10 +212,105 @@ const page = ({params}) => {
                     ))
                 }
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <Card className="my-6 w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+                <CardContent>
+                    <div className='flex gap-x-2 items-center justify-between'>
+                        <div className='flex gap-x-2 items-center'>
+                        <div className='flex items-center gap-x-2 mr-3'>
+                            <Button variant={"outline"} size={'sm'}> 
+                            <ArrowBigUp/> 
+                            <p>{snippet.upvoteCount}</p>
+                            </Button>
+                            
+                            <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
+                        </div>
+
+                        <div>
+                            <Button variant={"outline"}> 
+                            <MessageCircle/> 
+                            <p>{snippet.commentNo}</p>
+                            </Button>
+                        </div>
+
+                        <div>
+                            <Button variant={"outline"}> 
+                            <Bookmark/> 
+                            <p>{snippet.bookmarks.length}</p>
+                            </Button>
+                        </div>
+                        </div>
+
+                        <div>
+                        <Button variant={"link"}> <CircleDollarSign/> </Button>
+                        </div>
+                    </div>
+
+                </CardContent>
+            </Card>
+
+
+
+
+            <Card className="bg-transparent mb-12">
+                <CardContent>
+                    <CommentBox/>
+                </CardContent>
+            </Card>
+
+
         </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div className='md:flex-[1] md:max-w-[400px] flex flex-col gap-y-3'>
-            <Card key={snippet._id} className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+            <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
               <CardHeader>
                     <div className="flex items-center gap-2">
                       <Image
@@ -251,7 +347,7 @@ const page = ({params}) => {
                 <Card className="hidden sm:block w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
                     <CardHeader className="text-xl">Collaborators</CardHeader>
                     <Separator/>
-                    <CardContent className="flex items-center flex-wrap gap-y-2">
+                    <CardContent className="flex items-center flex-wrap gap-y-2 pt-6">
                         {
                             [1,2,3,4,5].map((i) => (
                                 <Link href="/#" key={i} className='flex flex-col gap-2 -ml-2'>
