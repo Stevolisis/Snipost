@@ -19,14 +19,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function CodeLanguage({language}) {
+export function CodeLanguage({languages}) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
-    const [frameworks, setFramework] = useState(()=> [
-        {   value:language, label: language }
-    ]);
+    const [frameworks, setFramework] = useState(()=> languages);
 
-  return (
+    return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
@@ -37,7 +35,7 @@ export function CodeLanguage({language}) {
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
-            : language}
+            : "Select language..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -57,7 +55,7 @@ export function CodeLanguage({language}) {
                     setOpen(false)
                   }}
                 >
-                  {language}
+                  {framework.label}
                   <Check
                     className={cn(
                       "ml-auto",

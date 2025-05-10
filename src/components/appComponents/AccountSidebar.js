@@ -1,6 +1,5 @@
 "use client"
-import * as React from "react"
-
+import React, { useEffect, useState } from 'react'
 import {
   Sidebar,
   SidebarContent,
@@ -61,6 +60,21 @@ const data = {
 }
 
 export function AccountSidebar({ ...props }) {
+    const [activeNav, setActiveNav] = useState("/account/profile") // Default to "Trending"
+
+    // Update navMain data with dynamic active state
+    const navMainWithActiveState = data.navMain.map(item => ({
+        ...item,
+        isActive: item.url === activeNav
+    }));
+
+    useEffect(()=>{
+        if(window){
+            setActiveNav(window.location.pathname);
+        }
+    },[]);
+
+    
   return (
     <>
     
@@ -89,9 +103,13 @@ export function AccountSidebar({ ...props }) {
           </SidebarMenu>
 
         <SidebarMenu>
-            {data.navMain.map((item) => (
+            {navMainWithActiveState.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild isActive={item.isActive}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={item.isActive}
+                  onClick={() => setActiveNav(item.url)}
+                >
                   <Link href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>

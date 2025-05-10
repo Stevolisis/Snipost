@@ -141,7 +141,7 @@ const page = ({params}) => {
             "updatedAt": "2025-05-07T17:37:02.452Z",
             "__v": 0
         }
-        ];
+    ];
   const [copiedBlocks, setCopiedBlocks] = useState({});
 
   async function handleCopy(content, blockId) {
@@ -230,7 +230,10 @@ const page = ({params}) => {
 
                                 <div className='flex items-center gap-x-2'>
                                     <div className="hidden md:block">
-                                        <CodeLanguage language={code.language.toLowerCase()}/>
+                                        <CodeLanguage languages={[{
+                                            value: code.language.toLowerCase(),
+                                            label: code.language.toLowerCase()
+                                        }]}/>
                                     </div>
                                     <div>
                                         <Button variant={"outline"}>

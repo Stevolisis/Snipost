@@ -11,27 +11,27 @@ const page = () => {
         <form className='w-[93%] md:w-[50%] flex flex-col gap-y-5 md:gap-y-8'>
             <div className='flex flex-col gap-y-3'>
                 <Label className="text-sm md:text-base">Avatar</Label>
-                <Input type="file" placeholder="John Doe" />
+                <Input className="" type="file" placeholder="John Doe" />
             </div>
 
             <div className='flex flex-col gap-y-3'>
                 <Label className="text-sm md:text-base">Name</Label>
-                <Input type="text" placeholder="John Doe" required/>
+                <Input className="" type="text" placeholder="John Doe" required/>
             </div>
 
             <div className='flex flex-col gap-y-3'>
                 <Label className="text-sm md:text-base">UserName</Label>
-                <Input type="text" placeholder="JohnDev" required/>
+                <Input className="" type="text" placeholder="JohnDev" required/>
             </div>
             
             <div className='flex flex-col gap-y-3'>
                 <Label className="text-sm md:text-base">Email</Label>
-                <Input type="email" placeholder="john@gmail.com" />
+                <Input className="" type="email" placeholder="john@gmail.com" />
             </div>
 
             <div className='flex flex-col gap-y-3'>
                 <Label className="text-sm md:text-base">Position</Label>
-                <Input type="text" placeholder="Software Engineer" />
+                <Input className="" type="text" placeholder="Software Engineer" />
             </div>
 
             <div className='flex flex-col gap-y-3'>

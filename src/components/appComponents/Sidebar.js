@@ -1,5 +1,5 @@
 "use client"
-import * as React from "react"
+import React, { useEffect, useState } from 'react';
 import {
   AudioWaveform,
   Blocks,
@@ -106,83 +106,59 @@ const data = {
       icon: MessageCircleQuestion,
     },
   ],
-  favorites: [
-    {
-      name: "Project Management & Task Tracking",
-      url: "#",
-      emoji: "📊",
-    },
-    {
-      name: "Family Recipe Collection & Meal Planning",
-      url: "#",
-      emoji: "🍳",
-    },
-    {
-      name: "Fitness Tracker & Workout Routines",
-      url: "#",
-      emoji: "💪",
-    },
-    {
-      name: "Book Notes & Reading List",
-      url: "#",
-      emoji: "📚",
-    },
-    {
-      name: "Sustainable Gardening Tips & Plant Care",
-      url: "#",
-      emoji: "🌱",
-    },
-    {
-      name: "Language Learning Progress & Resources",
-      url: "#",
-      emoji: "🗣️",
-    },
-    {
-      name: "Home Renovation Ideas & Budget Tracker",
-      url: "#",
-      emoji: "🏠",
-    },
-    {
-      name: "Personal Finance & Investment Portfolio",
-      url: "#",
-      emoji: "💰",
-    },
-    {
-      name: "Movie & TV Show Watchlist with Reviews",
-      url: "#",
-      emoji: "🎬",
-    },
-    {
-      name: "Daily Habit Tracker & Goal Setting",
-      url: "#",
-      emoji: "✅",
-    },
-  ],
   workspaces: [
     {
       name: "Upvotes",
+      url: "/feed/upvotes",
       emoji: "🏠",
     },
     {
       name: "Comments",
+      url: "/feed/comments",
       emoji: "💼",
     },
     {
       name: "Views",
+      url: "/feed/views",
       emoji: "🎨",
     },
     {
       name: "latest",
+      url: "/feed/latest",
       emoji: "🏡",
     },
     {
       name: "Downvotes",
+      url: "/feed/downvotes",
       emoji: "🧳",
     },
   ],
 }
 
 export function AppSidebar({ ...props }) {
+  const [activeItem, setActiveItem] = useState({
+    url: '/feed/snippets'
+  })
+  const navMainWithActiveState = data.navMain.map(item => ({
+    ...item,
+    isActive: activeItem.url === item.url
+  }))
+
+  // Update workspaces with dynamic active state
+  const workspacesWithActiveState = data.workspaces.map(workspace => ({
+    ...workspace,
+    isActive: activeItem.url === workspace.url
+  }))
+
+
+  useEffect(()=>{
+      if(window){
+          setActiveItem({
+            url: window.location.pathname
+          });
+      }
+  },[]);
+  
   return (
     <>
     
@@ -217,9 +193,15 @@ export function AppSidebar({ ...props }) {
 
           
           <SidebarMenu>
-            {data.navMain.map((item) => (
+            {navMainWithActiveState.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild isActive={item.isActive}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={item.isActive}
+                  onClick={() => setActiveItem({
+                    value: item.url
+                  })}
+                >
                   <Link href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>
@@ -240,16 +222,21 @@ export function AppSidebar({ ...props }) {
             <SidebarGroupContent>
               <SidebarMenu>
 
-                {data.workspaces.map((workspace) => (
-                    <SidebarMenuItem key={workspace.name}>
-                      <SidebarMenuButton asChild>
-                        <Link href="#">
-                          <span>{workspace.emoji}</span>
-                          <span>{workspace.name}</span>
-                        </Link>
-                      </SidebarMenuButton>
-
-                    </SidebarMenuItem>
+                {workspacesWithActiveState.map((workspace) => (
+                  <SidebarMenuItem key={workspace.name}>
+                    <SidebarMenuButton 
+                      asChild
+                      isActive={workspace.isActive}
+                      onClick={() => setActiveItem({
+                        value: workspace.url
+                      })}
+                    >
+                      <Link href="#">
+                        <span>{workspace.emoji}</span>
+                        <span>{workspace.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 ))}
 
               </SidebarMenu>
