@@ -1,6 +1,9 @@
 import { Inter } from "next/font/google";
-import "./globals.css";
 import Header from "@/components/appComponents/Header";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AccountSidebar } from "@/components/appComponents/AccountSidebar";
+import { Toaster } from "@/components/ui/sonner";
+import "../globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,9 +18,17 @@ export const metadata = {
 export default function Section2Layout({ children }) {
   return (
     <html lang="en" className="dark">
-      <body className={` ${inter.variable} antialiased`}>
+      <body className={`${inter.variable} antialiased`}>
         <Header/>
-        {children}
+        <SidebarProvider>
+          <AccountSidebar className="mt-18"/>
+          <Toaster />
+            <main className="font-[var(--font-inter)] w-full">
+              <SidebarTrigger />
+              {children}
+            </main>
+
+        </SidebarProvider>
       </body>
     </html>
   );

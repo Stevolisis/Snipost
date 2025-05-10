@@ -3,58 +3,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from '../ui/button';
 import { AtSign, Code, Link } from 'lucide-react';
 import { Textarea } from "@/components/ui/textarea"
-const SyntaxHighlighter = dynamic(
-  () => import('react-syntax-highlighter').then((mod) => {
-    return mod.Prism;
-  }),
-  {
-    ssr: false,
-    loading: () => (
-      <pre className=" p-4 rounded-md overflow-x-auto">
-        Loading code snippet...
-      </pre>
-    )
-  }
-);
-
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import dynamic from 'next/dynamic';
+import { renderTextWithCode } from '@/utils/rendertextwithcode';
 
 
 const CommentBox = () => {
     const [comment, setComment] = useState("");
 
-     const renderTextWithCode = (text) => {
-        // Split text into parts that are either code or normal text
-        const parts = text.split(/(`[^`]+`)/g);
-        
-        return parts.map((part, index) => {
-            if (part.startsWith('`') && part.endsWith('`')) {
-                // Extract code content (remove backticks)
-                const codeContent = part.slice(1, -1);
-                return (
-                    <SyntaxHighlighter
-                        key={index}
-                        language="javascript" 
-                        style={atomDark}
-                        customStyle={{
-                            margin: '0.5em 0',
-                            padding: '1em',
-                            borderRadius: '0.3em',
-                            fontSize: '0.85em',
-                            display: 'inline-block',
-                            width: '100%'
-                        }}
-                        wrapLines
-                    >
-                        {codeContent}
-                    </SyntaxHighlighter>
-                );
-            }
-            // Return normal text
-            return <span key={index}>{part}</span>;
-        });
-    };
 
   return (
     <div>

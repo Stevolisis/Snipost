@@ -1,5 +1,4 @@
 "use client"
-
 import * as React from "react"
 import {
   AudioWaveform,
@@ -9,6 +8,7 @@ import {
   Home,
   Inbox,
   MessageCircleQuestion,
+  Plus,
   Search,
   Settings2,
   Sparkles,
@@ -17,8 +17,6 @@ import {
   TrendingUp,
   Users2,
 } from "lucide-react"
-
-
 import {
   Sidebar,
   SidebarContent,
@@ -36,6 +34,7 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 // This is sample data.
 const data = {
@@ -211,7 +210,13 @@ export function AppSidebar({ ...props }) {
             </SidebarMenuItem>
           </SidebarMenu>
 
-                <SidebarMenu>
+          <Button>
+            <Plus/>
+            <p>Create Post</p>
+          </Button>
+
+          
+          <SidebarMenu>
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild isActive={item.isActive}>

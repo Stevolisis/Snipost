@@ -24,6 +24,7 @@ const SyntaxHighlighter = dynamic(
 );
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import CommentBox from '@/components/appComponents/CommentBox';
+import Comment from '@/components/appComponents/Comment';
 
 const page = ({params}) => {
     const { snippetId } = use(params);
@@ -80,6 +81,67 @@ const page = ({params}) => {
         netVotes: 0,
         bookmarks: []
     };
+    const dummyComments = [
+        {
+            "_id": "681b92b787b022abfaa41296",
+            "contentRef": {  // Populated document
+            "_id": "68179244e70ebcd15617e3fa",
+            "title": "CommonJS vs ES Modules",
+            "description": "Detailed comparison between module systems",
+            "tags": ["javascript", "nodejs"],
+            // Mongoose adds this virtual field during population:
+            "__model": "Snippet" 
+            },
+            "author": {  // Fully replaced with user document
+            "_id": "68161f63ad854930d22c03dd",
+            "name": "CodeMaster",
+            "userName": "@codemaster",
+            "avatar": {
+                "url": "https://example.com/avatars/codemaster.jpg",
+                "public_id": "user-avatars/codemaster"
+            },
+            "__model": "User"
+            },
+            "text": "The event loop explanation was crystal clear!",
+            "replies": [
+            {
+                "_id": "681b961f6e5d7ded5a218518",
+                "author": {  // Populated user
+                "_id": "68161f63ad854930d22c03de",
+                "name": "DevNewbie",
+                "userName": "@newbie",
+                "__model": "User"
+                },
+                "text": "@codemaster This helped me fix my async/await issues!",
+                "mentions": [  // Populated mentions
+                {
+                    "_id": "68161f63ad854930d22c03dd",
+                    "userName": "@codemaster",
+                    "__model": "User"
+                }
+                ],
+                "upvotes": [  // Populated voters
+                {
+                    "_id": "68161f63ad854930d22c03df",
+                    "userName": "@reactlover",
+                    "__model": "User"
+                }
+                ],
+                "createdAt": "2025-05-07T17:19:27.137Z"
+            }
+            ],
+            "upvotes": [  // Populated voters
+            {
+                "_id": "68161f63ad854930d22c03de",
+                "userName": "@newbie",
+                "__model": "User"
+            }
+            ],
+            "createdAt": "2025-05-07T17:04:55.829Z",
+            "updatedAt": "2025-05-07T17:37:02.452Z",
+            "__v": 0
+        }
+        ];
   const [copiedBlocks, setCopiedBlocks] = useState({});
 
   async function handleCopy(content, blockId) {
@@ -272,6 +334,14 @@ const page = ({params}) => {
                     <CommentBox/>
                 </CardContent>
             </Card>
+
+            {
+                dummyComments.map((comment, i)=>(<Comment key={i} comment={comment}/>))
+            }
+
+            <div>
+                
+            </div>
 
 
         </div>
