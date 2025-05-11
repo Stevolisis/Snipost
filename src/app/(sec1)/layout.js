@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/appComponents/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
+import WalletContextProvider from './../../components/appComponents/WalletContextProvider';
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -30,19 +31,20 @@ export default function Section1Layout({ children }) {
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} antialiased`}>
-        <ReduxStateProvider>
-          <Header/>
-          <SidebarProvider>
-            <AppSidebar className="mt-18"/>
-            <Toaster />
-              <main className="font-[var(--font-inter)] w-full">
-                <SidebarTrigger />
-                {children}
-              </main>
+        <WalletContextProvider>
+          <ReduxStateProvider>
+            <Header/>
+            <SidebarProvider>
+              <AppSidebar className="mt-18"/>
+              <Toaster />
+                <main className="font-[var(--font-inter)] w-full">
+                  <SidebarTrigger />
+                  {children}
+                </main>
 
-          </SidebarProvider>          
-        </ReduxStateProvider>
-
+            </SidebarProvider>          
+          </ReduxStateProvider>          
+        </WalletContextProvider>
       </body>
     </html>
   );
