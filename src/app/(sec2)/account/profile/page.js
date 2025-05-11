@@ -8,14 +8,69 @@ import { MultiSelect } from '@/components/appComponents/MultiSelect'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 
-const frameworksList = [
+const allTags = [
   { value: 'react', label: 'React' },
   { value: 'nextjs', label: 'Next.js' },
   { value: 'solana', label: 'Solana' },
   { value: 'web3', label: 'Web3' },
   { value: 'javascript', label: 'JavaScript' },
-  // Add more tags as needed
-]
+  { value: 'blockchain', label: 'Blockchain' },
+  { value: 'smartcontracts', label: 'Smart Contracts' },
+  { value: 'onchain', label: 'On-chain' },
+  { value: 'anchor', label: 'Anchor' },
+  { value: 'metaplex', label: 'Metaplex' },
+  { value: 'spl-tokens', label: 'SPL Tokens' },
+  { value: 'solana-cli', label: 'Solana CLI' },
+  { value: 'rpc', label: 'RPC' },
+  { value: 'depin', label: 'DePIN' },
+  { value: 'defi', label: 'DeFi' },
+  { value: 'nfts', label: 'NFTs' },
+  { value: 'solana-pay', label: 'Solana Pay' },
+  { value: 'programs', label: 'Programs' },
+  { value: 'validators', label: 'Validators' },
+  { value: 'l1blockchain', label: 'L1 Blockchain' },
+  { value: 'ledger', label: 'Ledger' },
+  { value: 'web3auth', label: 'Web3Auth' },
+  { value: 'arweave', label: 'Arweave' },
+  { value: 'rust', label: 'Rust' },
+  { value: 'typescript', label: 'TypeScript' },
+  { value: 'vscode', label: 'VS Code' },
+  { value: 'nodejs', label: 'Node.js' },
+  { value: 'solidity', label: 'Solidity' },
+  { value: 'hardhat', label: 'Hardhat' },
+  { value: 'foundry', label: 'Foundry' },
+  { value: 'wasm', label: 'WASM' },
+  { value: 'cli-tools', label: 'CLI Tools' },
+  { value: 'json-rpc', label: 'JSON-RPC' },
+  { value: 'graphql', label: 'GraphQL' },
+  { value: 'unit-testing', label: 'Unit Testing' },
+  { value: 'devnet', label: 'Devnet' },
+  { value: 'mainnet-beta', label: 'Mainnet Beta' },
+  { value: 'sdk', label: 'SDK' },
+  { value: 'borsh', label: 'Borsh' },
+  { value: 'buildtools', label: 'Build Tools' },
+  { value: 'snipost', label: 'Snipost' },
+  { value: 'snap2earn', label: 'Snap2Earn' },
+  { value: 'upvotetoearn', label: 'Upvote to Earn' },
+  { value: 'codegems', label: 'CodeGems' },
+  { value: 'snips', label: 'Snips' },
+  { value: 'buildinpublic', label: 'Build in Public' },
+  { value: 'showyourwork', label: 'Show Your Work' },
+  { value: 'devprofile', label: 'Dev Profile' },
+  { value: 'reputation', label: 'Reputation' },
+  { value: 'devrewards', label: 'Dev Rewards' },
+  { value: 'snippetdrop', label: 'Snippet Drop' },
+  { value: 'socialcoding', label: 'Social Coding' },
+  { value: 'dailydev', label: 'Daily Dev' },
+  { value: 'followdevs', label: 'Follow Devs' },
+  { value: 'devcommunity', label: 'Dev Community' },
+  { value: 'snippetfeed', label: 'Snippet Feed' },
+  { value: 'sharecode', label: 'Share Code' },
+  { value: 'opensource', label: 'Open Source' },
+  { value: 'codewars', label: 'Codewars' },
+  { value: 'techstack', label: 'Tech Stack' },
+];
+
 
 const ProfilePage = () => {
   const dispatch = useAppDispatch()
@@ -184,7 +239,7 @@ const ProfilePage = () => {
           <Label className="text-sm md:text-base">Followed Tags</Label>
           <div className="">
             <MultiSelect
-              options={frameworksList}
+              options={allTags}
               onValueChange={setTags}
               defaultValue={tags}
               placeholder="Select Tag"
