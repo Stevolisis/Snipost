@@ -8,6 +8,7 @@ import { MultiSelect } from '@/components/appComponents/MultiSelect'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 import api from '@/utils/axiosConfig'
+import { toast } from "sonner"
 
 const allTags = [
   { value: 'react', label: 'React' },
@@ -172,12 +173,17 @@ const ProfilePage = () => {
 
       const data = response.data;
       console.log("Res: ", data);
-
+      toast("Success", {
+        description: response.data.message,
+      })
       dispatch(updateUserData(data.user));
 
     } catch (error) {
       console.error('Update error:', error)
-      alert(error.message)
+      toast("Uh oh! Something went wrong.", {
+        description: err.message,
+      })
+      setIsLoading(false);
     }
   }
 

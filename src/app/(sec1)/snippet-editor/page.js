@@ -28,6 +28,7 @@ import { Users, X } from 'lucide-react';
 import { MultiSelect } from '@/components/appComponents/MultiSelect';
 import api from '@/utils/axiosConfig';
 import { useAppSelector } from '@/lib/redux/hooks';
+import { toast } from "sonner"
 
 
 
@@ -98,14 +99,14 @@ const SnippetEditor = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
-  const [tagInput, setTagInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [codeBlocks, setCodeBlocks] = useState([
     { name: "", language: "javascript", content: "" }
   ]);
   const [folder, setFolder] = useState("");
   const [type, setType] = useState("public");
   const { jwtToken, userData } = useAppSelector((state) => state.auth)
-  
+
   const handleAddCodeBlock = () => {
     setCodeBlocks([...codeBlocks, { name: "", language: "javascript", content: "" }]);
   };
@@ -124,7 +125,10 @@ const SnippetEditor = () => {
     setCodeBlocks(newCodeBlocks);
   };
   console.log(userData.folders[0]._id)
+
+
   const handlePublish = async() => {
+    setIsLoading(true);
     const snippetData = {
       title,
       description,
@@ -140,9 +144,16 @@ const SnippetEditor = () => {
           Authorization: `Bearer ${jwtToken}`
         }
       });
+      toast("Success", {
+        description: response.data.message,
+      })
       console.log(response.data);
+      setIsLoading(false);
     }catch(err){
-      alert(err.message);
+      toast("Uh oh! Something went wrong.", {
+        description: err.message,
+      })
+      setIsLoading(false);
     }
   };
 
