@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AccountSidebar } from "@/components/appComponents/AccountSidebar";
 import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
+import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -19,16 +20,19 @@ export default function Section2Layout({ children }) {
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} antialiased`}>
-        <Header/>
-        <SidebarProvider>
-          <AccountSidebar className="mt-18"/>
-          <Toaster />
-            <main className="font-[var(--font-inter)] w-full">
-              <SidebarTrigger />
-              {children}
-            </main>
+        <ReduxStateProvider>
+          <Header/>
+          <SidebarProvider>
+            <AccountSidebar className="mt-18"/>
+            <Toaster />
+              <main className="font-[var(--font-inter)] w-full">
+                <SidebarTrigger />
+                {children}
+              </main>
 
-        </SidebarProvider>
+          </SidebarProvider>          
+        </ReduxStateProvider>
+
       </body>
     </html>
   );
