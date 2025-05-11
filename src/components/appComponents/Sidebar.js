@@ -36,6 +36,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation';
+import { useAppSelector } from '@/lib/redux/hooks';
 
 // This is sample data.
 const data = {
@@ -140,7 +141,15 @@ export function AppSidebar({ ...props }) {
   const router = useRouter();
   const [activeItem, setActiveItem] = useState({
     url: '/feed/snippets'
-  })
+  });
+  const { 
+    isConnected, 
+    walletAddress, 
+    jwtToken, 
+    userData,
+    isLoading 
+  } = useAppSelector((state) => state.auth);
+
   const navMainWithActiveState = data.navMain.map(item => ({
     ...item,
     isActive: activeItem.url === item.url
@@ -168,24 +177,34 @@ export function AppSidebar({ ...props }) {
         <SidebarHeader>
 
           <SidebarMenu>
-            <SidebarMenuItem>
+            {userData && <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
                 <Link href="#">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <Image
-                      src="/logo2.svg"
-                      alt="Avatar"
-                      width={20}
-                      height={20}
-                    />
+                    {
+                      userData?.avatar.url ? 
+                      <Image
+                        src={userData.avatar.url}
+                        alt={userData.avatar.id}
+                        width={20}
+                        height={20}
+                        className='object-cover'
+                      /> :
+                      <Image
+                        src="/logo2.svg"
+                        alt="Avatar"
+                        width={20}
+                        height={20}
+                      />
+                    }
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Steven Joseph</span>
-                    <span className="truncate text-xs">Pro Coder</span>
+                    <span className="truncate font-semibold">{userData?.name}</span>
+                    <span className="truncate text-xs text-muted-foreground">@{userData?.userName}</span>
                   </div>
                 </Link>
               </SidebarMenuButton>
-            </SidebarMenuItem>
+            </SidebarMenuItem>}
           </SidebarMenu>
 
           <Button onClick={()=>router.push("/snippet-editor")}>

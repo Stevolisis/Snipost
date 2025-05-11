@@ -60,8 +60,8 @@ const Comment = ({comment}) => {
 
           {
             comment.replies.map((reply,i)=>(
-              <>
-                <Card className=" hover:bg-background hover:border-gray-600 mb-4" key={i}>
+              <div key={i}>
+                <Card className=" hover:bg-background hover:border-gray-600 mb-4">
                   <CardHeader>
                       <Link href="#" className='flex gap-x-2 my-2'>
                         <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
@@ -107,7 +107,7 @@ const Comment = ({comment}) => {
                   </CardHeader>
                 </Card>
                 <CommentBox/>
-              </>
+              </div>
             ))
           }
         </CardContent>

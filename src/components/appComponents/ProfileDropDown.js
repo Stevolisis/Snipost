@@ -7,12 +7,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu"
+import { useAppSelector } from "@/lib/redux/hooks";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
 
 export function ProfileDropDown({ children }) {
+    const { 
+    isConnected, 
+    walletAddress, 
+    jwtToken, 
+    userData,
+    isLoading 
+  } = useAppSelector((state) => state.auth);
+
   const menuItems = [
     {
       group: [
@@ -67,16 +76,26 @@ export function ProfileDropDown({ children }) {
         <DropdownMenuLabel>
           <Link href="#" className="flex items-center gap-x-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Image
-                src="/logo2.svg"
-                alt="Avatar"
-                width={20}
-                height={20}
-              />
+              {
+                userData?.avatar.url ? 
+                <Image
+                  src={userData.avatar.url}
+                  alt={userData.avatar.id}
+                  width={20}
+                  height={20}
+                  className='object-cover'
+                /> :
+                <Image
+                  src="/logo2.svg"
+                  alt="Avatar"
+                  width={20}
+                  height={20}
+                />
+              }
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">Steven Joseph</span>
-              <span className="truncate text-xs text-muted-foreground">@stevolisis</span>
+              <span className="truncate font-semibold">{userData?.name}</span>
+              <span className="truncate text-xs text-muted-foreground">@{userData?.userName}</span>
             </div>
           </Link>
         </DropdownMenuLabel>
