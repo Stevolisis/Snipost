@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { MultiSelect } from '@/components/appComponents/MultiSelect'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
+import api from '@/utils/axiosConfig'
 
 const allTags = [
   { value: 'react', label: 'React' },
@@ -80,7 +81,8 @@ const ProfilePage = () => {
     userName: '',
     email: '',
     position: '',
-    about: ''
+    about: '',
+    twitterLink: ''
   })
   const [avatarFile, setAvatarFile] = useState(null)
   const [tags, setTags] = useState([])
@@ -93,18 +95,37 @@ const ProfilePage = () => {
         userName: userData.userName || '',
         email: userData.email || '',
         position: userData.position || '',
-        about: userData.about || ''
-      })
-      
-      // Initialize tags if user has followed tags
-      if (userData.followedTags) {
-        setTags(userData.followedTags.map(tag => ({
-          value: tag,
-          label: frameworksList.find(f => f.value === tag)?.label || tag
-        })))
-      }
+        about: userData.about || '',
+        twitterLink:  userData.socialLinks && userData?.socialLinks[0]?.link
+      });
+
     }
   }, [userData])
+
+  useEffect(()=>{
+    if(jwtToken){
+      const fetchUser = async()=>{
+        try{
+          const data = await api.get("/me",{
+            headers:{
+              Authorization:`Bearer ${jwtToken}`
+            }
+          });
+          if (data.data.user.followedTags) {
+            setTags(data.data.user.followedTags.map(tag => ({
+              value: tag,
+              label: allTags.find(f => f.value === tag)?.label || tag
+            })))
+          }
+          dispatch(updateUserData(data.data.user));
+        }catch(err){
+          console.log("Error: ", err);
+        }
+      };
+
+      fetchUser();
+    }
+  },[])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -119,8 +140,7 @@ const ProfilePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    const formData = new FormData()
+    const formData = new FormData(e.target)
     
     // Append all fields
     formData.append('name', formValues.name)
@@ -128,40 +148,40 @@ const ProfilePage = () => {
     formData.append('email', formValues.email)
     formData.append('position', formValues.position)
     formData.append('about', formValues.about)
+    formData.append('socialLinks', JSON.stringify([{platform:"Twitter",link:formValues.twitterLink}]))
     
     // Append tags as JSON array
     if (tags.length > 0) {
-      formData.append('followedTags', JSON.stringify(tags.map(tag => tag.value)))
+      console.log(JSON.stringify(tags))
+      formData.append('followedTags', JSON.stringify(tags))
+    }else{
+      formData.append('followedTags', JSON.stringify([]))
     }
-    
-    // Append file if selected
-    if (avatarFile) {
-      formData.append('avatar', avatarFile)
-    }
+
+    // // Append file if selected
+    // if (avatarFile) {
+    //   formData.append('avatar', avatarFile)
+    // }
 
     try {
-      const response = await fetch('/api/user/profile', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${jwtToken}`
-        },
-        body: formData
-      })
+      const response = await api.put('/complete-user-profile',formData,{
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
 
-      const data = await response.json()
+      const data = response.data;
+      console.log("Res: ", data);
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile')
-      }
+      dispatch(updateUserData(data.user));
 
-      dispatch(updateUserData(data.user))
-      alert('Profile updated successfully!')
     } catch (error) {
       console.error('Update error:', error)
       alert(error.message)
     }
   }
 
+  console.log("ggg: ",tags);
   return (
     <div className='w-full flex justify-center items-center'>
       <form 
@@ -173,6 +193,7 @@ const ProfilePage = () => {
           <Label className="text-sm md:text-base">Avatar</Label>
           <Input 
             type="file" 
+            name="avatar"
             onChange={handleFileChange}
             accept="image/*"
           />
@@ -219,6 +240,17 @@ const ProfilePage = () => {
             type="text" 
             name="position"
             value={formValues.position}
+            onChange={handleChange}
+            placeholder="Software Engineer" 
+          />
+        </div>
+
+        <div className='flex flex-col gap-y-3'>
+          <Label className="text-sm md:text-base">Twitter/X Link</Label>
+          <Input 
+            type="text" 
+            name="twitterLink"
+            value={formValues.twitterLink}
             onChange={handleChange}
             placeholder="Software Engineer" 
           />

@@ -26,8 +26,73 @@ import {
 import { Button } from '@/components/ui/button';
 import { Users, X } from 'lucide-react';
 import { MultiSelect } from '@/components/appComponents/MultiSelect';
+import api from '@/utils/axiosConfig';
+import { useAppSelector } from '@/lib/redux/hooks';
 
 
+
+const allTags = [
+  { value: 'react', label: 'React' },
+  { value: 'nextjs', label: 'Next.js' },
+  { value: 'solana', label: 'Solana' },
+  { value: 'web3', label: 'Web3' },
+  { value: 'javascript', label: 'JavaScript' },
+  { value: 'blockchain', label: 'Blockchain' },
+  { value: 'smartcontracts', label: 'Smart Contracts' },
+  { value: 'onchain', label: 'On-chain' },
+  { value: 'anchor', label: 'Anchor' },
+  { value: 'metaplex', label: 'Metaplex' },
+  { value: 'spl-tokens', label: 'SPL Tokens' },
+  { value: 'solana-cli', label: 'Solana CLI' },
+  { value: 'rpc', label: 'RPC' },
+  { value: 'depin', label: 'DePIN' },
+  { value: 'defi', label: 'DeFi' },
+  { value: 'nfts', label: 'NFTs' },
+  { value: 'solana-pay', label: 'Solana Pay' },
+  { value: 'programs', label: 'Programs' },
+  { value: 'validators', label: 'Validators' },
+  { value: 'l1blockchain', label: 'L1 Blockchain' },
+  { value: 'ledger', label: 'Ledger' },
+  { value: 'web3auth', label: 'Web3Auth' },
+  { value: 'arweave', label: 'Arweave' },
+  { value: 'rust', label: 'Rust' },
+  { value: 'typescript', label: 'TypeScript' },
+  { value: 'vscode', label: 'VS Code' },
+  { value: 'nodejs', label: 'Node.js' },
+  { value: 'solidity', label: 'Solidity' },
+  { value: 'hardhat', label: 'Hardhat' },
+  { value: 'foundry', label: 'Foundry' },
+  { value: 'wasm', label: 'WASM' },
+  { value: 'cli-tools', label: 'CLI Tools' },
+  { value: 'json-rpc', label: 'JSON-RPC' },
+  { value: 'graphql', label: 'GraphQL' },
+  { value: 'unit-testing', label: 'Unit Testing' },
+  { value: 'devnet', label: 'Devnet' },
+  { value: 'mainnet-beta', label: 'Mainnet Beta' },
+  { value: 'sdk', label: 'SDK' },
+  { value: 'borsh', label: 'Borsh' },
+  { value: 'buildtools', label: 'Build Tools' },
+  { value: 'snipost', label: 'Snipost' },
+  { value: 'snap2earn', label: 'Snap2Earn' },
+  { value: 'upvotetoearn', label: 'Upvote to Earn' },
+  { value: 'codegems', label: 'CodeGems' },
+  { value: 'snips', label: 'Snips' },
+  { value: 'buildinpublic', label: 'Build in Public' },
+  { value: 'showyourwork', label: 'Show Your Work' },
+  { value: 'devprofile', label: 'Dev Profile' },
+  { value: 'reputation', label: 'Reputation' },
+  { value: 'devrewards', label: 'Dev Rewards' },
+  { value: 'snippetdrop', label: 'Snippet Drop' },
+  { value: 'socialcoding', label: 'Social Coding' },
+  { value: 'dailydev', label: 'Daily Dev' },
+  { value: 'followdevs', label: 'Follow Devs' },
+  { value: 'devcommunity', label: 'Dev Community' },
+  { value: 'snippetfeed', label: 'Snippet Feed' },
+  { value: 'sharecode', label: 'Share Code' },
+  { value: 'opensource', label: 'Open Source' },
+  { value: 'codewars', label: 'Codewars' },
+  { value: 'techstack', label: 'Tech Stack' },
+];
 
 const SnippetEditor = () => {
   const [title, setTitle] = useState("");
@@ -39,14 +104,8 @@ const SnippetEditor = () => {
   ]);
   const [folder, setFolder] = useState("");
   const [type, setType] = useState("public");
-const frameworksList = [
-  { value: "react", label: "React", icon: Users },
-  { value: "angular", label: "Angular", icon: Users },
-  { value: "vue", label: "Vue", icon: Users },
-  { value: "svelte", label: "Svelte", icon: Users },
-  { value: "ember", label: "Ember", icon: Users },
-];
-
+  const { jwtToken, userData } = useAppSelector((state) => state.auth)
+  
   const handleAddCodeBlock = () => {
     setCodeBlocks([...codeBlocks, { name: "", language: "javascript", content: "" }]);
   };
@@ -64,17 +123,27 @@ const frameworksList = [
     newCodeBlocks[index][field] = value;
     setCodeBlocks(newCodeBlocks);
   };
-
-  const handlePublish = () => {
+  console.log(userData.folders[0]._id)
+  const handlePublish = async() => {
     const snippetData = {
       title,
       description,
+      folder: userData.folders[0]._id,
       tags,
       codeBlocks,
-      folder,
       type
     };
     console.log("Publishing snippet:", snippetData);
+    try{
+      const response = await api.post("/create-snippet",snippetData,{
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+      console.log(response.data);
+    }catch(err){
+      alert(err.message);
+    }
   };
 
   return (
@@ -99,7 +168,7 @@ const frameworksList = [
 
         <div className="">
             <MultiSelect
-                options={frameworksList}
+                options={allTags}
                 onValueChange={setTags}
                 defaultValue={tags}
                 placeholder="Select Tag"

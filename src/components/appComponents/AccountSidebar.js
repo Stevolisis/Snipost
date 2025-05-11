@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
-import { History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react"
+import { History, IdCard, MessageCircle, PackagePlus, Plus, Settings, User } from "lucide-react"
+import { useAppSelector } from '@/lib/redux/hooks'
+import { useRouter } from 'next/navigation'
+import { Button } from "@/components/ui/button"
 
 // This is sample data.
 const data = {
@@ -60,10 +63,17 @@ const data = {
 }
 
 export function AccountSidebar({ ...props }) {
-    const [activeNav, setActiveNav] = useState("/account/profile") // Default to "Trending"
+  const [activeNav, setActiveNav] = useState("/account/profile") // Default to "Trending"
+  const { 
+    isConnected, 
+    walletAddress, 
+    jwtToken, 
+    userData,
+    isLoading 
+  } = useAppSelector((state) => state.auth);
+  const router = useRouter();
 
-    // Update navMain data with dynamic active state
-    const navMainWithActiveState = data.navMain.map(item => ({
+  const navMainWithActiveState = data.navMain.map(item => ({
         ...item,
         isActive: item.url === activeNav
     }));
@@ -82,25 +92,42 @@ export function AccountSidebar({ ...props }) {
         <SidebarHeader>
 
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild>
-                <Link href="#">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <Image
-                      src="/logo2.svg"
-                      alt="Avatar"
-                      width={20}
-                      height={20}
-                    />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Steven Joseph</span>
-                    <span className="truncate text-xs">Pro Coder</span>
-                  </div>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {userData && 
+              <SidebarMenuItem>
+                <SidebarMenuButton size="lg" asChild>
+                  <Link href="#">
+                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                    {
+                      userData?.avatar.url ? 
+                      <Image
+                        src={userData.avatar.url}
+                        alt={userData.avatar.public_id}
+                        width={40}
+                        height={40}
+                        className='object-cover'
+                      /> :
+                      <Image
+                        src="/logo2.svg"
+                        alt="Avatar"
+                        width={20}
+                        height={20}
+                      />
+                    }
+                    </div>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">{userData?.name}</span>
+                      <span className="truncate text-xs text-muted-foreground">@{userData?.userName}</span>
+                    </div>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            }
           </SidebarMenu>
+
+          <Button onClick={()=>router.push("/snippet-editor")}>
+            <Plus/>
+            <p>Create Post</p>
+          </Button>
 
         <SidebarMenu>
             {navMainWithActiveState.map((item) => (

@@ -185,9 +185,9 @@ export function AppSidebar({ ...props }) {
                       userData?.avatar.url ? 
                       <Image
                         src={userData.avatar.url}
-                        alt={userData.avatar.id}
-                        width={20}
-                        height={20}
+                        alt={userData.avatar.public_id}
+                        width={40}
+                        height={40}
                         className='object-cover'
                       /> :
                       <Image
