@@ -10,7 +10,6 @@ import { PhantomWalletName, SolflareWalletName } from '@solana/wallet-adapter-wa
 
 const Header = () => {
   const { connect, select, wallets, wallet, publicKey } = useWallet()
-  
 
  const handleWalletClick = useCallback(async () => {
     try {
