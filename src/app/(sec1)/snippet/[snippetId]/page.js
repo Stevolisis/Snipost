@@ -28,6 +28,7 @@ const SyntaxHighlighter = dynamic(
 );
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useAppSelector } from '@/lib/redux/hooks';
+import { disconnectWallet } from '@/lib/redux/slices/auth';
 
 const Page = ({params}) => {
   const { snippetId } = use(params);
@@ -36,20 +37,24 @@ const Page = ({params}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
-  const { userData, jwtToken } = useAppSelector((state) => state.auth)
+  const { userData, jwtToken, disconnect } = useAppSelector((state) => state.auth)
 
   useEffect(() => {
     const fetchSnippetData = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get(`/get-snippet/${snippetId}`,{
-            headers:{
-                Authorization: `Bearer ${jwtToken}`
-            }
-        });
+        const response = await api.get(`/get-snippet/${snippetId}`);
         setSnippet(response.data.snippet);
         setComments(response.data.comments || []);
       } catch (err) {
+        if (err.response?.status === 401) {
+          // Handle unauthorized error
+          dispatch(disconnectWallet());
+          disconnect();
+          toast("Uh oh! Something went wrong.", {
+            description: "Connect your wallet"
+          })
+        }
         setError(err.response?.data?.message || 'Failed to load snippet');
         console.error("Error fetching snippet:", err);
       } finally {
@@ -58,7 +63,7 @@ const Page = ({params}) => {
     };
 
     fetchSnippetData();
-  }, [snippetId]);
+  }, [snippetId, dispatch]);
 
   async function handleCopy(content, blockId) {
     try {
