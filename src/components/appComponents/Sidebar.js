@@ -74,12 +74,12 @@ const data = {
       icon: TrendingUp,
       isActive: true,
     },
-    {
-      title: "Explore",
-      url: "/feed/explore",
-      icon: Telescope,
-      isActive: false,
-    },
+    // {
+    //   title: "Explore",
+    //   url: "/feed/explore",
+    //   icon: Telescope,
+    //   isActive: false,
+    // },
   ],
   navSecondary: [
     {
@@ -111,17 +111,17 @@ const data = {
   workspaces: [
     {
       name: "Upvotes",
-      url: "/feed/upvotes",
+      url: "/feed/mostupvotes",
       emoji: "🏠",
     },
     {
       name: "Comments",
-      url: "/feed/comments",
+      url: "/feed/mostcomments",
       emoji: "💼",
     },
     {
       name: "Views",
-      url: "/feed/views",
+      url: "/feed/mostviews",
       emoji: "🎨",
     },
     {
@@ -131,7 +131,7 @@ const data = {
     },
     {
       name: "Downvotes",
-      url: "/feed/downvotes",
+      url: "/feed/mostdownvotes",
       emoji: "🧳",
     },
   ],
@@ -252,7 +252,7 @@ export function AppSidebar({ ...props }) {
                         value: workspace.url
                       })}
                     >
-                      <Link href="#">
+                      <Link href={workspace.url}>
                         <span>{workspace.emoji}</span>
                         <span>{workspace.name}</span>
                       </Link>
