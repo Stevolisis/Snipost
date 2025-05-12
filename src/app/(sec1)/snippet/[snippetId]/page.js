@@ -44,7 +44,11 @@ const Page = ({params}) => {
     const fetchSnippetData = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get(`/get-snippet/${snippetId}`);
+        const response = await api.get(`/get-snippet/${snippetId}`,{
+          headers:{
+            Authorization: `Bearer ${jwtToken}`
+          }
+        });
         setSnippet(response.data.snippet);
         setComments(response.data.comments || []);
       } catch (err) {
