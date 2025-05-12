@@ -17,6 +17,7 @@ import {
 } from '@/lib/redux/slices/snippets';
 import { toast } from 'sonner';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import { Tip } from '@/components/appComponents/Tip';
 
 const SnippetsPage = () => {
   const dispatch = useAppDispatch();
@@ -278,7 +279,8 @@ const SnippetsPage = () => {
                   </div>
 
                   <div>
-                    <Button variant={"link"}> <CircleDollarSign/> </Button>
+                    {/* <Button variant={"link"}> <CircleDollarSign/> </Button> */}
+                    <Tip walletAddress={snippet.user.walletAddress} />
                   </div>
                 </div>
               </CardContent>

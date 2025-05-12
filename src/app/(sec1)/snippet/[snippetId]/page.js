@@ -29,6 +29,7 @@ const SyntaxHighlighter = dynamic(
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { disconnectWallet } from '@/lib/redux/slices/auth';
+import { Tip } from '@/components/appComponents/Tip';
 
 const Page = ({params}) => {
   const { snippetId } = use(params);
@@ -161,7 +162,7 @@ const Page = ({params}) => {
               </div>
 
               <div>
-                <Button variant={"link"}> <CircleDollarSign/> </Button>
+                <Tip walletAddress={snippet.user.entity.walletAddress} />
               </div>
             </div>
           </CardContent>
@@ -251,7 +252,7 @@ const Page = ({params}) => {
               </div>
 
               <div>
-                <Button variant={"link"}> <CircleDollarSign/> </Button>
+                <Tip snippet={snippet} />
               </div>
             </div>
           </CardContent>
