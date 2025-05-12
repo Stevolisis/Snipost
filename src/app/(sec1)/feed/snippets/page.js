@@ -47,7 +47,6 @@ const SnippetsPage = () => {
         setLocalVotes(initialVotes);
       } catch (err) {
         dispatch(snippetsFailure(err.message || 'Failed to load snippets'));
-        console.error("Error fetching snippets:", err);
       }
     };
 
@@ -108,7 +107,6 @@ const SnippetsPage = () => {
       // Revert on error
       setLocalVotes(previousVotes);
       toast.error(`Failed to ${action} snippet`);
-      console.error(`Error ${action}ing snippet:`, err);
       
       // Dispatch action to revert Redux state
       if (action === 'upvote') {

@@ -75,7 +75,7 @@ const allTags = [
 
 
 const ProfilePage = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const { userData, jwtToken } = useAppSelector((state) => state.auth)
   const [formValues, setFormValues] = useState({
     name: '',
@@ -87,6 +87,7 @@ const ProfilePage = () => {
   })
   const [avatarFile, setAvatarFile] = useState(null)
   const [tags, setTags] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load user data
   useEffect(() => {
@@ -120,7 +121,6 @@ const ProfilePage = () => {
           }
           dispatch(updateUserData(data.data.user));
         }catch(err){
-          console.log("Error: ", err);
         }
       };
 
@@ -140,7 +140,8 @@ const ProfilePage = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(e.target)
     
     // Append all fields
@@ -153,7 +154,6 @@ const ProfilePage = () => {
     
     // Append tags as JSON array
     if (tags.length > 0) {
-      console.log(JSON.stringify(tags))
       formData.append('followedTags', JSON.stringify(tags))
     }else{
       formData.append('followedTags', JSON.stringify([]))
@@ -172,14 +172,12 @@ const ProfilePage = () => {
       });
 
       const data = response.data;
-      console.log("Res: ", data);
       toast("Success", {
         description: response.data.message,
       })
       dispatch(updateUserData(data.user));
-
+      setIsLoading(false);
     } catch (error) {
-      console.error('Update error:', error)
       toast("Uh oh! Something went wrong.", {
         description: err.message,
       })
@@ -187,7 +185,7 @@ const ProfilePage = () => {
     }
   }
 
-  console.log("ggg: ",tags);
+
   return (
     <div className='w-full flex justify-center items-center'>
       <form 
@@ -288,7 +286,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <Button type="submit">Complete profile</Button>
+        <Button type="submit">{isLoading ? "processing..." : "Complete profile"}</Button>
       </form>
     </div>
   )

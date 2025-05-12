@@ -23,7 +23,8 @@ export function Tip({ walletAddress }) {
   const { publicKey, sendTransaction } = useWallet()
   const [amount, setAmount] = useState(0.1) // Default tip amount
   const [isLoading, setIsLoading] = useState(false)
-console.log("gggGgG: ", walletAddress);
+  const [isOpen, setIsOpen] = useState(false)
+
   const handleTip = async () => {
     if (!publicKey) {
       toast.error("Please connect your wallet first")
@@ -79,15 +80,15 @@ console.log("gggGgG: ", walletAddress);
         }
       )
     } catch (error) {
-        console.log(error);
       toast.error("Error Occured, Try Again")
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
+      setIsOpen(false);
     }
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant={"link"}> <CircleDollarSign/> </Button>
       </DialogTrigger>

@@ -14,7 +14,7 @@ import bs58 from "bs58";
 import { useAppSelector } from '@/lib/redux/hooks';
 
 const Header = () => {
-  const { connect, select, wallets, wallet, publicKey } = useWallet()
+  const { connect, connected, select, wallets, wallet, publicKey } = useWallet()
   const dispatch = useDispatch();
   const { 
     isConnected, 
@@ -45,9 +45,7 @@ const Header = () => {
 
       await select(walletToConnect.adapter.name);
       await connect();
-      console.log("eeeeeeeeeee: ", publicKey);
     } catch (err) {
-      console.error('Wallet connection error:', err);
       alert(`Connection failed: ${err.message}`);
     }
   }, [wallets, select, connect]);
@@ -56,6 +54,9 @@ const Header = () => {
 
 
   useEffect(() => {
+    // if(connected){
+    //   return;
+    // }
     if (publicKey) {
       dispatch(connectWalletSuccess({
           walletAddress: publicKey.toBase58()
@@ -69,33 +70,18 @@ const Header = () => {
           const messageBytes = new TextEncoder().encode(message);
           const signature = await wallet.adapter.signMessage(messageBytes);
           const signatureBase58 = bs58.encode(signature); // Using bs58 encoding
-
-          console.log("Signing message with:", {
-            publicKey: publicKey.toBase58(),
-            message,
-            signature: signatureBase58
-          });
           
           const data = await api.post("/user-sign-in",{
             publicKey: publicKey.toBase58(),
             signature: signatureBase58,
             message
           });
-          console.log("Data: ", data);
-          dispatch(authenticateSuccess({
-            jwtToken: data.data.token,
-            userData: data.data.user
-          }));
 
         }catch(err){
-          console.error("Sign-in error:", err);
           dispatch(authFailure(err.message));
         }
       }
       signInWithBackend();
-
-      console.log("Connected to:", wallet?.adapter.name);
-      console.log("Public Key:", publicKey.toBase58());
     }
   }, [publicKey, wallet]);
 

@@ -62,7 +62,6 @@ const Page = ({params}) => {
           })
         }
         setError(err.response?.data?.message || 'Failed to load snippet');
-        console.error("Error fetching snippet:", err);
       } finally {
         setIsLoading(false);
       }

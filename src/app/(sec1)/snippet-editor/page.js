@@ -136,7 +136,6 @@ const SnippetEditor = () => {
       codeBlocks,
       type
     };
-    console.log("Publishing snippet:", snippetData);
     try{
       const response = await api.post("/create-snippet",snippetData,{
         headers:{
@@ -146,7 +145,6 @@ const SnippetEditor = () => {
       toast("Success", {
         description: response.data.message,
       })
-      console.log(response.data);
       setIsLoading(false);
     }catch(err){
       toast("Uh oh! Something went wrong.", {
@@ -263,7 +261,7 @@ const SnippetEditor = () => {
           <Button variant="outline" onClick={handleAddCodeBlock}>
             Add Snippet
           </Button>
-          <Button onClick={handlePublish}>Publish</Button>
+          <Button onClick={()=>handlePublish()}>{isLoading ? "Publishing..." : "publish"}</Button>
         </div>
       </Card>
     </div>
