@@ -178,10 +178,19 @@ const ProfilePage = () => {
       dispatch(updateUserData(data.user));
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
+      if (err.response?.status === 401) {
+        // Handle unauthorized error
+        dispatch(disconnectWallet());
+        disconnect();
+        toast("Uh oh! Something went wrong.", {
+          description: "Connect your wallet"
+        });
+        return
+      }
       toast("Uh oh! Something went wrong.", {
         description: err.message,
       })
-      setIsLoading(false);
     }
   }
 

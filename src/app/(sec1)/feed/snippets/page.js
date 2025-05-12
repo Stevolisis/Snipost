@@ -34,6 +34,15 @@ const SnippetsPage = () => {
         const snippets = response.data.snippets || [];
         dispatch(loadSnippetsSuccess(snippets));
       } catch (err) {
+        if (err.response?.status === 401) {
+          // Handle unauthorized error
+          dispatch(disconnectWallet());
+          disconnect();
+          toast("Uh oh! Something went wrong.", {
+            description: "Connect your wallet"
+          });
+          return
+        }
         dispatch(snippetsFailure(err.message || 'Failed to load snippets'));
       }
     };

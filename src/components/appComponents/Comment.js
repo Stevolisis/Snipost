@@ -7,34 +7,34 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 import CommentBox from './CommentBox';
+import { Tip } from './Tip';
 
 const Comment = ({comment}) => {
   return (
     <div>
-      <Card className=" bg-transparent hover:border-gray-600 hover:bg-card">
+      <Card className=" bg-transparent hover:border-gray-600 hover:bg-card my-6">
         <CardHeader>
-            <Link href="#" className='flex gap-x-2 my-2'>
+            <Link href="#" className='flex gap-x-2 my-2 mb-5'>
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <Image
-                  src="/logo2.svg"
+                  src={comment.author?.entity?.avatar?.url || "/logo2.svg"}
                   alt="Avatar"
                   width={20}
                   height={20}
                 />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Steven Joseph</span>
-                <span className="truncate text-xs">Pro Coder</span>
+                <span className="truncate font-semibold">{comment?.author?.entity?.name}</span>
+                <span className="truncate text-xs">{comment?.author?.entity?.userName}</span>
               </div>
             </Link>
-          <CardTitle>{comment.text}</CardTitle>
-          <CardDescription>{comment.text}</CardDescription>
+          <CardTitle>{renderTextWithCode(comment.text)}</CardTitle>
           <div className='flex gap-x-2 items-center justify-between pt-3'>
             <div className='flex gap-x-2 items-center'>
               <div className='flex items-center gap-x-2'>
                 <Button variant={"outline"} size={'sm'}> 
                   <ArrowBigUp/> 
-                  <p>12</p>
+                  <p>{comment.upvotes.length}</p>
                 </Button>
                 
                 <Button variant={"outline"} size={'sm'}> 
@@ -51,7 +51,7 @@ const Comment = ({comment}) => {
             </div>
 
             <div>
-              <Button variant={"link"}> <CircleDollarSign/> </Button>
+              <Tip walletAddress={comment.author?.entity.walletAddress} />
             </div>
           </div>
         </CardHeader>

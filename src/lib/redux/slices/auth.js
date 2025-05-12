@@ -54,7 +54,7 @@ const authSlice = createSlice({
     },
     
     // To update user data
-    updateUserData(state, action) {
+    updateUserData(state, action) {      
       if (state.userData) {
         state.userData = { ...state.userData, ...action.payload };
       }

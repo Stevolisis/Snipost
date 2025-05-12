@@ -62,6 +62,7 @@ const snippetsSlice = createSlice({
             
     upvoteSnippetSuccess(state, action) {
       const { snippetId, userId } = action.payload;
+          console.log("tttt: ", snippetId, userId);
       
       const updateSnippet = (snippet) => {
         if (snippet._id === snippetId) {

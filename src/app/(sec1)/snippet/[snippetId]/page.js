@@ -28,33 +28,112 @@ const SyntaxHighlighter = dynamic(
 );
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { disconnectWallet } from '@/lib/redux/slices/auth';
+import { disconnectWallet, updateUserData } from '@/lib/redux/slices/auth';
 import { Tip } from '@/components/appComponents/Tip';
 import { loadSnippetStart, loadSnippetSuccess, snippetsFailure } from '@/lib/redux/slices/snippets';
+import { loadCommentsSuccess } from '@/lib/redux/slices/comments';
 
 const Page = ({params}) => {
   const { snippetId } = use(params);
-  const [comments, setComments] = useState([]);
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
   const { userData, jwtToken, disconnect } = useAppSelector((state) => state.auth)
   const { snippet, isLoading } = useAppSelector((state) => state.snippets);
+  const { comments, loading } = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
-
-    const scrollToElement = () => {
-
-    };
-    useEffect(() => {
-      // Check hash after component mounts
-      if (window.location.hash === '#comment') {
-        if (geeksForGeeksRef.current) {
-          geeksForGeeksRef.current.scrollIntoView({ behavior: 'smooth' });
+  const targetUser = snippet && snippet.user.entity;
+  
+  // Check if current user is already following the target user
+  const isFollowing = userData?.following?.some(
+    follow => follow.entity.toString() === targetUser?._id.toString()
+  );
+  
+  const fetchUser = async()=>{
+    try{
+      const response = await api.get("/me",{
+        headers:{
+          Authorization:`Bearer ${jwtToken}`
         }
-      }
-    });
+      });
+      dispatch(updateUserData(response.data.user));
+    }catch(err){
+    }
+  };
 
-  scrollToElement();
+  const handleFollow = async () => {
+    if (!jwtToken) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      await toast.promise(
+        api.put('/follow-user', {
+          followId: targetUser._id,
+          role: userData.role
+        }, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`
+          }
+        }),
+        {
+          loading: 'Following user...',
+          success: async(response) => {
+            await fetchUser();
+            return 'Followed successfully!';
+          },
+          error: (err) => {
+            return err.response?.data?.message || 'Failed to follow user';
+          }
+        }
+      );
+    } catch (err) {
+      console.error('Follow error:', err);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    if (!jwtToken) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      await toast.promise(
+        api.put('/unfollow-user', {
+          followId: targetUser._id,
+          role: targetUser.role
+        }, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`
+          }
+        }),
+        {
+          loading: 'Unfollowing user...',
+          success: async(response) => {
+            await fetchUser();
+            return 'Unfollowed successfully!';
+          },
+          error: (err) => {
+            return err.response?.data?.message || 'Failed to unfollow user';
+          }
+        }
+      );
+    } catch (err) {
+      console.error('Unfollow error:', err);
+    }
+  };
+
+  useEffect(() => {
+    // Check hash after component mounts
+    if (window.location.hash === '#comment') {
+      if (geeksForGeeksRef.current) {
+        geeksForGeeksRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
 
   useEffect(() => {
     const fetchSnippetData = async () => {
@@ -66,7 +145,6 @@ const Page = ({params}) => {
           }
         });
         dispatch(loadSnippetSuccess(response.data.snippet));
-        setComments(response.data.comments || []);
       } catch (err) {
         if (err.response?.status === 401) {
           // Handle unauthorized error
@@ -76,13 +154,39 @@ const Page = ({params}) => {
             description: "Connect your wallet"
           })
         }
-        setError(err.response?.data?.message || 'Failed to load snippet');
+        toast.error("Something went wrong. Try again");
+      } finally {
+        dispatch(snippetsFailure());
+      }
+    };
+
+
+    const fetchSnippetCommentData = async () => {
+      try {
+        dispatch(loadSnippetStart());
+        const response = await api.get(`get-comments?contentId=${snippetId}&contentType=Snippet`,{
+          headers:{
+            Authorization: `Bearer ${jwtToken}`
+          }
+        });
+        dispatch(loadCommentsSuccess(response.data.comments || []))
+      } catch (err) {
+        if (err.response?.status === 401) {
+          // Handle unauthorized error
+          dispatch(disconnectWallet());
+          disconnect();
+          toast("Uh oh! Something went wrong.", {
+            description: "Connect your wallet"
+          })
+        }
+        toast.error("Something went wrong. Try again");
       } finally {
         dispatch(snippetsFailure());
       }
     };
 
     fetchSnippetData();
+    fetchSnippetCommentData();
   }, [snippetId, dispatch]);
 
   async function handleCopy(content, blockId) {
@@ -313,7 +417,13 @@ const Page = ({params}) => {
               {snippet.user?.entity?.about || 'No description available'}
             </div>
             <div className='pt-4'>
-              <Button variant={"default"} className="w-full">Follow</Button>
+              <Button 
+                variant={isFollowing ? "outline" : "default"} 
+                className="w-full"
+                onClick={isFollowing ? handleUnfollow : handleFollow}
+              >
+                {isFollowing ? 'Following' : 'Follow'}
+              </Button>
             </div>
           </CardContent>
         </Card>
