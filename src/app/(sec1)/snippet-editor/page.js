@@ -124,7 +124,6 @@ const SnippetEditor = () => {
     newCodeBlocks[index][field] = value;
     setCodeBlocks(newCodeBlocks);
   };
-  console.log(userData.folders[0]._id)
 
 
   const handlePublish = async() => {
