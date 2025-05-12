@@ -218,7 +218,7 @@ const SnippetEditor = () => {
 
         {codeBlocks.map((block, index) => (
           <Card key={index} className="">
-            <CardHeader className="flex justify-between items-center">
+            <CardHeader className="flex justify-between items-center flex-wrap">
               <div className="flex-1">
                 <Input
                   type="text"
@@ -229,7 +229,7 @@ const SnippetEditor = () => {
               </div>
 
               <div className='flex items-center gap-x-2 ml-4'>
-                <div className="hidden md:block">
+                <div className="">
                   <CodeLanguage
                     languages={codeLanguages}
                     value={block.language}
