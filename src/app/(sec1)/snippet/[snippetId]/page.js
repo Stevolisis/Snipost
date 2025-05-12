@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowBigDown, ArrowBigUp, BookCopy, Bookmark, CircleDollarSign, MessageCircle } from 'lucide-react';
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useEffect, useRef, useState } from 'react'
 import Link from 'next/link';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
@@ -30,27 +30,42 @@ import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { disconnectWallet } from '@/lib/redux/slices/auth';
 import { Tip } from '@/components/appComponents/Tip';
+import { loadSnippetStart, loadSnippetSuccess, snippetsFailure } from '@/lib/redux/slices/snippets';
 
 const Page = ({params}) => {
   const { snippetId } = use(params);
-  const [snippet, setSnippet] = useState(null);
   const [comments, setComments] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
   const { userData, jwtToken, disconnect } = useAppSelector((state) => state.auth)
+  const { snippet, isLoading } = useAppSelector((state) => state.snippets);
   const dispatch = useAppDispatch();
+  const geeksForGeeksRef = useRef(null);
+
+    const scrollToElement = () => {
+
+    };
+    useEffect(() => {
+      // Check hash after component mounts
+      if (window.location.hash === '#comment') {
+        if (geeksForGeeksRef.current) {
+          geeksForGeeksRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+  scrollToElement();
 
   useEffect(() => {
     const fetchSnippetData = async () => {
       try {
-        setIsLoading(true);
+        dispatch(loadSnippetStart());
         const response = await api.get(`/get-snippet/${snippetId}`,{
           headers:{
             Authorization: `Bearer ${jwtToken}`
           }
         });
-        setSnippet(response.data.snippet);
+        dispatch(loadSnippetSuccess(response.data.snippet));
         setComments(response.data.comments || []);
       } catch (err) {
         if (err.response?.status === 401) {
@@ -63,7 +78,7 @@ const Page = ({params}) => {
         }
         setError(err.response?.data?.message || 'Failed to load snippet');
       } finally {
-        setIsLoading(false);
+        dispatch(snippetsFailure());
       }
     };
 
@@ -257,7 +272,7 @@ const Page = ({params}) => {
           </CardContent>
         </Card>
 
-        <Card className="bg-transparent mb-12">
+        <Card className="bg-transparent mb-12" ref={geeksForGeeksRef} >
           <CardContent>
             <CommentBox snippetId={snippetId} />
           </CardContent>

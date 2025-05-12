@@ -14,7 +14,7 @@ import bs58 from "bs58";
 import { useAppSelector } from '@/lib/redux/hooks';
 
 const Header = () => {
-  const { connect, connected, select, wallets, wallet, publicKey } = useWallet()
+  const { connect, connected, connecting , select, wallets, wallet, publicKey } = useWallet()
   const dispatch = useDispatch();
   const { 
     isConnected, 
@@ -23,7 +23,7 @@ const Header = () => {
     userData,
     isLoading 
   } = useAppSelector((state) => state.auth);
-
+  console.log("ttt: ", connecting, connected, wallets, wallet, publicKey);
  const handleWalletClick = useCallback(async () => {
     try {
       dispatch(connectWalletStart());
@@ -71,11 +71,12 @@ const Header = () => {
           const signature = await wallet.adapter.signMessage(messageBytes);
           const signatureBase58 = bs58.encode(signature); // Using bs58 encoding
           
-          const data = await api.post("/user-sign-in",{
+          const response = await api.post("/user-sign-in",{
             publicKey: publicKey.toBase58(),
             signature: signatureBase58,
             message
           });
+          dispatch(authenticateSuccess(response.data))
 
         }catch(err){
           dispatch(authFailure(err.message));
@@ -125,7 +126,7 @@ const Header = () => {
         :
         <Button variant="default" className="gap-2" onClick={()=>handleWalletClick()}>
           <Wallet className="h-4 w-4" />
-          {isLoading ? "Connecting..." :"Connect Wallet"}
+          {connecting ? "Connecting..." :"Connect Wallet"}
         </Button>
     }
 

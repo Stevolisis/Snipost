@@ -5,7 +5,7 @@ const initialState = {
   trendingSnippets: [],
   isLoading: false,
   error: null,
-  currentSnippet: null
+  snippet: null
 };
 
 const snippetsSlice = createSlice({
@@ -44,7 +44,7 @@ const snippetsSlice = createSlice({
     
     // When a single snippet is loaded successfully
     loadSnippetSuccess(state, action) {
-      state.currentSnippet = action.payload;
+      state.snippet = action.payload;
       state.isLoading = false;
     },
     
@@ -59,92 +59,73 @@ const snippetsSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-    
-    // When upvoting succeeds
+            
     upvoteSnippetSuccess(state, action) {
       const { snippetId, userId } = action.payload;
       
-      // Update in snippets array
-      state.snippets = state.snippets.map(snippet => {
+      const updateSnippet = (snippet) => {
         if (snippet._id === snippetId) {
-          // Remove existing downvote if exists
-          const downvotes = snippet.downvotes.filter(v => v.entity._id !== userId);
-          // Add upvote if not already exists
-          const hasUpvoted = snippet.upvotes.some(v => v.entity._id === userId);
-          const upvotes = hasUpvoted 
-            ? snippet.upvotes 
-            : [...snippet.upvotes, { entity: { _id: userId }, model: 'User' }];
-            
-          return {
-            ...snippet,
-            upvotes,
-            downvotes,
-            upvoteCount: upvotes.length,
-            downvoteCount: downvotes.length,
-            netVotes: upvotes.length - downvotes.length
-          };
-        }
-        return snippet;
-      });
-      
-      // Update in trendingSnippets array
-      state.trendingSnippets = state.trendingSnippets.map(snippet => {
-        if (snippet._id === snippetId) {
-          // Same logic as above
-          const downvotes = snippet.downvotes.filter(v => v.entity._id !== userId);
-          const hasUpvoted = snippet.upvotes.some(v => v.entity._id === userId);
-          const upvotes = hasUpvoted 
-            ? snippet.upvotes 
-            : [...snippet.upvotes, { entity: { _id: userId }, model: 'User' }];
-            
-          return {
-            ...snippet,
-            upvotes,
-            downvotes,
-            upvoteCount: upvotes.length,
-            downvoteCount: downvotes.length,
-            netVotes: upvotes.length - downvotes.length
-          };
-        }
-        return snippet;
-      });
-      
-      // Update current snippet if it's the one being voted on
-      if (state.currentSnippet?._id === snippetId) {
-        const downvotes = state.currentSnippet.downvotes.filter(v => v.entity._id !== userId);
-        const hasUpvoted = state.currentSnippet.upvotes.some(v => v.entity._id === userId);
-        const upvotes = hasUpvoted 
-          ? state.currentSnippet.upvotes 
-          : [...state.currentSnippet.upvotes, { entity: { _id: userId }, model: 'User' }];
+          // Check if user already upvoted
+          const alreadyUpvoted = snippet.upvotes.some(v => v.entity === userId);
           
-        state.currentSnippet = {
-          ...state.currentSnippet,
-          upvotes,
-          downvotes,
-          upvoteCount: upvotes.length,
-          downvoteCount: downvotes.length,
-          netVotes: upvotes.length - downvotes.length
-        };
-      }
+          // If already upvoted, remove the upvote (toggle off)
+          if (alreadyUpvoted) {
+            const upvotes = snippet.upvotes.filter(v => v.entity !== userId);
+            return {
+              ...snippet,
+              upvotes,
+              upvoteCount: upvotes.length,
+              netVotes: upvotes.length - snippet.downvotes.length
+            };
+          }
+          
+          // If not upvoted, add upvote and remove any downvote
+          const upvotes = [...snippet.upvotes, { entity: userId, model: 'User' }];
+          const downvotes = snippet.downvotes.filter(v => v.entity !== userId);
+          
+          return {
+            ...snippet,
+            upvotes,
+            downvotes,
+            upvoteCount: upvotes.length,
+            downvoteCount: downvotes.length,
+            netVotes: upvotes.length - downvotes.length
+          };
+        }
+        return snippet;
+      };
+
+      state.snippets = state.snippets.map(updateSnippet);
+      state.trendingSnippets = state.trendingSnippets.map(updateSnippet);
       
-      state.isLoading = false;
+      if (state.snippet?._id === snippetId) {
+        state.currentSnippet = updateSnippet(state.currentSnippet);
+      }
     },
-    
-    // When downvoting succeeds
+
     downvoteSnippetSuccess(state, action) {
       const { snippetId, userId } = action.payload;
       
-      // Similar logic to upvote but inverted
-      state.snippets = state.snippets.map(snippet => {
+      const updateSnippet = (snippet) => {
         if (snippet._id === snippetId) {
-          // Remove existing upvote if exists
-          const upvotes = snippet.upvotes.filter(v => v.entity._id !== userId);
-          // Add downvote if not already exists
-          const hasDownvoted = snippet.downvotes.some(v => v.entity._id === userId);
-          const downvotes = hasDownvoted 
-            ? snippet.downvotes 
-            : [...snippet.downvotes, { entity: { _id: userId }, model: 'User' }];
-            
+          // Check if user already downvoted
+          const alreadyDownvoted = snippet.downvotes.some(v => v.entity === userId);
+          
+          // If already downvoted, remove the downvote (toggle off)
+          if (alreadyDownvoted) {
+            const downvotes = snippet.downvotes.filter(v => v.entity !== userId);
+            return {
+              ...snippet,
+              downvotes,
+              downvoteCount: downvotes.length,
+              netVotes: snippet.upvotes.length - downvotes.length
+            };
+          }
+          
+          // If not downvoted, add downvote and remove any upvote
+          const downvotes = [...snippet.downvotes, { entity: userId, model: 'User' }];
+          const upvotes = snippet.upvotes.filter(v => v.entity !== userId);
+          
           return {
             ...snippet,
             upvotes,
@@ -155,46 +136,14 @@ const snippetsSlice = createSlice({
           };
         }
         return snippet;
-      });
-      
-      state.trendingSnippets = state.trendingSnippets.map(snippet => {
-        if (snippet._id === snippetId) {
-          const upvotes = snippet.upvotes.filter(v => v.entity._id !== userId);
-          const hasDownvoted = snippet.downvotes.some(v => v.entity._id === userId);
-          const downvotes = hasDownvoted 
-            ? snippet.downvotes 
-            : [...snippet.downvotes, { entity: { _id: userId }, model: 'User' }];
-            
-          return {
-            ...snippet,
-            upvotes,
-            downvotes,
-            upvoteCount: upvotes.length,
-            downvoteCount: downvotes.length,
-            netVotes: upvotes.length - downvotes.length
-          };
-        }
-        return snippet;
-      });
+      };
+
+      state.snippets = state.snippets.map(updateSnippet);
+      state.trendingSnippets = state.trendingSnippets.map(updateSnippet);
       
       if (state.currentSnippet?._id === snippetId) {
-        const upvotes = state.currentSnippet.upvotes.filter(v => v.entity._id !== userId);
-        const hasDownvoted = state.currentSnippet.downvotes.some(v => v.entity._id === userId);
-        const downvotes = hasDownvoted 
-          ? state.currentSnippet.downvotes 
-          : [...state.currentSnippet.downvotes, { entity: { _id: userId }, model: 'User' }];
-          
-        state.currentSnippet = {
-          ...state.currentSnippet,
-          upvotes,
-          downvotes,
-          upvoteCount: upvotes.length,
-          downvoteCount: downvotes.length,
-          netVotes: upvotes.length - downvotes.length
-        };
+        state.currentSnippet = updateSnippet(state.currentSnippet);
       }
-      
-      state.isLoading = false;
     },
     
     // When bookmarking succeeds

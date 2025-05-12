@@ -34,8 +34,8 @@ const authSlice = createSlice({
     
     // When backend authentication succeeds
     authenticateSuccess(state, action) {
-      state.jwtToken = action.payload.jwtToken;
-      state.userData = action.payload.userData;
+      state.jwtToken = action.payload.token;
+      state.userData = action.payload.user;
       state.isLoading = false;
     },
     
