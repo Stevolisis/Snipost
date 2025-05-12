@@ -27,7 +27,7 @@ const SyntaxHighlighter = dynamic(
   }
 );
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { useAppSelector } from '@/lib/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { disconnectWallet } from '@/lib/redux/slices/auth';
 
 const Page = ({params}) => {
@@ -38,6 +38,7 @@ const Page = ({params}) => {
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
   const { userData, jwtToken, disconnect } = useAppSelector((state) => state.auth)
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchSnippetData = async () => {
