@@ -10,7 +10,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from '@/lib/redux/slices/snippets'
 import {
   Table,
@@ -26,7 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function ProfilePage({ params }) {
-  const { userId } = params
+  const { userId } = use(params)
   const { userData, jwtToken } = useAppSelector((state) => state.auth)
   const { snippets } = useAppSelector((state) => state.snippets)
   const dispatch = useAppDispatch()
@@ -34,6 +34,7 @@ export default function ProfilePage({ params }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [transactions, setTransactions] = useState([])
+  const [earned, setEarned] = useState([])
   const [activeTab, setActiveTab] = useState('snippets')
 
   const isOwner = userData?._id === userId
@@ -56,7 +57,7 @@ export default function ProfilePage({ params }) {
     if (!isOwner) return
     
     try {
-      const response = await api.get('/api/transactions', {
+      const response = await api.get('/get-transactions', {
         headers: { Authorization: `Bearer ${jwtToken}` }
       })
       setTransactions(response.data.transactions || [])
@@ -85,6 +86,22 @@ export default function ProfilePage({ params }) {
       const response = await api.get(`/get-user-snippets/${userId}?limit=10`)
       const snippets = response.data.snippets || []
       dispatch(loadSnippetsSuccess(snippets))
+    } catch (err) {
+      dispatch(snippetsFailure(err.message || 'Failed to load snippets'))
+    }
+  }
+
+  const fetchEarningSummary = async () => {
+    try {
+      dispatch(loadSnippetsStart())
+      const response = await api.get(`/transactions/earnings`,{
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+      console.log("vvvvvvvv: ",response.data)
+      setEarned(response.data.transactions);
+      // dispatch(loadSnippetsSuccess(snippets))
     } catch (err) {
       dispatch(snippetsFailure(err.message || 'Failed to load snippets'))
     }
@@ -144,7 +161,11 @@ export default function ProfilePage({ params }) {
     if (isOwner) {
       fetchTransactions()
     }
-  }, [userId])
+  }, [userId]);
+
+  useEffect(()=>{
+        fetchEarningSummary();
+  },[]);
 
   if (loading) {
     return (
@@ -182,7 +203,7 @@ export default function ProfilePage({ params }) {
             <CardContent className="p-6">
               <div className="flex flex-col items-center space-y-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={profile.avatar?.url} />
+                  <AvatarImage src={profile.avatar?.url} className="object-cover" />
                   <AvatarFallback>
                     {profile.name?.charAt(0) || 'U'}
                   </AvatarFallback>
@@ -246,7 +267,7 @@ export default function ProfilePage({ params }) {
               {isOwner && (
                 <div className="text-center">
                   <p className="text-2xl font-bold">
-                    {transactions.reduce((sum, tx) => sum + tx.amount, 0).toFixed(3)}
+                    {earned.reduce((sum, tx) => sum + tx.amount, 0).toFixed(3)}
                   </p>
                   <p className="text-sm text-muted-foreground">Earned (SOL)</p>
                 </div>
@@ -317,7 +338,7 @@ export default function ProfilePage({ params }) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {transactions.length > 0 ? (
+                      {earned.length > 0 ? (
                         <Table>
                           <TableHeader>
                             <TableRow>
@@ -379,19 +400,17 @@ export default function ProfilePage({ params }) {
                         <p className="text-2xl font-bold">
                           {transactions.reduce((sum, tx) => sum + tx.amount, 0).toFixed(3)} SOL
                         </p>
-                        <p className="text-sm text-muted-foreground">Total Earned</p>
+                        <p className="text-sm text-muted-foreground">Total Tips Given</p>
                       </div>
                       <div className="p-4 border rounded-lg">
-                        <p className="text-2xl font-bold">{transactions.length}</p>
+                        <p className="text-2xl font-bold">{earned.length}</p>
                         <p className="text-sm text-muted-foreground">Total Tips</p>
                       </div>
                       <div className="p-4 border rounded-lg">
                         <p className="text-2xl font-bold">
-                          {transactions.length > 0 
-                            ? (transactions.reduce((sum, tx) => sum + tx.amount, 0) / transactions.length).toFixed(3)
-                            : 0} SOL
+                          {earned.reduce((sum, tx) => sum + tx.amount, 0).toFixed(3)} SOL
                         </p>
-                        <p className="text-sm text-muted-foreground">Average Tip</p>
+                        <p className="text-sm text-muted-foreground">Total Earned</p>
                       </div>
                     </CardContent>
                   </Card>
