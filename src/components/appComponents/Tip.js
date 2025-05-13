@@ -22,18 +22,18 @@ import api from "@/utils/axiosConfig"
 
 export function Tip({ walletAddress }) {
   const { connection } = useConnection()
-  const { publicKey, sendTransaction } = useWallet()
+  const { connected ,publicKey, sendTransaction } = useWallet()
   const [amount, setAmount] = useState(0.1) // Default tip amount
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const { jwtToken } = useAppSelector((state) => state.auth)
+  const { userData, jwtToken } = useAppSelector((state) => state.auth)
 
 
-
+  
   const recordTransaction = async (signature, amount) => {
     try {
       if (!jwtToken) {
-        throw new Error("Please connect wallet")
+        throw new Error("Please login to record transaction")
       }
 
       await api.post('/record-transaction', {
@@ -48,17 +48,17 @@ export function Tip({ walletAddress }) {
         headers: { 
           Authorization: `Bearer ${jwtToken}` 
         }
-      });
-
-
+      })
+      toast.success("Transaction recorded successfully");
     } catch (error) {
       console.error("Transaction recording failed:", error)
       toast.error("Failed to record transaction. Check console for details.")
+      throw error
     }
   }
 
   const handleTip = async () => {
-    if (!publicKey) {
+    if (!connected || !publicKey) {
       toast.error("Please connect your wallet first")
       return
     }
@@ -79,7 +79,13 @@ export function Tip({ walletAddress }) {
       const recipientAddress = new PublicKey(walletAddress)
       const lamports = amount * 10**9
 
-      const transaction = new Transaction().add(
+      // Get recent blockhash
+      const { blockhash } = await connection.getLatestBlockhash()
+      
+      const transaction = new Transaction({
+        feePayer: publicKey,
+        recentBlockhash: blockhash
+      }).add(
         SystemProgram.transfer({
           fromPubkey: publicKey,
           toPubkey: recipientAddress,
@@ -92,7 +98,18 @@ export function Tip({ walletAddress }) {
       toast.promise(
         (async () => {
           try {
-            await connection.confirmTransaction(signature, "processed")
+            // Wait for confirmation
+            const confirmation = await connection.confirmTransaction({
+              signature,
+              blockhash,
+              lastValidBlockHeight: (await connection.getBlockHeight()) + 150
+            }, "confirmed")
+
+            if (confirmation.value.err) {
+              throw new Error("Transaction failed")
+            }
+
+            // Record transaction
             await recordTransaction(signature, amount)
             
             return (
@@ -109,13 +126,14 @@ export function Tip({ walletAddress }) {
               </div>
             )
           } catch (error) {
-            toast.error(error.message || "Transaction failed")
+            console.error("Confirmation error:", error)
+            throw new Error("Transaction confirmation failed")
           }
         })(),
         {
           loading: "Processing transaction...",
           success: (data) => data,
-          error: "Failed to complete transaction"
+          error: (err) => err.message || "Failed to complete transaction"
         }
       )
     } catch (error) {

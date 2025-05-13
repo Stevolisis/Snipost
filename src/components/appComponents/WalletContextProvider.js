@@ -18,7 +18,7 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 const WalletContextProvider= ({ children }) => {
-  const network = WalletAdapterNetwork.Mainnet;
+  const network = WalletAdapterNetwork.Devnet;
 
   //initiate auto connect
   const { autoConnect } = useWallet();
@@ -36,7 +36,7 @@ const WalletContextProvider= ({ children }) => {
   );
 
   return (
-    <ConnectionProvider endpoint={`https://api.mainnet.solana.com`}>
+    <ConnectionProvider endpoint={`https://api.devnet.solana.com`}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
