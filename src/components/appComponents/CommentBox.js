@@ -8,6 +8,7 @@ import api from '@/utils/axiosConfig';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { toast } from 'sonner';
 import { addCommentSuccess, commentsFailure, loadCommentsStart } from '@/lib/redux/slices/comments';
+import { disconnectWallet } from '@/lib/redux/slices/auth';
 
 
 const CommentBox = () => {
@@ -50,9 +51,10 @@ const CommentBox = () => {
             success: (data) => data.message || 'Comment posted successfully!',
             error: (err) => {
             // Handle 401 specifically
+            console.log("ttttttttt: ",err)
             if (err.response?.status === 401) {
                 dispatch(disconnectWallet()); // Clear auth state
-                disconnect(); // Wallet disconnect logic
+                // disconnect(); // Wallet disconnect logic
                 return 'Session expired. Please reconnect your wallet.';
             }
             
