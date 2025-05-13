@@ -17,18 +17,35 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
-import { History, IdCard, MessageCircle, PackagePlus, Plus, Settings, User } from "lucide-react"
+import { History, IdCard, MessageCircle, NewspaperIcon, PackagePlus, Plus, Settings, User } from "lucide-react"
 import { useAppSelector } from '@/lib/redux/hooks'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 
 // This is sample data.
-const data = {
+
+export function AccountSidebar({ ...props }) {
+  const [activeNav, setActiveNav] = useState("/account/profile") // Default to "Trending"
+  const { 
+    isConnected, 
+    walletAddress, 
+    jwtToken, 
+    userData,
+    isLoading 
+  } = useAppSelector((state) => state.auth);
+  const router = useRouter();
+
+  const data = {
   navMain: [
     {
       title: "My Account",
-      url: "/account/profile",
+      url: `/profile/${userData._id}`,
       icon: User,
+    },
+    {
+      title: "My Feed",
+      url: "/feed/snippets",
+      icon: NewspaperIcon,
     },
     {
       title: "SnipCard",
@@ -61,17 +78,6 @@ const data = {
     },
   ],
 }
-
-export function AccountSidebar({ ...props }) {
-  const [activeNav, setActiveNav] = useState("/account/profile") // Default to "Trending"
-  const { 
-    isConnected, 
-    walletAddress, 
-    jwtToken, 
-    userData,
-    isLoading 
-  } = useAppSelector((state) => state.auth);
-  const router = useRouter();
 
   const navMainWithActiveState = data.navMain.map(item => ({
         ...item,

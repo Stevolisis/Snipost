@@ -28,7 +28,7 @@ export function ProfileDropDown({ children }) {
         {
           label: "Profile",
           icon: User,
-          href: "/account/profile",
+          href: `/profile/${userData._id}`,
           shortcut: "⇧⌘P",
         },
         {

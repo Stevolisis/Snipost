@@ -74,7 +74,7 @@ const allTags = [
 ];
 
 
-const ProfilePage = () => {
+const page = () => {
   const dispatch = useAppDispatch();
   const { userData, jwtToken } = useAppSelector((state) => state.auth)
   const [formValues, setFormValues] = useState({
@@ -177,7 +177,8 @@ const ProfilePage = () => {
       })
       dispatch(updateUserData(data.user));
       setIsLoading(false);
-    } catch (error) {
+    } catch (err) {
+      console.log(err.response)
       setIsLoading(false);
       if (err.response?.status === 401) {
         // Handle unauthorized error
@@ -189,7 +190,7 @@ const ProfilePage = () => {
         return
       }
       toast("Uh oh! Something went wrong.", {
-        description: err.message,
+        description: err?.response?.data?.message || err.message,
       })
     }
   }
@@ -301,4 +302,4 @@ const ProfilePage = () => {
   )
 }
 
-export default ProfilePage
+export default page

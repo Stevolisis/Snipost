@@ -17,6 +17,8 @@ import { toast } from "sonner"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js"
 import { useState } from "react"
+import { useAppSelector } from "@/lib/redux/hooks"
+import api from "@/utils/axiosConfig"
 
 export function Tip({ walletAddress }) {
   const { connection } = useConnection()
@@ -24,6 +26,36 @@ export function Tip({ walletAddress }) {
   const [amount, setAmount] = useState(0.1) // Default tip amount
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const { jwtToken } = useAppSelector((state) => state.auth)
+
+
+
+  const recordTransaction = async (signature, amount) => {
+    try {
+      if (!jwtToken) {
+        throw new Error("Please connect wallet")
+      }
+
+      await api.post('/record-transaction', {
+        signature,
+        amount,
+        transactionType: "reward",
+        fee: 0.000005,
+        sender: publicKey?.toString(),
+        receiver: walletAddress,
+        description: "Content creator tip"
+      }, {
+        headers: { 
+          Authorization: `Bearer ${jwtToken}` 
+        }
+      });
+
+
+    } catch (error) {
+      console.error("Transaction recording failed:", error)
+      toast.error("Failed to record transaction. Check console for details.")
+    }
+  }
 
   const handleTip = async () => {
     if (!publicKey) {
@@ -32,7 +64,7 @@ export function Tip({ walletAddress }) {
     }
 
     if (!walletAddress) {
-      toast.error("Author wallet address not found")
+      toast.error("Recipient wallet address not found")
       return
     }
 
@@ -45,7 +77,7 @@ export function Tip({ walletAddress }) {
       setIsLoading(true)
       
       const recipientAddress = new PublicKey(walletAddress)
-      const lamports = amount * 10**9 // Convert SOL to lamports
+      const lamports = amount * 10**9
 
       const transaction = new Transaction().add(
         SystemProgram.transfer({
@@ -58,12 +90,13 @@ export function Tip({ walletAddress }) {
       const signature = await sendTransaction(transaction, connection)
       
       toast.promise(
-        connection.confirmTransaction(signature, "processed"),
-        {
-          loading: "Processing transaction...",
-          success: () => {
+        (async () => {
+          try {
+            await connection.confirmTransaction(signature, "processed")
+            await recordTransaction(signature, amount)
+            
             return (
-              <div>
+              <div className="flex flex-col gap-2">
                 <p>Tip sent successfully!</p>
                 <a 
                   href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
@@ -71,19 +104,26 @@ export function Tip({ walletAddress }) {
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  View transaction
+                  View transaction on Explorer
                 </a>
               </div>
             )
-          },
-          error: "Failed to send tip",
+          } catch (error) {
+            toast.error(error.message || "Transaction failed")
+          }
+        })(),
+        {
+          loading: "Processing transaction...",
+          success: (data) => data,
+          error: "Failed to complete transaction"
         }
       )
     } catch (error) {
-      toast.error("Error Occured, Try Again")
+      console.error("Tip error:", error)
+      toast.error(error.message || "An error occurred while sending tip")
     } finally {
-      setIsLoading(false);
-      setIsOpen(false);
+      setIsLoading(false)
+      setIsOpen(false)
     }
   }
 

@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark } from 'lucide-react'
+import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 import { toast } from 'sonner'
@@ -170,8 +170,15 @@ export default function ProfilePage({ params }) {
                   height={100}
                   className="rounded-full"
                 />
-                <div className="text-center">
-                  <h2 className="text-xl font-bold">{profile.name}</h2>
+                <div className="text-center hover:text-primary transition-colors duration-150">
+                  <div className='flex gap-x-2 items-center'>
+                    <h2 className="text-xl font-bold">{profile.name}</h2>
+                    <span>{userData._id === profile._id && 
+                      <Link href={`/account/profile`} className=''>
+                        <SquarePen/>
+                      </Link>
+                      }</span>
+                  </div>
                   <p className="text-muted-foreground">@{profile.userName}</p>
                 </div>
                 <div className="flex gap-2 w-full">
@@ -220,7 +227,7 @@ export default function ProfilePage({ params }) {
         <div className="md:w-2/3 space-y-4">
           <Card className="bg-transparent hover:border-gray-600 transition-colors duration-200">
             <CardHeader>
-              <CardTitle>Snippets</CardTitle>
+              <CardTitle className='text-2xl'>Snippets</CardTitle>
             </CardHeader>
             <CardContent>
               {snippets?.length > 0 ? (
