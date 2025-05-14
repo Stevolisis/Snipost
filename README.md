@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Snipost Frontend
 
-## Getting Started
+Snipost backend for colloseum 👇
+[![Snipost Backend API](https://img.shields.io/badge/BACKEND_REPO-snipost--api-blue?style=for-the-badge&logo=github)](https://github.com/stevolisis/snipost-api)
 
-First, run the development server:
+**The SocialFi Platform for Solana Developers**  
+*Learn • Share • Earn SOL*
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Project Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Snipost revolutionizes how Solana developers collaborate by combining:
+- **SOL Tipping** for code snippets
+- **Sponsored Code Battles** with crypto prizes
+- **On-Chain Reputation** via NFT badges
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+**Colosseum Submission Focus:**  
+✔️ Working SOL tipping system  
+✔️ Live code battle implementation  
+✔️ Wallet-based reputation tracking
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔗 Repositories
+| Component | Stack | Link |
+|-----------|-------|------|
+| Frontend  | Next.js + Web3.js | [Current Repo](https://github.com/stevolisis/snipost) |
+| Backend   | Node.js + MongoDB | [snipost-api](https://github.com/stevolisis/snipost-api) |
 
-## Learn More
+## 🛠️ Frontend Tech Stack
+**Core:**
+- Next.js 15 (App Router)
+- shadcn/ui + Tailwind CSS
+- Solana Web3.js
+- Wallet Adapter
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Key Integrations:**
+```text
+@solana/web3.js       - Solana chain interactions
+bs58                  - Wallet message encoding
+@radix-ui/react-slot  - shadcn component core
+axios                 - API client
