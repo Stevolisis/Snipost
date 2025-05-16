@@ -32,9 +32,9 @@ export function ProfileDropDown({ children }) {
           shortcut: "⇧⌘P",
         },
         {
-          label: "SnipCard",
+          label: "DevCard",
           icon: IdCard,
-          href: "/account/snipcard",
+          href: "/account/devcard",
           shortcut: "⌘B",
         },
         {

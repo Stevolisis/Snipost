@@ -32,6 +32,8 @@ import { disconnectWallet, updateUserData } from '@/lib/redux/slices/auth';
 import { Tip } from '@/components/appComponents/Tip';
 import { loadSnippetStart, loadSnippetSuccess, snippetsFailure } from '@/lib/redux/slices/snippets';
 import { loadCommentsSuccess } from '@/lib/redux/slices/comments';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 const Page = ({params}) => {
   const { snippetId } = use(params);
@@ -210,8 +212,13 @@ const Page = ({params}) => {
 
   if (isLoading) {
     return (
-      <div className="w-full px-4 py-4">
-        <p>Loading snippet...</p>
+      <div className='px-5 flex flex-col md:flex-row gap-5'>
+        <div className='flex-grow md:flex-[2]'>
+          <Skeleton className="h-[620px] w-full" />
+        </div>
+        <div className='md:flex-[1] md:max-w-[400px] flex flex-col gap-y-3'>
+          <Skeleton className="h-[380px] w-full"/>
+        </div>
       </div>
     );
   }
@@ -224,231 +231,229 @@ const Page = ({params}) => {
     );
   }
 
-  if (!snippet) {
-    return (
-      <div className="w-full px-4 py-4">
-        <p>Snippet not found</p>
-      </div>
-    );
-  }
 
   return (
-    <div className='px-5 flex flex-col md:flex-row gap-5'>
-      <div className='flex-grow md:flex-[2]'>
-        <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
-          <CardHeader>
-            <div className='-mb-6 py-3'>
-              <h1 className="text-2xl line-clamp-2 text-foreground font-bold">
-                {snippet.title}
-              </h1>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <p className="text-sm text-muted-foreground line-clamp-3">{snippet.description}</p>
-
-            <div className="mt-2 flex flex-wrap gap-2">
-              {snippet.tags.map((tag, i) => (
-                <Button variant="outline" size={"sm"} key={i} className='text-xs text-muted-foreground'>#{tag}</Button>
-              ))}
-            </div>
-
-            <div className='flex gap-x-2 items-center justify-between pt-5'>
-              <div className='flex gap-x-2 items-center'>
-                <div className='flex items-center gap-x-2 mr-3'>
-                  <Button variant={"outline"} size={'sm'}> 
-                    <ArrowBigUp/> 
-                    <p>{snippet.upvotes.length}</p>
-                  </Button>
-                  
-                  <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
-                </div>
-
-                <div>
-                  <Button variant={"outline"}> 
-                    <MessageCircle/> 
-                    <p>{snippet.commentNo}</p>
-                  </Button>
-                </div>
-
-                <div>
-                  <Button variant={"outline"}> 
-                    <Bookmark/> 
-                    <p>{snippet.bookmarks?.length || 0}</p>
-                  </Button>
-                </div>
-              </div>
-
-              <div>
-                <Tip walletAddress={snippet.user.entity.walletAddress} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className='flex flex-col gap-y-10 mt-6'>
-          {snippet.codeBlocks.map((code,i) => (
-            <Card key={i} className="rounded-bl-sm rounded-br-sm">
-              <CardHeader className="flex justify-between items-center">
-                <div><h3 className='hover:underline hover:text-primary transition-colors duration-150 cursor-pointer'>{code.name}</h3></div>
-
-                <div className='flex items-center gap-x-2'>
-                  <div className="hidden md:block">
-                    <CodeLanguage languages={[{
-                      value: code.language.toLowerCase(),
-                      label: code.language.toLowerCase()
-                    }]}/>
-                  </div>
-                  <div>
-                    <Button variant={"outline"}>
-                      <BookCopy />
-                    </Button>
-                  </div>
-                  <div>
-                    <Button 
-                      variant="outline"
-                      onClick={() => handleCopy(code.content, code._id)}
-                    >
-                      {copiedBlocks[code._id] ? "Copied" : "Copy"}
-                    </Button>
-                  </div>
+    <>
+      {
+        snippet && 
+        <div className='px-5 flex flex-col md:flex-row gap-5'>
+          <div className='flex-grow md:flex-[2]'>
+            <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+              <CardHeader>
+                <div className='-mb-6 py-3'>
+                  <h1 className="text-2xl line-clamp-2 text-foreground font-bold">
+                    {snippet.title}
+                  </h1>
                 </div>
               </CardHeader>
 
               <CardContent>
-                <div className='pt-4'>
-                  <SyntaxHighlighter
-                    language={code.language.toLowerCase()}
-                    style={atomDark}
-                    customStyle={{
-                      margin: 0,
-                      padding: '0.75rem',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      background: '#1e1e1e',
-                      maxHeight: '350px',
-                      overflowX: 'scroll',
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: '#4b5563 transparent'
-                    }}
-                    showLineNumbers={true}
-                  >
-                    {code.content}
-                  </SyntaxHighlighter>
+                <p className="text-sm text-muted-foreground line-clamp-3">{snippet.description}</p>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {snippet.tags.map((tag, i) => (
+                    <Button variant="outline" size={"sm"} key={i} className='text-xs text-muted-foreground'>#{tag}</Button>
+                  ))}
+                </div>
+
+                <div className='flex gap-x-2 items-center justify-between pt-5'>
+                  <div className='flex gap-x-2 items-center'>
+                    <div className='flex items-center gap-x-2 mr-3'>
+                      <Button variant={"outline"} size={'sm'}> 
+                        <ArrowBigUp/> 
+                        <p>{snippet.upvotes.length}</p>
+                      </Button>
+                      
+                      <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
+                    </div>
+
+                    <div>
+                      <Button variant={"outline"}> 
+                        <MessageCircle/> 
+                        <p>{snippet.commentNo}</p>
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Button variant={"outline"}> 
+                        <Bookmark/> 
+                        <p>{snippet.bookmarks?.length || 0}</p>
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Tip walletAddress={snippet.user.entity.walletAddress} />
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
 
-        <Card className="my-6 w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
-          <CardContent>
-            <div className='flex gap-x-2 items-center justify-between'>
-              <div className='flex gap-x-2 items-center'>
-                <div className='flex items-center gap-x-2 mr-3'>
-                  <Button variant={"outline"} size={'sm'}> 
-                    <ArrowBigUp/> 
-                    <p>{snippet.upvotes.length}</p>
-                  </Button>
-                  
-                  <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
-                </div>
+            <div className='flex flex-col gap-y-10 mt-6'>
+              {snippet.codeBlocks.map((code,i) => (
+                <Card key={i} className="rounded-bl-sm rounded-br-sm">
+                  <CardHeader className="flex justify-between items-center">
+                    <div><h3 className='hover:underline hover:text-primary transition-colors duration-150 cursor-pointer'>{code.name}</h3></div>
 
-                <div>
-                  <Button variant={"outline"}> 
-                    <MessageCircle/> 
-                    <p>{snippet.commentNo}</p>
-                  </Button>
-                </div>
+                    <div className='flex items-center gap-x-2'>
+                      <div className="hidden md:block">
+                        <CodeLanguage languages={[{
+                          value: code.language.toLowerCase(),
+                          label: code.language.toLowerCase()
+                        }]}/>
+                      </div>
+                      <div>
+                        <Button variant={"outline"}>
+                          <BookCopy />
+                        </Button>
+                      </div>
+                      <div>
+                        <Button 
+                          variant="outline"
+                          onClick={() => handleCopy(code.content, code._id)}
+                        >
+                          {copiedBlocks[code._id] ? "Copied" : "Copy"}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
 
-                <div>
-                  <Button variant={"outline"}> 
-                    <Bookmark/> 
-                    <p>{snippet.bookmarks?.length || 0}</p>
-                  </Button>
-                </div>
-              </div>
-
-              <div>
-                <Tip snippet={snippet} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-transparent mb-12" ref={geeksForGeeksRef} >
-          <CardContent>
-            <CommentBox snippetId={snippetId} />
-          </CardContent>
-        </Card>
-
-        {comments.map((comment, i) => (
-          <Comment key={i} comment={comment}/>
-        ))}
-      </div>
-
-      <div className='md:flex-[1] md:max-w-[400px] flex flex-col gap-y-3'>
-        <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Image
-                src={snippet.user?.entity?.avatar?.url || '/default-avatar.png'}
-                alt={snippet.user?.entity?.name || 'User'}
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-              <div>
-                <Link href={`/profile/${snippet.user?.entity?._id}`} className="text-sm font-semibold text-foreground hover:underline">
-                  <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
-                    {snippet.user?.entity?.name || 'Unknown User'}
-                  </CardTitle>
-                </Link>
-
-                <CardDescription className="text-[11px] text-muted-foreground">
-                  by @{snippet.user?.entity?.userName || 'unknown'}
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="-mt-4">
-            <div className='text-sm md:text-base'>
-              {snippet.user?.entity?.about || 'No description available'}
-            </div>
-            <div className='pt-4'>
-              <Button 
-                variant={isFollowing ? "outline" : "default"} 
-                className="w-full"
-                onClick={isFollowing ? handleUnfollow : handleFollow}
-              >
-                {isFollowing ? 'Following' : 'Follow'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {snippet.collaborators?.length === 0 && (
-          <Card className="hidden sm:block w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
-            <CardHeader className="text-xl">Collaborators</CardHeader>
-            <Separator/>
-            <CardContent className="flex items-center flex-wrap gap-y-2 pt-6">
-              {[1,2,3,4,5].map((i) => (
-                <Link href="/#" key={i} className='flex flex-col gap-2 -ml-2'>
-                  <Image 
-                    src={"/profile.png"}
-                    alt='collaborators'
-                    width={37}
-                    height={37}
-                    className='rounded-full min-h-[25px] aspect-square object-cover border-2 border-secondary'
-                  />
-                </Link>
+                  <CardContent>
+                    <div className='pt-4'>
+                      <SyntaxHighlighter
+                        language={code.language.toLowerCase()}
+                        style={atomDark}
+                        customStyle={{
+                          margin: 0,
+                          padding: '0.75rem',
+                          borderRadius: '0.5rem',
+                          fontSize: '0.875rem',
+                          background: '#1e1e1e',
+                          maxHeight: '350px',
+                          overflowX: 'scroll',
+                          scrollbarWidth: 'thin',
+                          scrollbarColor: '#4b5563 transparent'
+                        }}
+                        showLineNumbers={true}
+                      >
+                        {code.content}
+                      </SyntaxHighlighter>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    </div>
+            </div>
+
+            <Card className="my-6 w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+              <CardContent>
+                <div className='flex gap-x-2 items-center justify-between'>
+                  <div className='flex gap-x-2 items-center'>
+                    <div className='flex items-center gap-x-2 mr-3'>
+                      <Button variant={"outline"} size={'sm'}> 
+                        <ArrowBigUp/> 
+                        <p>{snippet.upvotes.length}</p>
+                      </Button>
+                      
+                      <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
+                    </div>
+
+                    <div>
+                      <Button variant={"outline"}> 
+                        <MessageCircle/> 
+                        <p>{snippet.commentNo}</p>
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Button variant={"outline"}> 
+                        <Bookmark/> 
+                        <p>{snippet.bookmarks?.length || 0}</p>
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Tip snippet={snippet} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-transparent mb-12" ref={geeksForGeeksRef} >
+              <CardContent>
+                <CommentBox snippetId={snippetId} />
+              </CardContent>
+            </Card>
+
+            {comments.map((comment, i) => (
+              <Comment key={i} comment={comment}/>
+            ))}
+          </div>
+
+          <div className='md:flex-[1] md:max-w-[400px] flex flex-col gap-y-3'>
+            <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={snippet.user?.entity?.avatar?.url || '/default-avatar.png'}
+                    alt={snippet.user?.entity?.name || 'User'}
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                  <div>
+                    <Link href={`/profile/${snippet.user?.entity?._id}`} className="text-sm font-semibold text-foreground hover:underline">
+                      <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
+                        {snippet.user?.entity?.name || 'Unknown User'}
+                      </CardTitle>
+                    </Link>
+
+                    <CardDescription className="text-[11px] text-muted-foreground">
+                      by @{snippet.user?.entity?.userName || 'unknown'}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="-mt-4">
+                <div className='text-sm md:text-base'>
+                  {snippet.user?.entity?.about || 'No description available'}
+                </div>
+                <div className='pt-4'>
+                  <Button 
+                    variant={isFollowing ? "outline" : "default"} 
+                    className="w-full"
+                    onClick={isFollowing ? handleUnfollow : handleFollow}
+                  >
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {snippet?.collaborators.length !== 0 && (
+              <Card className="hidden sm:block w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
+                <CardHeader className="text-xl">Collaborators</CardHeader>
+                <Separator/>
+                <CardContent className="flex items-center flex-wrap gap-y-2 pt-6">
+                  {snippet.collaborators.map((i) => (
+                    <Link href="/#" key={i} className='flex flex-col gap-2 -ml-2'>
+                      <Image 
+                        src={"/profile.png"}
+                        alt='collaborators'
+                        width={37}
+                        height={37}
+                        className='rounded-full min-h-[25px] aspect-square object-cover border-2 border-secondary'
+                      />
+                    </Link>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      }
+    </>
   )
 }
 
