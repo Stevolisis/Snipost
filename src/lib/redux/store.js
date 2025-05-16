@@ -3,7 +3,9 @@ import storage from 'redux-persist/lib/storage';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer } from 'redux-persist';
 import auth from './slices/auth';
 import snippets from './slices/snippets';
-import comments from './slices//comments';
+import comments from './slices/comments';
+import profile from './slices/profile';
+import search from './slices/search';
 
 const persistConfig = {
   key: 'root',
@@ -16,6 +18,8 @@ const combinedReducers = combineReducers({
   auth,
   snippets,
   comments,
+  profile,
+  search
 });
 
 const persistedReducer = persistReducer(persistConfig, combinedReducers);

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
   comments: [],
-  loading: false,
+  isLoading: false,
   error: null,
 };
 
@@ -11,19 +11,19 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     loadCommentsStart(state) {
-      state.loading = true;
+      state.isLoading = true;
       state.error = null;
     },
     loadCommentsSuccess(state, action) {
       state.comments = action.payload;
-      state.loading = false;
+      state.isLoading = false;
       state.error = null;
     },
     addCommentSuccess(state, action) {
       state.comments.unshift(action.payload);
     },
     commentsFailure(state, action) {
-      state.loading = false;
+      state.isLoading = false;
       state.error = action.payload;
     },
   },

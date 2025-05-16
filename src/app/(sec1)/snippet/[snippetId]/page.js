@@ -31,7 +31,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { disconnectWallet, updateUserData } from '@/lib/redux/slices/auth';
 import { Tip } from '@/components/appComponents/Tip';
 import { loadSnippetStart, loadSnippetSuccess, snippetsFailure } from '@/lib/redux/slices/snippets';
-import { loadCommentsSuccess } from '@/lib/redux/slices/comments';
+import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
 import { Skeleton } from '@/components/ui/skeleton';
 
 
@@ -41,7 +41,7 @@ const Page = ({params}) => {
   const [copiedBlocks, setCopiedBlocks] = useState({});
   const { userData, jwtToken, disconnect } = useAppSelector((state) => state.auth)
   const { snippet, isLoading } = useAppSelector((state) => state.snippets);
-  const { comments, loading } = useAppSelector((state) => state.comments);
+  const commentState = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
   const targetUser = snippet && snippet.user.entity;
@@ -165,7 +165,7 @@ const Page = ({params}) => {
 
     const fetchSnippetCommentData = async () => {
       try {
-        dispatch(loadSnippetStart());
+        dispatch(loadCommentsStart());
         const response = await api.get(`get-comments?contentId=${snippetId}&contentType=Snippet`,{
           headers:{
             Authorization: `Bearer ${jwtToken}`
@@ -173,6 +173,7 @@ const Page = ({params}) => {
         });
         dispatch(loadCommentsSuccess(response.data.comments || []))
       } catch (err) {
+        dispatch(commentsFailure());
         if (err.response?.status === 401) {
           // Handle unauthorized error
           dispatch(disconnectWallet());
@@ -182,8 +183,6 @@ const Page = ({params}) => {
           })
         }
         toast.error("Something went wrong. Try again");
-      } finally {
-        dispatch(snippetsFailure());
       }
     };
 
@@ -223,6 +222,7 @@ const Page = ({params}) => {
     );
   }
 
+
   if (error) {
     return (
       <div className="w-full px-4 py-4">
@@ -231,7 +231,7 @@ const Page = ({params}) => {
     );
   }
 
-
+console.log("commentsFailure", commentState);
   return (
     <>
       {
@@ -385,7 +385,7 @@ const Page = ({params}) => {
               </CardContent>
             </Card>
 
-            {comments.map((comment, i) => (
+            {commentState.comments.map((comment, i) => (
               <Comment key={i} comment={comment}/>
             ))}
           </div>

@@ -4,11 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
+import { 
+  loadProfileStart, 
+  loadProfileSuccess, 
+  loadProfileFailure,
+  loadTransactionsSuccess,
+  loadEarningsSuccess
+} from '@/lib/redux/slices/profile'
 import { toast } from 'sonner'
 import api from '@/utils/axiosConfig'
-import Image from 'next/image'
 import Link from 'next/link'
-import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { use, useEffect, useState } from 'react'
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from '@/lib/redux/slices/snippets'
@@ -29,12 +34,8 @@ export default function ProfilePage({ params }) {
   const { userId } = use(params)
   const { userData, jwtToken } = useAppSelector((state) => state.auth)
   const { snippets } = useAppSelector((state) => state.snippets)
+  const { profile, loading, error, transactions, earned } = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
-  const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [transactions, setTransactions] = useState([])
-  const [earned, setEarned] = useState([])
   const [activeTab, setActiveTab] = useState('snippets')
 
   const isOwner = userData?._id === userId
@@ -44,12 +45,11 @@ export default function ProfilePage({ params }) {
 
   const fetchProfile = async () => {
     try {
+      dispatch(loadProfileStart())
       const response = await api.get(`/get-user/${userId}`)
-      setProfile(response.data.user)
+      dispatch(loadProfileSuccess(response.data.user))
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load profile')
-    } finally {
-      setLoading(false)
+      dispatch(loadProfileFailure(err.response?.data?.message || 'Failed to load profile'))
     }
   }
 
@@ -60,7 +60,7 @@ export default function ProfilePage({ params }) {
       const response = await api.get('/get-transactions', {
         headers: { Authorization: `Bearer ${jwtToken}` }
       })
-      setTransactions(response.data.transactions || [])
+      dispatch(loadTransactionsSuccess(response.data.transactions || []))
     } catch (err) {
       console.error('Failed to fetch transactions:', err)
       toast.error('Failed to load transaction history')
@@ -93,17 +93,15 @@ export default function ProfilePage({ params }) {
 
   const fetchEarningSummary = async () => {
     try {
-      dispatch(loadSnippetsStart())
-      const response = await api.get(`/transactions/earnings`,{
-        headers:{
+      const response = await api.get(`/transactions/earnings`, {
+        headers: {
           Authorization: `Bearer ${jwtToken}`
         }
-      });
-      console.log("vvvvvvvv: ",response.data)
-      setEarned(response.data.transactions);
-      // dispatch(loadSnippetsSuccess(snippets))
+      })
+      dispatch(loadEarningsSuccess(response.data.transactions || []))
     } catch (err) {
-      dispatch(snippetsFailure(err.message || 'Failed to load snippets'))
+      console.error('Failed to fetch earnings:', err)
+      toast.error('Failed to load earnings summary')
     }
   }
 
@@ -160,12 +158,9 @@ export default function ProfilePage({ params }) {
     fetchSnippets()
     if (isOwner) {
       fetchTransactions()
+      fetchEarningSummary()
     }
-  }, [userId]);
-
-  useEffect(()=>{
-        fetchEarningSummary();
-  },[]);
+  }, [userId])
 
   if (loading) {
     return (
@@ -338,7 +333,7 @@ export default function ProfilePage({ params }) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {earned.length > 0 ? (
+                      {transactions.length > 0 ? (
                         <Table>
                           <TableHeader>
                             <TableRow>
