@@ -68,7 +68,16 @@ const page = () => {
 
   
 
-  return (<SnipCard snippet={snippet} key={snippet._id} />)
+  return (
+      <div className="w-full px-4 py-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+        {snippets.map((snippet) => {
+
+          return (<SnipCard snippet={snippet} key={snippet._id} />);
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default page;
