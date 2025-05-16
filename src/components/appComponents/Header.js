@@ -163,15 +163,17 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">
-      <div className="text-xl font-bold text-white flex gap-x-2 items-center">
-        <Image
-          src="/logo.svg"
-          alt="Snipost Logo"
-          width={30}
-          height={30}
-        />
-        <h2 className='text-2xl text-primary'>Snipost</h2>
-      </div>
+      <Link href="/start">
+        <div className="text-xl font-bold text-white flex gap-x-2 items-center">
+          <Image
+            src="/logo.svg"
+            alt="Snipost Logo"
+            width={30}
+            height={30}
+          />
+          <h2 className='text-2xl text-primary'>Snipost</h2>
+        </div>
+      </Link>
 
       {/* Search */}
       <div className="flex-1 max-w-md mx-6 relative">
