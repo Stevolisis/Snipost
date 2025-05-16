@@ -12,22 +12,22 @@ export default function LandingPage() {
 
   const features = [
     {
-      icon: <Code2 className="w-8 h-8 text-primary" />,
+      icon: <Code2 className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
       title: "Create & Share",
       description: "Build, edit and share code snippets with built-in syntax highlighting and collaborative tools."
     },
     {
-      icon: <PenTool className="w-8 h-8 text-primary" />,
+      icon: <PenTool className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
       title: "Visual Learning",
       description: "Create visual explainers with our snap editor to simplify complex Solana concepts."
     },
     {
-      icon: <Trophy className="w-8 h-8 text-primary" />,
+      icon: <Trophy className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
       title: "Code Battles",
       description: "Join competitive challenges, solve problems, and earn SOL while improving your skills."
     },
     {
-      icon: <Zap className="w-8 h-8 text-primary" />,
+      icon: <Zap className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
       title: "SocialFi Rewards",
       description: "Earn SOL through tips, sponsorships, and recognition for your contributions."
     }
@@ -222,8 +222,8 @@ export default function LandingPage() {
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="relative">
-                <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <span className="text-2xl font-bold text-primary">1</span>
+                <div className="bg-primary/10 rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center mb-6">
+                  <span className="text-xl md:text-2xl font-bold text-primary">1</span>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Create Content</h3>
                 <p className="text-muted-foreground mb-4">
@@ -232,8 +232,8 @@ export default function LandingPage() {
               </div>
               
               <div className="relative">
-                <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <span className="text-2xl font-bold text-primary">2</span>
+                <div className="bg-primary/10 rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center mb-6">
+                  <span className="text-xl md:text-2xl font-bold text-primary">2</span>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Share with Community</h3>
                 <p className="text-muted-foreground mb-4">
@@ -242,8 +242,8 @@ export default function LandingPage() {
               </div>
               
               <div>
-                <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mb-6">
-                  <span className="text-2xl font-bold text-primary">3</span>
+                <div className="bg-primary/10 rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center mb-6">
+                  <span className="text-xl md:text-2xl font-bold text-primary">3</span>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Earn SOL Rewards</h3>
                 <p className="text-muted-foreground mb-4">
