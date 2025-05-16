@@ -25,10 +25,10 @@ const inter = Inter({
 export const metadata = {
   title: "Snipost",
   description: "Learn, build, share and earn with Snipost",
-    icons: {
+  icons: {
     icon: "/logo.svg",
     shortcut: "/logo.svg",
-    apple: "/logo.svg", // for Apple devices
+    apple: "/logo.svg",
   },
 };
 

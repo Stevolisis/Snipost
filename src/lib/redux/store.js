@@ -13,9 +13,9 @@ const persistConfig = {
 }
 
 const combinedReducers = combineReducers({
-  auth: auth,
-  snippets: snippets,
-  comments: comments,
+  auth,
+  snippets,
+  comments,
 });
 
 const persistedReducer = persistReducer(persistConfig, combinedReducers);

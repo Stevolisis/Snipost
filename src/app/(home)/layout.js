@@ -1,7 +1,5 @@
 import { Inter } from "next/font/google";
 import Header from "@/components/appComponents/Header";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AccountSidebar } from "@/components/appComponents/AccountSidebar";
 import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
