@@ -53,16 +53,9 @@ const snippetsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    
-    // When upvoting/downvoting starts
-    voteSnippetStart(state) {
-      state.isLoading = true;
-      state.error = null;
-    },
             
     upvoteSnippetSuccess(state, action) {
       const { snippetId, userId } = action.payload;
-          console.log("tttt: ", snippetId, userId);
       
       const updateSnippet = (snippet) => {
         if (snippet._id === snippetId) {
@@ -100,7 +93,7 @@ const snippetsSlice = createSlice({
       state.trendingSnippets = state.trendingSnippets.map(updateSnippet);
       
       if (state.snippet?._id === snippetId) {
-        state.currentSnippet = updateSnippet(state.currentSnippet);
+        state.snippet = updateSnippet(state.snippet);
       }
     },
 
@@ -142,11 +135,49 @@ const snippetsSlice = createSlice({
       state.snippets = state.snippets.map(updateSnippet);
       state.trendingSnippets = state.trendingSnippets.map(updateSnippet);
       
-      if (state.currentSnippet?._id === snippetId) {
-        state.currentSnippet = updateSnippet(state.currentSnippet);
+      if (state.snippet?._id === snippetId) {
+        state.snippet = updateSnippet(state.snippet);
       }
     },
     
+    upvoteSnippetApiSuccess(state, action) {
+      const updatedSnippet = action.payload;
+      // Helper function to update snippet in an array
+      const updateSnippetInArray = (array) => {
+        return array.map(snippet => 
+          snippet._id === updatedSnippet._id ? { ...snippet, ...updatedSnippet } : snippet
+        );
+      };
+
+      // Update in snippets array
+      state.snippets = updateSnippetInArray(state.snippets);
+      
+      // Update in trendingSnippets array
+      state.trendingSnippets = updateSnippetInArray(state.trendingSnippets);
+      
+      // Update current snippet if it's the one being voted on
+      if (state.snippet?._id === updatedSnippet._id) {
+        state.snippet = { ...state.snippet, ...updatedSnippet };
+      }
+    },
+
+    downvoteSnippetApiSuccess(state, action) {
+      const updatedSnippet = action.payload;
+      
+      // Same helper function as above
+      const updateSnippetInArray = (array) => {
+        return array.map(snippet => 
+          snippet._id === updatedSnippet._id ? { ...snippet, ...updatedSnippet } : snippet
+        );
+      };
+
+      state.snippets = updateSnippetInArray(state.snippets);
+      state.trendingSnippets = updateSnippetInArray(state.trendingSnippets);
+      
+      if (state.snippet?._id === updatedSnippet._id) {
+        state.snippet = { ...state.snippet, ...updatedSnippet };
+      }
+    },
     // When bookmarking succeeds
     bookmarkSnippetSuccess(state, action) {
       const { snippetId, userId } = action.payload;
@@ -172,7 +203,7 @@ const snippetsSlice = createSlice({
     
     // Reset current snippet when leaving detail view
     clearCurrentSnippet(state) {
-      state.currentSnippet = null;
+      state.snippet = null;
     }
   }
 });
@@ -189,6 +220,8 @@ export const {
   voteSnippetStart,
   upvoteSnippetSuccess,
   downvoteSnippetSuccess,
+  upvoteSnippetApiSuccess,
+  downvoteSnippetApiSuccess,
   bookmarkSnippetSuccess,
   clearCurrentSnippet
 } = snippetsSlice.actions;

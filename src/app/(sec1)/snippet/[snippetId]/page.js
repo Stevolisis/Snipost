@@ -30,7 +30,7 @@ import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { disconnectWallet, updateUserData } from '@/lib/redux/slices/auth';
 import { Tip } from '@/components/appComponents/Tip';
-import { loadSnippetStart, loadSnippetSuccess, snippetsFailure } from '@/lib/redux/slices/snippets';
+import { downvoteSnippetApiSuccess, downvoteSnippetSuccess, loadSnippetStart, loadSnippetSuccess, snippetsFailure, upvoteSnippetApiSuccess, upvoteSnippetSuccess } from '@/lib/redux/slices/snippets';
 import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -45,11 +45,11 @@ const Page = ({params}) => {
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
   const targetUser = snippet && snippet.user.entity;
-  
+  const hasUpvoted = snippet?.upvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
+  const hasDownvoted = snippet?.downvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
+
   // Check if current user is already following the target user
-  const isFollowing = userData?.following?.some(
-    follow => follow.entity.toString() === targetUser?._id.toString()
-  );
+  const isFollowing = true
   
   const fetchUser = async()=>{
     try{
@@ -126,6 +126,45 @@ const Page = ({params}) => {
       console.error('Unfollow error:', err);
     }
   };
+
+  const handleVote = async (type, id) => {
+      if (!userData) {
+          toast.error("Please connect your wallet first");
+          return;
+      }
+
+      // Optimistic UI update
+      if (type === 'upvote') {
+          dispatch(upvoteSnippetSuccess({ 
+              snippetId: id, 
+              userId: userData._id,
+          }));
+      } else {
+          dispatch(downvoteSnippetSuccess({
+              snippetId: id,
+              userId: userData._id, 
+          }));
+      }
+
+      try {
+          const response = await api.put(`/${type}-snippet/${id}`, {}, {
+              headers: {
+                  Authorization: `Bearer ${jwtToken}`
+              }
+          });
+
+          console.log("Api: ", response);
+
+          type === "upvote" ? dispatch(upvoteSnippetApiSuccess(response.data.snippet)) 
+          : dispatch(downvoteSnippetApiSuccess(response.data.snippet))
+          
+      // The actual state will be updated when we refetch the snippets
+      } catch (err) {
+          console.error(`${type} error:`, err);
+          toast.error(`Failed to ${type}`);
+      }
+  };
+
 
   useEffect(() => {
     // Check hash after component mounts
@@ -231,7 +270,6 @@ const Page = ({params}) => {
     );
   }
 
-console.log("commentsFailure", commentState);
   return (
     <>
       {
@@ -259,12 +297,23 @@ console.log("commentsFailure", commentState);
                 <div className='flex gap-x-2 items-center justify-between pt-5'>
                   <div className='flex gap-x-2 items-center'>
                     <div className='flex items-center gap-x-2 mr-3'>
-                      <Button variant={"outline"} size={'sm'}> 
-                        <ArrowBigUp/> 
-                        <p>{snippet.upvotes.length}</p>
+                      <Button 
+                          variant={hasUpvoted ? "default" : "outline"} 
+                          onClick={() => handleVote('upvote', snippet._id)}
+                          disabled={isLoading}
+                      > 
+                          <ArrowBigUp /> 
+                          <p>{snippet.upvoteCount}</p>
                       </Button>
                       
-                      <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
+                      <Button 
+                          variant={hasDownvoted ? "destructive" : "outline"}
+                          onClick={() => handleVote('downvote', snippet._id)}
+                          disabled={isLoading}
+                      > 
+                          <ArrowBigDown className={hasDownvoted ? "text-destructive-foreground" : ""} /> 
+                          {/* <p className={hasDownvoted ? "text-destructive-foreground" : ""}>{snippet.downvoteCount}</p> */}
+                      </Button>
                     </div>
 
                     <div>
@@ -349,12 +398,23 @@ console.log("commentsFailure", commentState);
                 <div className='flex gap-x-2 items-center justify-between'>
                   <div className='flex gap-x-2 items-center'>
                     <div className='flex items-center gap-x-2 mr-3'>
-                      <Button variant={"outline"} size={'sm'}> 
-                        <ArrowBigUp/> 
-                        <p>{snippet.upvotes.length}</p>
+                      <Button 
+                          variant={hasUpvoted ? "default" : "outline"} 
+                          onClick={() => handleVote('upvote', snippet._id)}
+                          disabled={isLoading}
+                      > 
+                          <ArrowBigUp /> 
+                          <p>{snippet.upvoteCount}</p>
                       </Button>
                       
-                      <Button variant={"outline"} size={'sm'}> <ArrowBigDown/> </Button>
+                      <Button 
+                          variant={hasDownvoted ? "destructive" : "outline"}
+                          onClick={() => handleVote('downvote', snippet._id)}
+                          disabled={isLoading}
+                      > 
+                          <ArrowBigDown className={hasDownvoted ? "text-destructive-foreground" : ""} /> 
+                          {/* <p className={hasDownvoted ? "text-destructive-foreground" : ""}>{snippet.downvoteCount}</p> */}
+                      </Button>
                     </div>
 
                     <div>
