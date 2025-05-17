@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { ArrowBigDown, ArrowBigUp, Bookmark, MessageCircle } from 'lucide-react';
+import { ArrowBigDown, ArrowBigUp, Bookmark, GitFork, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
@@ -12,6 +12,8 @@ import {
   downvoteSnippetSuccess,
   upvoteSnippetApiSuccess,
   downvoteSnippetApiSuccess,
+  bookmarkSnippetSuccess,
+  bookmarkSnippetApiSuccess,
   
 } from '@/lib/redux/slices/snippets';
 import { Tip } from '@/components/appComponents/Tip';
@@ -29,6 +31,7 @@ const SnipCard = ({snippet}) => {
     const dispatch = useAppDispatch();
     const hasUpvoted = snippet.upvotes?.some(v => v.entity === userData?._id);
     const hasDownvoted = snippet.downvotes?.some(v => v.entity === userData?._id);
+    const hasBookmark = snippet.bookmarkedBy?.some(v => v.entity === userData?._id);
 
 
     const handleVote = async (type, id) => {
@@ -69,25 +72,68 @@ const SnipCard = ({snippet}) => {
         }
     };
 
+    const handleBookmark = async (entityId, entityType) => {
+        if (!userData) {
+            return toast.error("Connect wallet first");
+        }
+
+        // 1. Optimistic update
+        dispatch(bookmarkSnippetSuccess({ 
+            snippetId: entityId, 
+            userId: userData._id 
+        }));
+
+        try {
+            // 2. API call
+            let response;
+            if(hasBookmark){
+                response = await api.put("/unbookmark", { entityId, entityType },{
+                    headers:{
+                        Authorization: `Bearer ${jwtToken}`
+                    }
+                });
+            }else{
+                response = await api.put("/bookmark", { entityId, entityType },{
+                    headers:{
+                        Authorization: `Bearer ${jwtToken}`
+                    }
+                });
+            }
+            
+            // 3. Optional: Final sync with backend data
+            dispatch(bookmarkSnippetApiSuccess(response.data.snippet));
+            
+        } catch (err) {
+            toast.error("Bookmark failed");
+            // Note: Automatic rollback isn't needed since we'll refetch snippets later
+        }
+    };
     
 
     return (
         <Card key={snippet._id} className="w-full hover:shadow-md hover:border-gray-600 transition-colors duration-200">
             <CardHeader>
-            <div className="flex items-center gap-2">
-                <Image
-                src={snippet.user?.avatar?.url || '/default-avatar.png'}
-                alt={snippet.user?.name || 'User'}
-                width={32}
-                height={32}
-                className="rounded-full min-h-[25px] aspect-square object-cover"
-                />
+            <div className='flex justify-between items-center'>
+                <div className="flex items-center gap-2">
+                    <Image
+                    src={snippet.user?.avatar?.url || '/default-avatar.png'}
+                    alt={snippet.user?.name || 'User'}
+                    width={32}
+                    height={32}
+                    className="rounded-full min-h-[25px] aspect-square object-cover"
+                    />
+                    <div>
+                    <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
+                        <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
+                        {snippet.user?.name || 'Unknown User'}
+                        </CardTitle>
+                    </Link>
+                    </div>
+                </div>
                 <div>
-                <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
-                    <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
-                    {snippet.user?.name || 'Unknown User'}
-                    </CardTitle>
-                </Link>
+                    <Button variant={"outline"}>
+                        <GitFork />
+                    </Button>
                 </div>
             </div>
             
@@ -140,23 +186,38 @@ const SnipCard = ({snippet}) => {
             <div className='flex gap-x-2 items-center justify-between pt-3'>
                 <div className='flex gap-x-2 items-center'>
                 <div className='flex items-center gap-x-2 mr-3'>
-                    <Button 
-                        variant={hasUpvoted ? "default" : "outline"} 
-                        onClick={() => handleVote('upvote', snippet._id)}
-                        disabled={isLoading}
-                    > 
-                        <ArrowBigUp /> 
-                        <p>{snippet.upvoteCount}</p>
-                    </Button>
-                    
-                    <Button 
-                        variant={hasDownvoted ? "destructive" : "outline"}
-                        onClick={() => handleVote('downvote', snippet._id)}
-                        disabled={isLoading}
-                    > 
-                        <ArrowBigDown className={hasDownvoted ? "text-destructive-foreground" : ""} /> 
-                        {/* <p className={hasDownvoted ? "text-destructive-foreground" : ""}>{snippet.downvoteCount}</p> */}
-                    </Button>
+                <Button
+                    variant="outline"
+                    onClick={() => handleVote('upvote', snippet._id)}
+                    disabled={isLoading}
+                    className={`
+                        gap-1
+                        ${hasUpvoted ? "border-green-500!" : "border-green-500"}
+                        hover:bg-accent/50  // Subtle hover
+                    `}
+                >
+                    <ArrowBigUp 
+                        className={hasUpvoted ? "fill-green-500 text-green-500!" : "fill-transparent"} 
+                    />
+                    <span className={hasUpvoted ? "text-green-500" : ""}>
+                        {snippet.upvoteCount}
+                    </span>
+                </Button>
+
+                <Button
+                    variant="outline"
+                    onClick={() => handleVote('downvote', snippet._id)}
+                    disabled={isLoading}
+                    className={`
+                        gap-1
+                        ${hasDownvoted ? "border-red-500!" : "border-red-500"}
+                        hover:bg-accent/50  // Subtle hover
+                    `}
+                >
+                    <ArrowBigDown 
+                        className={hasDownvoted ? "fill-red-500 text-red-500!" : "fill-transparent"} 
+                    />
+                </Button>
                 </div>
 
                 <div>
@@ -167,12 +228,23 @@ const SnipCard = ({snippet}) => {
                 </div>
 
                 <div>
-                    <Button variant={"outline"}> 
-                    <Bookmark/> 
-                    <p>{(snippet.bookmarkedBy || []).length}</p>
+                    <Button 
+                        variant={"outline"}
+                        onClick={() => handleBookmark(snippet._id, "Snippet")}
+                        className={`gap-1
+                            ${hasBookmark ? "border-[#A246FD]!" : "border-[#A246FD]"}
+                            hover:bg-accent/50  // Subtle hover
+                        `}
+                    > 
+                    <Bookmark
+                        className={hasBookmark ? "fill-[#A246FD] text-[#A246FD]!" : "fill-transparent"} 
+                    /> 
+                    <p className={hasBookmark ? "text-[#A246FD]" : ""}>
+                        {snippet.bookmarkCount}
+                    </p>
                     </Button>
                 </div>
-                </div>
+            </div>
 
                 <div>
                 {/* <Button variant={"link"}> <CircleDollarSign/> </Button> */}

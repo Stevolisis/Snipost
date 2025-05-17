@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowBigDown, ArrowBigUp, BookCopy, Bookmark, CircleDollarSign, MessageCircle } from 'lucide-react';
+import { ArrowBigDown, ArrowBigUp, GitFork, Bookmark, CircleDollarSign, MessageCircle } from 'lucide-react';
 import React, { use, useEffect, useRef, useState } from 'react'
 import Link from 'next/link';
 import Image from 'next/image';
@@ -30,7 +30,7 @@ import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { disconnectWallet, updateUserData } from '@/lib/redux/slices/auth';
 import { Tip } from '@/components/appComponents/Tip';
-import { downvoteSnippetApiSuccess, downvoteSnippetSuccess, loadSnippetStart, loadSnippetSuccess, snippetsFailure, upvoteSnippetApiSuccess, upvoteSnippetSuccess } from '@/lib/redux/slices/snippets';
+import { bookmarkSnippetApiSuccess, bookmarkSnippetSuccess, downvoteSnippetApiSuccess, downvoteSnippetSuccess, loadSnippetStart, loadSnippetSuccess, snippetsFailure, upvoteSnippetApiSuccess, upvoteSnippetSuccess } from '@/lib/redux/slices/snippets';
 import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -44,13 +44,14 @@ const Page = ({params}) => {
   const commentState = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
-  const targetUser = snippet && snippet.user.entity;
+  const targetUser = snippet && snippet?.user.entity;
   const hasUpvoted = snippet?.upvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
   const hasDownvoted = snippet?.downvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
+  const hasBookmark = snippet?.bookmarkedBy?.some(v => (v.entity._id || v.entity ) === userData?._id);
 
   // Check if current user is already following the target user
   const isFollowing = userData?.following?.some(
-    follow => follow.entity.toString() === targetUser?._id.toString()
+    follow => follow.entity === targetUser?._id
   );
   
   const fetchUser = async()=>{
@@ -168,6 +169,43 @@ const Page = ({params}) => {
   };
 
 
+  const handleBookmark = async (entityId, entityType) => {
+    if (!userData) {
+        return toast.error("Connect wallet first");
+    }
+
+    // 1. Optimistic update
+    dispatch(bookmarkSnippetSuccess({ 
+        snippetId: entityId, 
+        userId: userData._id 
+    }));
+
+    try {
+        // 2. API call
+        let response;
+        if(hasBookmark){
+            response = await api.put("/unbookmark", { entityId, entityType },{
+                headers:{
+                    Authorization: `Bearer ${jwtToken}`
+                }
+            });
+        }else{
+            response = await api.put("/bookmark", { entityId, entityType },{
+                headers:{
+                    Authorization: `Bearer ${jwtToken}`
+                }
+            });
+        }
+        
+        // 3. Optional: Final sync with backend data
+        dispatch(bookmarkSnippetApiSuccess(response.data.snippet));
+        
+    } catch (err) {
+        toast.error("Bookmark failed");
+        // Note: Automatic rollback isn't needed since we'll refetch snippets later
+    }
+  };
+    
   useEffect(() => {
     // Check hash after component mounts
     if (window.location.hash === '#comment') {
@@ -299,37 +337,63 @@ const Page = ({params}) => {
                 <div className='flex gap-x-2 items-center justify-between pt-5'>
                   <div className='flex gap-x-2 items-center'>
                     <div className='flex items-center gap-x-2 mr-3'>
-                      <Button 
-                          variant={hasUpvoted ? "default" : "outline"} 
-                          onClick={() => handleVote('upvote', snippet._id)}
-                          disabled={isLoading}
-                      > 
-                          <ArrowBigUp /> 
-                          <p>{snippet.upvoteCount}</p>
-                      </Button>
-                      
-                      <Button 
-                          variant={hasDownvoted ? "destructive" : "outline"}
-                          onClick={() => handleVote('downvote', snippet._id)}
-                          disabled={isLoading}
-                      > 
-                          <ArrowBigDown className={hasDownvoted ? "text-destructive-foreground" : ""} /> 
-                          {/* <p className={hasDownvoted ? "text-destructive-foreground" : ""}>{snippet.downvoteCount}</p> */}
-                      </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleVote('upvote', snippet._id)}
+                      disabled={isLoading}
+                      className={`
+                          gap-1
+                          ${hasUpvoted ? "border-green-500!" : "border-green-500"}
+                          hover:bg-accent/50  // Subtle hover
+                      `}
+                    >
+                      <ArrowBigUp 
+                          className={hasUpvoted ? "fill-green-500 text-green-500!" : "fill-transparent"} 
+                      />
+                      <span className={hasUpvoted ? "text-green-500" : ""}>
+                          {snippet.upvoteCount}
+                      </span>
+                    </Button>
+    
+                    <Button
+                      variant="outline"
+                      onClick={() => handleVote('downvote', snippet._id)}
+                      disabled={isLoading}
+                      className={`
+                          gap-1
+                          ${hasDownvoted ? "border-red-500!" : "border-red-500"}
+                          hover:bg-accent/50  // Subtle hover
+                      `}
+                    >
+                      <ArrowBigDown 
+                          className={hasDownvoted ? "fill-red-500 text-red-500!" : "fill-transparent"} 
+                      />
+                    </Button>
                     </div>
-
+    
                     <div>
-                      <Button variant={"outline"}> 
+                        <Button variant={"outline"} onClick={()=>router.push(`/snippet/${snippet._id}#comment`)}> 
                         <MessageCircle/> 
-                        <p>{snippet.commentNo}</p>
-                      </Button>
+                        <p>{snippet.commentNo || 0}</p>
+                        </Button>
                     </div>
-
+    
                     <div>
-                      <Button variant={"outline"}> 
-                        <Bookmark/> 
-                        <p>{snippet.bookmarks?.length || 0}</p>
-                      </Button>
+                        <Button 
+                            variant={"outline"}
+                            onClick={() => handleBookmark(snippet._id, "Snippet")}
+                            className={`gap-1
+                                ${hasBookmark ? "border-[#A246FD]!" : "border-[#A246FD]"}
+                                hover:bg-accent/50  // Subtle hover
+                            `}
+                        > 
+                        <Bookmark
+                            className={hasBookmark ? "fill-[#A246FD] text-[#A246FD]!" : "fill-transparent"} 
+                        /> 
+                        <p className={hasBookmark ? "text-[#A246FD]" : ""}>
+                            {snippet.bookmarkCount}
+                        </p>
+                        </Button>
                     </div>
                   </div>
 
@@ -355,7 +419,7 @@ const Page = ({params}) => {
                       </div>
                       <div>
                         <Button variant={"outline"}>
-                          <BookCopy />
+                          <GitFork />
                         </Button>
                       </div>
                       <div>
@@ -400,37 +464,63 @@ const Page = ({params}) => {
                 <div className='flex gap-x-2 items-center justify-between'>
                   <div className='flex gap-x-2 items-center'>
                     <div className='flex items-center gap-x-2 mr-3'>
-                      <Button 
-                          variant={hasUpvoted ? "default" : "outline"} 
+                        <Button
+                          variant="outline"
                           onClick={() => handleVote('upvote', snippet._id)}
                           disabled={isLoading}
-                      > 
-                          <ArrowBigUp /> 
-                          <p>{snippet.upvoteCount}</p>
-                      </Button>
-                      
-                      <Button 
-                          variant={hasDownvoted ? "destructive" : "outline"}
+                          className={`
+                              gap-1
+                              ${hasUpvoted ? "border-green-500!" : "border-green-500"}
+                              hover:bg-accent/50  // Subtle hover
+                          `}
+                        >
+                          <ArrowBigUp 
+                              className={hasUpvoted ? "fill-green-500 text-green-500!" : "fill-transparent"} 
+                          />
+                          <span className={hasUpvoted ? "text-green-500" : ""}>
+                              {snippet.upvoteCount}
+                          </span>
+                        </Button>
+        
+                        <Button
+                          variant="outline"
                           onClick={() => handleVote('downvote', snippet._id)}
                           disabled={isLoading}
-                      > 
-                          <ArrowBigDown className={hasDownvoted ? "text-destructive-foreground" : ""} /> 
-                          {/* <p className={hasDownvoted ? "text-destructive-foreground" : ""}>{snippet.downvoteCount}</p> */}
-                      </Button>
-                    </div>
-
-                    <div>
-                      <Button variant={"outline"}> 
-                        <MessageCircle/> 
-                        <p>{snippet.commentNo}</p>
-                      </Button>
-                    </div>
-
-                    <div>
-                      <Button variant={"outline"}> 
-                        <Bookmark/> 
-                        <p>{snippet.bookmarks?.length || 0}</p>
-                      </Button>
+                          className={`
+                              gap-1
+                              ${hasDownvoted ? "border-red-500!" : "border-red-500"}
+                              hover:bg-accent/50  // Subtle hover
+                          `}
+                        >
+                          <ArrowBigDown 
+                            className={hasDownvoted ? "fill-red-500 text-red-500!" : "fill-transparent"} 
+                          />
+                        </Button>
+                        </div>
+        
+                        <div>
+                            <Button variant={"outline"} onClick={()=>router.push(`/snippet/${snippet._id}#comment`)}> 
+                            <MessageCircle/> 
+                            <p>{snippet.commentNo || 0}</p>
+                            </Button>
+                        </div>
+        
+                        <div>
+                            <Button 
+                                variant={"outline"}
+                                onClick={() => handleBookmark(snippet._id, "Snippet")}
+                                className={`gap-1
+                                    ${hasBookmark ? "border-[#A246FD]!" : "border-[#A246FD]"}
+                                    hover:bg-accent/50  // Subtle hover
+                                `}
+                            > 
+                            <Bookmark
+                                className={hasBookmark ? "fill-[#A246FD] text-[#A246FD]!" : "fill-transparent"} 
+                            /> 
+                            <p className={hasBookmark ? "text-[#A246FD]" : ""}>
+                                {snippet.bookmarkCount}
+                            </p>
+                            </Button>
                     </div>
                   </div>
 

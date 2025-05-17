@@ -178,27 +178,39 @@ const snippetsSlice = createSlice({
         state.snippet = { ...state.snippet, ...updatedSnippet };
       }
     },
-    // When bookmarking succeeds
+
     bookmarkSnippetSuccess(state, action) {
       const { snippetId, userId } = action.payload;
       
-      // Similar update pattern for bookmarks
-      state.snippets = state.snippets.map(snippet => {
+      const updateSnippet = (snippet) => {
         if (snippet._id === snippetId) {
-          const isBookmarked = snippet.bookmarkedBy.some(b => b.entity._id === userId);
+          const isBookmarked = snippet.bookmarkedBy.some(b => b.entity.toString() === userId);
           const bookmarkedBy = isBookmarked
-            ? snippet.bookmarkedBy.filter(b => b.entity._id !== userId)
-            : [...snippet.bookmarkedBy, { entity: { _id: userId }, model: 'User' }];
+            ? snippet.bookmarkedBy.filter(b => b.entity.toString() !== userId)
+            : [...snippet.bookmarkedBy, { entity: userId, model: 'User' }];
             
           return {
             ...snippet,
-            bookmarkedBy
+            bookmarkedBy,
+            bookmarkCount: bookmarkedBy.length
           };
         }
         return snippet;
-      });
+      };
+
+      state.snippets = state.snippets.map(updateSnippet);
+      state.trendingSnippets = state.trendingSnippets.map(updateSnippet);
+      if (state.snippet?._id === snippetId) state.snippet = updateSnippet(state.snippet);
+    },
+
+    // Final sync after API success (optional - only if backend returns full snippet)
+    bookmarkSnippetApiSuccess(state, action) {
+      const updatedSnippet = action.payload;
+      const updateArray = (arr) => arr.map(s => s._id === updatedSnippet._id ? updatedSnippet : s);
       
-      // Apply similar updates to trendingSnippets and currentSnippet if needed
+      state.snippets = updateArray(state.snippets);
+      state.trendingSnippets = updateArray(state.trendingSnippets);
+      if (state.snippet?._id === updatedSnippet._id) state.snippet = updatedSnippet;
     },
     
     // Reset current snippet when leaving detail view
@@ -223,6 +235,7 @@ export const {
   upvoteSnippetApiSuccess,
   downvoteSnippetApiSuccess,
   bookmarkSnippetSuccess,
+  bookmarkSnippetApiSuccess,
   clearCurrentSnippet
 } = snippetsSlice.actions;
 
