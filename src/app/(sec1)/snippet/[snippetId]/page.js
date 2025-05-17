@@ -49,7 +49,9 @@ const Page = ({params}) => {
   const hasDownvoted = snippet?.downvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
 
   // Check if current user is already following the target user
-  const isFollowing = true
+  const isFollowing = userData?.following?.some(
+    follow => follow.entity.toString() === targetUser?._id.toString()
+  );
   
   const fetchUser = async()=>{
     try{
