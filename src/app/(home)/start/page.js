@@ -49,7 +49,7 @@ export default function LandingPage() {
     {
       quote: "Hosting code battles on Snipost helped us identify top talent for our DeFi project.",
       author: "Jamal Thomas",
-      role: "CTO, SolFinance",
+      role: "Rust Developer",
       image: "/user3.jpg"
     }
   ]
@@ -270,7 +270,7 @@ export default function LandingPage() {
               <CardContent className="pt-6">
                 <div className="mb-6">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="inline-block w-5 h-5 text-yellow-500 fill-yellow-500" />
+                    <Star key={i} className="inline-block w-5 h-5 text-primary fill-primary" />
                   ))}
                 </div>
                 <p className="mb-6 italic text-lg">"{testimonial.quote}"</p>
