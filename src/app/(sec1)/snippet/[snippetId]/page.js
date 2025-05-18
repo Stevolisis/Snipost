@@ -44,7 +44,7 @@ const Page = ({params}) => {
   const commentState = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
-  const targetUser = snippet && snippet?.user.entity;
+  const targetUser = snippet?.user;
   const hasUpvoted = snippet?.upvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
   const hasDownvoted = snippet?.downvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
   const hasBookmark = snippet?.bookmarkedBy?.some(v => (v.entity._id || v.entity ) === userData?._id);
