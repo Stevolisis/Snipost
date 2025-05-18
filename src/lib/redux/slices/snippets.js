@@ -184,6 +184,7 @@ const snippetsSlice = createSlice({
       
       const updateSnippet = (snippet) => {
         if (snippet._id === snippetId) {
+          console.log("ert: ", snippet);
           const isBookmarked = snippet.bookmarkedBy.some(b => b.entity.toString() === userId);
           const bookmarkedBy = isBookmarked
             ? snippet.bookmarkedBy.filter(b => b.entity.toString() !== userId)

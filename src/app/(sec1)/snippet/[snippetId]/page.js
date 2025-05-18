@@ -398,7 +398,7 @@ const Page = ({params}) => {
                   </div>
 
                   <div>
-                    <Tip walletAddress={snippet.user.entity.walletAddress} />
+                    <Tip walletAddress={snippet.user?.walletAddress} />
                   </div>
                 </div>
               </CardContent>
@@ -547,21 +547,21 @@ const Page = ({params}) => {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Image
-                    src={snippet.user?.entity?.avatar?.url || '/default-avatar.png'}
-                    alt={snippet.user?.entity?.name || 'User'}
+                    src={snippet.user?.avatar?.url || '/default-avatar.png'}
+                    alt={snippet.user?.name || 'User'}
                     width={32}
                     height={32}
                     className="rounded-full"
                   />
                   <div>
-                    <Link href={`/profile/${snippet.user?.entity?._id}`} className="text-sm font-semibold text-foreground hover:underline">
+                    <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
                       <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
-                        {snippet.user?.entity?.name || 'Unknown User'}
+                        {snippet.user?.name || 'Unknown User'}
                       </CardTitle>
                     </Link>
 
                     <CardDescription className="text-[11px] text-muted-foreground">
-                      by @{snippet.user?.entity?.userName || 'unknown'}
+                      by @{snippet.user?.userName || 'unknown'}
                     </CardDescription>
                   </div>
                 </div>
@@ -569,7 +569,7 @@ const Page = ({params}) => {
 
               <CardContent className="-mt-4">
                 <div className='text-sm md:text-base'>
-                  {snippet.user?.entity?.about || 'No description available'}
+                  {snippet.user?.about || 'No description available'}
                 </div>
                 <div className='pt-4'>
                   <Button 

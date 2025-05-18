@@ -131,8 +131,20 @@ const SnipCard = ({snippet}) => {
                     </div>
                 </div>
                 <div>
-                    <Button variant={"outline"}>
-                        <GitFork />
+                    <Button 
+                        variant={"outline"}
+                        onClick={() => handleBookmark(snippet._id, "Snippet")}
+                        className={`gap-1
+                            ${hasBookmark ? "border-primary!" : "border-primary"}
+                            hover:bg-accent/50  // Subtle hover
+                        `}
+                    > 
+                    <Bookmark
+                        className={hasBookmark ? "fill-primary text-primary!" : "fill-transparent"} 
+                    /> 
+                    {/* <p className={hasBookmark ? "text-[#A246FD]" : ""}>
+                        {snippet.bookmarkCount}
+                    </p> */}
                     </Button>
                 </div>
             </div>
@@ -228,20 +240,8 @@ const SnipCard = ({snippet}) => {
                 </div>
 
                 <div>
-                    <Button 
-                        variant={"outline"}
-                        onClick={() => handleBookmark(snippet._id, "Snippet")}
-                        className={`gap-1
-                            ${hasBookmark ? "border-[#A246FD]!" : "border-[#A246FD]"}
-                            hover:bg-accent/50  // Subtle hover
-                        `}
-                    > 
-                    <Bookmark
-                        className={hasBookmark ? "fill-[#A246FD] text-[#A246FD]!" : "fill-transparent"} 
-                    /> 
-                    <p className={hasBookmark ? "text-[#A246FD]" : ""}>
-                        {snippet.bookmarkCount}
-                    </p>
+                    <Button variant={"outline"}>
+                        <GitFork />
                     </Button>
                 </div>
             </div>
