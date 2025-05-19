@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowBigDown, ArrowBigUp, GitFork, Bookmark, CircleDollarSign, MessageCircle } from 'lucide-react';
+import { ArrowBigDown, ArrowBigUp, GitFork, Bookmark, CircleDollarSign, MessageCircle, FileText, UserPen } from 'lucide-react';
 import React, { use, useEffect, useRef, useState } from 'react'
 import Link from 'next/link';
 import Image from 'next/image';
@@ -33,10 +33,13 @@ import { Tip } from '@/components/appComponents/Tip';
 import { bookmarkSnippetApiSuccess, bookmarkSnippetSuccess, downvoteSnippetApiSuccess, downvoteSnippetSuccess, loadSnippetStart, loadSnippetSuccess, snippetsFailure, upvoteSnippetApiSuccess, upvoteSnippetSuccess } from '@/lib/redux/slices/snippets';
 import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Fork } from '@/components/appComponents/Fork';
+import { useRouter } from 'next/navigation';
 
 
 const Page = ({params}) => {
   const { snippetId } = use(params);
+  const router = useRouter();
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
   const { userData, jwtToken, disconnect } = useAppSelector((state) => state.auth)
@@ -48,6 +51,7 @@ const Page = ({params}) => {
   const hasUpvoted = snippet?.upvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
   const hasDownvoted = snippet?.downvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
   const hasBookmark = snippet?.bookmarkedBy?.some(v => (v.entity._id || v.entity ) === userData?._id);
+  const hasForked = snippet?.forks?.some(v => (v.forkedBy.entity || v.forkedBy.entity._id) === userData?._id);
 
   // Check if current user is already following the target user
   const isFollowing = userData?.following?.some(
@@ -318,7 +322,7 @@ const Page = ({params}) => {
           <div className='flex-grow md:flex-[2]'>
             <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
               <CardHeader>
-                <div className='-mb-6 py-3'>
+                <div className='-mb-8 py-3'>
                   <h1 className="text-2xl line-clamp-2 text-foreground font-bold">
                     {snippet.title}
                   </h1>
@@ -326,6 +330,19 @@ const Page = ({params}) => {
               </CardHeader>
 
               <CardContent>
+                { snippet?.isFork && 
+                  <div className='flex items-center gap-x-2 mb-2'>
+                    <GitFork size={12} /><span className='text-xs'>forked from</span>
+                    <Link href={`/snippet/${snippet?.originalContent.entity}`} className='hover:text-[#A246FD]'>
+                      <FileText size={18} />
+                    </Link>
+                    <Link href={`/profile/${snippet?.originalAuthor.entity}`} className='hover:text-[#A246FD]'>
+                      <UserPen size={18} />
+                    </Link>
+                    
+                  </div>
+                }
+
                 <p className="text-sm text-muted-foreground line-clamp-3">{snippet.description}</p>
 
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -377,20 +394,24 @@ const Page = ({params}) => {
                         <p>{snippet.commentNo || 0}</p>
                         </Button>
                     </div>
+
+                    <div>
+                      <Fork snippet={snippet} contentType="Snippet" hasForked={hasForked}/>
+                    </div>
     
                     <div>
                         <Button 
                             variant={"outline"}
                             onClick={() => handleBookmark(snippet._id, "Snippet")}
                             className={`gap-1
-                                ${hasBookmark ? "border-[#A246FD]!" : "border-[#A246FD]"}
+                                ${hasBookmark ? "border-white!" : "border-white"}
                                 hover:bg-accent/50  // Subtle hover
                             `}
                         > 
                         <Bookmark
-                            className={hasBookmark ? "fill-[#A246FD] text-[#A246FD]!" : "fill-transparent"} 
+                            className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
                         /> 
-                        <p className={hasBookmark ? "text-[#A246FD]" : ""}>
+                        <p className={hasBookmark ? "text-white" : ""}>
                             {snippet.bookmarkCount}
                         </p>
                         </Button>
@@ -506,22 +527,26 @@ const Page = ({params}) => {
                         </div>
         
                         <div>
+                          <Fork snippet={snippet} contentType="Snippet" hasForked={hasForked}/>
+                        </div>
+        
+                        <div>
                             <Button 
                                 variant={"outline"}
                                 onClick={() => handleBookmark(snippet._id, "Snippet")}
                                 className={`gap-1
-                                    ${hasBookmark ? "border-[#A246FD]!" : "border-[#A246FD]"}
+                                    ${hasBookmark ? "border-white!" : "border-white"}
                                     hover:bg-accent/50  // Subtle hover
                                 `}
                             > 
                             <Bookmark
-                                className={hasBookmark ? "fill-[#A246FD] text-[#A246FD]!" : "fill-transparent"} 
+                                className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
                             /> 
-                            <p className={hasBookmark ? "text-[#A246FD]" : ""}>
+                            <p className={hasBookmark ? "text-white" : ""}>
                                 {snippet.bookmarkCount}
                             </p>
                             </Button>
-                    </div>
+                        </div>
                   </div>
 
                   <div>

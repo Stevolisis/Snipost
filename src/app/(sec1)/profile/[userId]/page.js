@@ -13,7 +13,7 @@ import {
 } from '@/lib/redux/slices/profile'
 import { toast } from 'sonner'
 import api from '@/utils/axiosConfig'
-import Link from 'next/link'
+import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton'
 import { use, useEffect, useState } from 'react'
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from '@/lib/redux/slices/snippets'

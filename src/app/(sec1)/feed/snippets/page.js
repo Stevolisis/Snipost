@@ -3,8 +3,6 @@ import api from '@/utils/axiosConfig';
 import React, { useEffect } from 'react'
 import {
   snippetsFailure,
-  upvoteSnippetSuccess,
-  downvoteSnippetSuccess,
   loadSnippetsStart,
   loadSnippetsSuccess
 } from '@/lib/redux/slices/snippets';

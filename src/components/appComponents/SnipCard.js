@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { ArrowBigDown, ArrowBigUp, Bookmark, GitFork, MessageCircle } from 'lucide-react';
+import { ArrowBigDown, ArrowBigUp, Bookmark, FileText, GitFork, MessageCircle, UserPen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
@@ -21,6 +21,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import api from '@/utils/axiosConfig';
 import { toast } from 'sonner';
+import { Fork } from './Fork';
 
 
 
@@ -32,6 +33,7 @@ const SnipCard = ({snippet}) => {
     const hasUpvoted = snippet.upvotes?.some(v => v.entity === userData?._id);
     const hasDownvoted = snippet.downvotes?.some(v => v.entity === userData?._id);
     const hasBookmark = snippet.bookmarkedBy?.some(v => v.entity === userData?._id);
+    const hasForked = snippet?.forks?.some(v => v.forkedBy.entity === userData?._id);
 
 
     const handleVote = async (type, id) => {
@@ -113,14 +115,15 @@ const SnipCard = ({snippet}) => {
     return (
         <Card key={snippet._id} className="w-full hover:shadow-md hover:border-gray-600 transition-colors duration-200">
             <CardHeader>
+            
             <div className='flex justify-between items-center'>
                 <div className="flex items-center gap-2">
                     <Image
-                    src={snippet.user?.avatar?.url || '/default-avatar.png'}
-                    alt={snippet.user?.name || 'User'}
-                    width={32}
-                    height={32}
-                    className="rounded-full min-h-[25px] aspect-square object-cover"
+                        src={snippet.user?.avatar?.url || '/default-avatar.png'}
+                        alt={snippet.user?.name || 'User'}
+                        width={32}
+                        height={32}
+                        className="rounded-full min-h-[25px] aspect-square object-cover"
                     />
                     <div>
                     <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
@@ -129,22 +132,21 @@ const SnipCard = ({snippet}) => {
                         </CardTitle>
                     </Link>
                     </div>
+
                 </div>
+                
                 <div>
                     <Button 
                         variant={"outline"}
                         onClick={() => handleBookmark(snippet._id, "Snippet")}
                         className={`gap-1
-                            ${hasBookmark ? "border-primary!" : "border-primary"}
+                            ${hasBookmark ? "border-white!" : "border-white"}
                             hover:bg-accent/50  // Subtle hover
                         `}
                     > 
                     <Bookmark
-                        className={hasBookmark ? "fill-primary text-primary!" : "fill-transparent"} 
+                        className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
                     /> 
-                    {/* <p className={hasBookmark ? "text-[#A246FD]" : ""}>
-                        {snippet.bookmarkCount}
-                    </p> */}
                     </Button>
                 </div>
             </div>
@@ -154,6 +156,13 @@ const SnipCard = ({snippet}) => {
                 font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
                 {snippet.title || 'Untitled Snippet'}
                 </Link>
+                
+                {snippet?.isFork && <div className='flex items-center gap-x-2 mt-2'>
+                    <GitFork size={12} /><span className='text-xs'>forked from</span>
+                    <Link href={`/snippet/${snippet?.originalContent.entity}`} className='hover:text-[#A246FD]'><FileText size={18} /></Link>
+                    <Link href={`/profile/${snippet?.originalAuthor.entity}`} className='hover:text-[#A246FD]'><UserPen size={18} /></Link>
+                    
+                </div>}
             </div>
             </CardHeader>
 
@@ -240,9 +249,7 @@ const SnipCard = ({snippet}) => {
                 </div>
 
                 <div>
-                    <Button variant={"outline"}>
-                        <GitFork />
-                    </Button>
+                    <Fork snippet={snippet} contentType="Snippet" hasForked={hasForked}/>
                 </div>
             </div>
 

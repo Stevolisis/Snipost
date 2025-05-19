@@ -6,6 +6,7 @@ import snippets from './slices/snippets';
 import comments from './slices/comments';
 import profile from './slices/profile';
 import search from './slices/search';
+import fork from './slices/fork';
 
 const persistConfig = {
   key: 'root',
@@ -19,7 +20,8 @@ const combinedReducers = combineReducers({
   snippets,
   comments,
   profile,
-  search
+  search,
+  fork
 });
 
 const persistedReducer = persistReducer(persistConfig, combinedReducers);
