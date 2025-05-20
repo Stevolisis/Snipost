@@ -99,7 +99,7 @@ function ForkCard({ fork }) {
   
   return (
     <div className="px-5 hover:bg-accent/50 transition-colors">
-      <div className="flex items-start gap-x-4">
+      <div className="flex items-center flex-wrap md:flex-unwrap gap-x-4">
         {/* Avatar column */}
         <Avatar className="h-10 w-10">
             <AvatarImage className='object-cover' src={fork?.forkedBy?.entity?.avatar?.url || "/api/placeholder/40/40"} alt={fork?.forkedBy?.entity?.name || 'User'} />
@@ -110,7 +110,6 @@ function ForkCard({ fork }) {
         
         {/* Main content column */}
         <div className="flex-1">
-          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center text-white">
                 <Link href={`/profile/${fork?.forkedBy?.entity?._id}`} className="font-medium hover:underline hover:text-primary transition-colors duration-100 cursor-pointer">
                     {fork?.forkedBy?.entity?.name || 'Anonymous'}
@@ -118,8 +117,10 @@ function ForkCard({ fork }) {
                 <span className="mx-1">•</span>
                 <span className='text-muted-foreground text-sm'>Forked on {format(new Date(fork?.forkedAt), 'MMM d, yyyy')}</span>
             </div>
-        
-            <div className="flex space-x-2">
+        </div>
+
+        {/* Main Fork Btn */}
+        <div className='flex justify-end w-full mt-1 md:block md:w-fit md:mt-0'>     
               <Button
                 variant="outline"
                 size="sm"
@@ -132,10 +133,8 @@ function ForkCard({ fork }) {
                 <Code className="h-3.5 w-3.5 mr-1" />
                 View Fork
               </Button>
-            </div>
-          </div>
-          
         </div>
+        
       </div>
     </div>
   )
@@ -150,21 +149,21 @@ function ForkSkeleton() {
         <div className="flex-1">
           <div className="flex justify-between mb-2">
             <div>
-              <Skeleton className="h-5 w-64 mb-2" />
+              <Skeleton className="h-5 w-full mb-2" />
               <Skeleton className="h-4 w-40" />
             </div>
             <div className="flex space-x-2">
-              <Skeleton className="h-8 w-24" />
-              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
             </div>
           </div>
           
           <Skeleton className="h-4 w-full max-w-md mb-3" />
           
           <div className="flex items-center">
-            <Skeleton className="h-5 w-16 mr-2" />
-            <Skeleton className="h-4 w-16 mr-2" />
-            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-5 w-full mr-2" />
+            <Skeleton className="h-4 w-full mr-2" />
+            <Skeleton className="h-4 w-full" />
           </div>
         </div>
       </div>
