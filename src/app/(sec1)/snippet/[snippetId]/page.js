@@ -439,11 +439,6 @@ const Page = ({params}) => {
                         }]}/>
                       </div>
                       <div>
-                        <Button variant={"outline"}>
-                          <GitFork />
-                        </Button>
-                      </div>
-                      <div>
                         <Button 
                           variant="outline"
                           onClick={() => handleCopy(code.content, code._id)}

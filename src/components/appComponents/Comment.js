@@ -1,8 +1,8 @@
 "use client"
 import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { renderTextWithCode } from '@/utils/rendertextwithcode';
-import { ArrowBigDown, ArrowBigUp, Bookmark, CircleDollarSign, MessageCircle } from 'lucide-react';
+import { renderText } from '@/utils/renderText';
+import { ArrowBigDown, ArrowBigUp, CircleDollarSign, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -14,21 +14,23 @@ const Comment = ({comment}) => {
     <div>
       <Card className=" bg-transparent hover:border-gray-600 hover:bg-card my-6">
         <CardHeader>
-            <Link href="#" className='flex gap-x-2 my-2 mb-5'>
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <Image
-                  src={comment.author?.entity?.avatar?.url || "/logo2.svg"}
-                  alt="Avatar"
-                  width={20}
-                  height={20}
-                />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+            <Link href="#" className='flex items-start gap-x-2 my-2 mb-5'>
+                <div>
+                  <Image
+                    src={comment.author?.entity?.avatar?.url || "/logo2.svg"}
+                    alt="Avatar"
+                    width={20}
+                    height={20}
+                    className='w-8 h-8 rounded-full object-cover aspect-square'
+                  />
+                </div>
+              <div className="grid -mt-0.5 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{comment?.author?.entity?.name}</span>
-                <span className="truncate text-xs">{comment?.author?.entity?.userName}</span>
+                <span className="truncate text-xs text-muted-foreground">@{comment?.author?.entity?.userName}</span>
               </div>
             </Link>
-          <CardTitle>{renderTextWithCode(comment.text)}</CardTitle>
+
+          <CardTitle>{renderText(comment.text, comment.mentions)}</CardTitle>
           <div className='flex gap-x-2 items-center justify-between pt-3'>
             <div className='flex gap-x-2 items-center'>
               <div className='flex items-center gap-x-2'>
