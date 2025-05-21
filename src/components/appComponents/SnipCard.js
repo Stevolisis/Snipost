@@ -101,7 +101,8 @@ const SnipCard = ({snippet}) => {
                     }
                 });
             }
-            
+            toast.success(response.data.message);
+
             // 3. Optional: Final sync with backend data
             dispatch(bookmarkSnippetApiSuccess(response.data.snippet));
             
