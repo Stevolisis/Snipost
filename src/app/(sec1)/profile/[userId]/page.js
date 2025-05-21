@@ -366,7 +366,7 @@ export default function ProfilePage({ params }) {
                                 </TableCell>
                                 <TableCell>
                                   <a 
-                                    href={`https://explorer.solana.com/tx/${tx.signature}`}
+                                    href={`https://explorer.solana.com/tx/${tx.signature}?cluster=devnet`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1 text-blue-500 hover:underline"
