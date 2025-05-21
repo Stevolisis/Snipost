@@ -57,93 +57,109 @@ export function Tip({ walletAddress }) {
     }
   }
 
-  const handleTip = async () => {
-    if (!connected || !publicKey) {
-      toast.error("Please connect your wallet first")
-      return
-    }
-
-    if (!walletAddress) {
-      toast.error("Recipient wallet address not found")
-      return
-    }
-
-    if (amount < 0.001) {
-      toast.error("Minimum tip amount is 0.001 SOL")
-      return
-    }
-
-    try {
-      setIsLoading(true)
-      
-      const recipientAddress = new PublicKey(walletAddress)
-      const lamports = amount * 10**9
-
-      // Get recent blockhash
-      const { blockhash } = await connection.getLatestBlockhash()
-      
-      const transaction = new Transaction({
-        feePayer: publicKey,
-        recentBlockhash: blockhash
-      }).add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: recipientAddress,
-          lamports: lamports,
-        })
-      )
-
-      const signature = await sendTransaction(transaction, connection)
-      
-      toast.promise(
-        (async () => {
-          try {
-            // Wait for confirmation
-            const confirmation = await connection.confirmTransaction({
-              signature,
-              blockhash,
-              lastValidBlockHeight: (await connection.getBlockHeight()) + 150
-            }, "confirmed")
-
-            if (confirmation.value.err) {
-              throw new Error("Transaction failed")
-            }
-
-            // Record transaction
-            await recordTransaction(signature, amount)
-            
-            return (
-              <div className="flex flex-col gap-2">
-                <p>Tip sent successfully!</p>
-                <a 
-                  href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
-                >
-                  View transaction on Explorer
-                </a>
-              </div>
-            )
-          } catch (error) {
-            console.error("Confirmation error:", error)
-            throw new Error("Transaction confirmation failed")
-          }
-        })(),
-        {
-          loading: "Processing transaction...",
-          success: (data) => data,
-          error: (err) => err.message || "Failed to complete transaction"
-        }
-      )
-    } catch (error) {
-      console.error("Tip error:", error)
-      toast.error(error.message || "An error occurred while sending tip")
-    } finally {
-      setIsLoading(false)
-      setIsOpen(false)
-    }
+const handleTip = async () => {
+  if (!connected || !publicKey) {
+    toast.error("Please connect your wallet first");
+    return;
   }
+
+  if (!walletAddress) {
+    toast.error("Recipient wallet address not found");
+    return;
+  }
+
+  if (amount < 0.001) {
+    toast.error("Minimum tip amount is 0.001 SOL");
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+    
+    const recipientAddress = new PublicKey(walletAddress);
+    const platformAddress = new PublicKey(process.env.NEXT_PUBLIC_SNIPOST_WALLET_ADDRESS);
+    
+    const totalLamports = amount * 10**9;
+    const platformFee = Math.floor(totalLamports * 0.12); // 12%
+    const recipientAmount = totalLamports - platformFee;
+
+    // Get recent blockhash
+    const { blockhash } = await connection.getLatestBlockhash();
+    
+    // Create transaction with two transfers
+    const transaction = new Transaction({
+      feePayer: publicKey,
+      recentBlockhash: blockhash
+    }).add(
+      // Transfer to recipient (88%)
+      SystemProgram.transfer({
+        fromPubkey: publicKey,
+        toPubkey: recipientAddress,
+        lamports: recipientAmount,
+      }),
+      // Transfer to platform (12%)
+      SystemProgram.transfer({
+        fromPubkey: publicKey,
+        toPubkey: platformAddress,
+        lamports: platformFee,
+      })
+    );
+
+    // Sign and send transaction
+    const signature = await sendTransaction(transaction, connection);
+    
+    toast.promise(
+      (async () => {
+        try {
+          // Wait for confirmation
+          const confirmation = await connection.confirmTransaction({
+            signature,
+            blockhash,
+            lastValidBlockHeight: (await connection.getBlockHeight()) + 150
+          }, "confirmed");
+
+          if (confirmation.value.err) {
+            throw new Error("Transaction failed");
+          }
+
+          // Record transaction (update this to include platform fee)
+          await recordTransaction(signature, amount, platformFee / 10**9);
+          
+          return (
+            <div className="flex flex-col gap-2">
+              <p>Tip sent successfully!</p>
+              <p className="text-sm text-gray-500">
+                {platformFee / 10**9} SOL fee collected by Snipost
+              </p>
+              <a 
+                href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View transaction on Explorer
+              </a>
+            </div>
+          );
+        } catch (error) {
+          console.error("Confirmation error:", error);
+          throw new Error("Transaction confirmation failed");
+        }
+      })(),
+      {
+        loading: "Processing transaction...",
+        success: (data) => data,
+        error: (err) => err.message || "Failed to complete transaction"
+      }
+    );
+  } catch (error) {
+    console.error("Tip error:", error);
+    toast.error(error.message || "An error occurred while sending tip");
+  } finally {
+    setIsLoading(false);
+    setIsOpen(false);
+  }
+};
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
