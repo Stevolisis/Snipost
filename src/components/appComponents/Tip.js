@@ -26,8 +26,8 @@ export function Tip({ walletAddress }) {
   const [amount, setAmount] = useState(0.1) // Default tip amount
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const { userData, jwtToken } = useAppSelector((state) => state.auth)
-
+  const { jwtToken } = useAppSelector((state) => state.auth)
+  console.log("add: ",walletAddress)
 
   
   const recordTransaction = async (signature, amount) => {

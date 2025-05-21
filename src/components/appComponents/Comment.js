@@ -1,20 +1,84 @@
 "use client"
-import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { renderText } from '@/utils/renderText';
-import { ArrowBigDown, ArrowBigUp, CircleDollarSign, MessageCircle } from 'lucide-react';
+import { ArrowBigDown, ArrowBigUp, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import CommentBox from './CommentBox';
 import { Tip } from './Tip';
+import { downvoteCommentOptimistic, updateCommentAfterVote, upvoteCommentOptimistic } from '@/lib/redux/slices/comments';
+import api from '@/utils/axiosConfig';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import { toast } from 'sonner';
+import Reply from './Reply';
+import ReplyBox from './ReplyBox';
 
 const Comment = ({comment}) => {
+  const dispatch = useAppDispatch();
+  const { jwtToken, userData } = useAppSelector((state) => state.auth);
+  const [showReplyBox, setShowReplyBox] = useState(false);
+  const hasUpvoted = comment.upvotes?.some(v => (v.entity || v.entity._id ) === userData?._id);
+  const hasDownvoted = comment.downvotes?.some(v => (v.entity || v.entity._id ) === userData?._id);
+
+  const handleUpvote = async () => {
+    try {
+      // Optimistic update
+      dispatch(upvoteCommentOptimistic({ 
+        commentId: comment._id, 
+        userId: userData._id 
+      }));
+
+      // API call
+      const response = await api.post(`/upvote-comment/${comment._id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+
+      // Update with actual data
+      dispatch(updateCommentAfterVote(response.data.comment));
+      
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to upvote');
+      // Revert optimistic update on error
+      dispatch(updateCommentAfterVote(comment));
+    }
+  };
+
+  const handleDownvote = async () => {
+    try {
+      // Optimistic update
+      dispatch(downvoteCommentOptimistic({ 
+        commentId: comment._id, 
+        userId: userData._id 
+      }));
+
+      // API call
+      const response = await api.post(`/downvote-comment/${comment._id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+
+      // Update with actual data
+      dispatch(updateCommentAfterVote(response.data.comment));
+      
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to downvote');
+      // Revert optimistic update on error
+      dispatch(updateCommentAfterVote(comment));
+    }
+  };
+
+  
   return (
     <div>
-      <Card className=" bg-transparent hover:border-gray-600 hover:bg-card my-6">
+      <Card className=" bg-transparent hover:border-gray-600 hover:bg-card my-6 gap-0">
         <CardHeader>
-            <Link href="#" className='flex items-start gap-x-2 my-2 mb-5'>
+            <Link href={`/profile/${comment.author?.entity?._id}`} className='flex items-start gap-x-2 my-2 mb-5'>
                 <div>
                   <Image
                     src={comment.author?.entity?.avatar?.url || "/logo2.svg"}
@@ -31,87 +95,68 @@ const Comment = ({comment}) => {
             </Link>
 
           <CardTitle>{renderText(comment.text, comment.mentions)}</CardTitle>
-          <div className='flex gap-x-2 items-center justify-between pt-3'>
-            <div className='flex gap-x-2 items-center'>
-              <div className='flex items-center gap-x-2'>
-                <Button variant={"outline"} size={'sm'}> 
-                  <ArrowBigUp/> 
-                  <p>{comment.upvotes.length}</p>
-                </Button>
-                
-                <Button variant={"outline"} size={'sm'}> 
-                  <ArrowBigDown/> 
-                </Button>
-              </div>
+            <div className='flex gap-x-2 items-center justify-between pt-3'>
+              <div className='flex gap-x-2 items-center'>
+                <div className='flex items-center gap-x-2'>
+                  <Button 
+                    variant={"outline"} 
+                    size={'sm'}
+                    onClick={handleUpvote}
+                    disabled={!jwtToken}
+                    className={`
+                        gap-1
+                        ${hasUpvoted ? "border-green-500!" : "border-green-500"}
+                        hover:bg-accent/50  // Subtle hover
+                    `}
+                  > 
+                    <ArrowBigUp
+                      className={hasUpvoted ? "fill-green-500 text-green-500!" : "fill-transparent"} 
+                    /> 
+                    <p className={hasUpvoted ? "text-green-500" : ""}>{comment.upvotes.length}</p>
+                  </Button>
+                  
+                  <Button 
+                    variant={"outline"} 
+                    size={'sm'}
+                    onClick={handleDownvote}
+                    disabled={!jwtToken}
+                    className={`
+                        gap-1
+                        ${hasDownvoted ? "border-red-500!" : "border-red-500"}
+                        hover:bg-accent/50  // Subtle hover
+                    `}
+                  > 
+                    <ArrowBigDown
+                      className={hasDownvoted ? "fill-red-500 text-red-500!" : "fill-transparent"} 
+                    /> 
+                    <p className={hasDownvoted ? "text-red-500" : ""}>{comment.downvotes.length}</p>
+                  </Button>
 
+                  <Button 
+                    variant={"outline"}
+                    onClick={() => setShowReplyBox(!showReplyBox)}
+                  > 
+                    <MessageCircle/> 
+                    <p>{comment.replies.length}</p>
+                  </Button>
+                </div>
+              </div>
               <div>
-                <Button variant={"outline"}> 
-                  <MessageCircle/> 
-                </Button>
+                <Tip walletAddress={comment?.author?.entity.walletAddress}/>
               </div>
-
             </div>
-
-            <div>
-              <Tip walletAddress={comment.author?.entity.walletAddress} />
-            </div>
-          </div>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className='mt-3'>
+          {showReplyBox && <ReplyBox comment={comment} setShowReplyBox={setShowReplyBox}/>}
 
-          {
-            comment.replies.map((reply,i)=>(
-              <div key={i}>
-                <Card className=" hover:bg-background hover:border-gray-600 mb-4">
-                  <CardHeader>
-                      <Link href="#" className='flex gap-x-2 my-2'>
-                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                          <Image
-                            src="/logo2.svg"
-                            alt="Avatar"
-                            width={20}
-                            height={20}
-                          />
-                        </div>
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                          <span className="truncate font-semibold">Steven Joseph</span>
-                          <span className="truncate text-xs">Pro Coder</span>
-                        </div>
-                      </Link>
-                    <CardTitle>{comment.text}</CardTitle>
-                    <CardDescription>{comment.text}</CardDescription>
-                    <div className='flex gap-x-2 items-center justify-between pt-3'>
-                      <div className='flex gap-x-2 items-center'>
-                        <div className='flex items-center gap-x-2'>
-                          <Button variant={"outline"} size={'sm'}> 
-                            <ArrowBigUp/> 
-                            <p>12</p>
-                          </Button>
-                          
-                          <Button variant={"outline"} size={'sm'}> 
-                            <ArrowBigDown/> 
-                          </Button>
-                        </div>
-
-                        <div>
-                          <Button variant={"outline"}> 
-                            <MessageCircle/> 
-                          </Button>
-                        </div>
-
-                      </div>
-
-                      <div>
-                        <Button variant={"link"}> <CircleDollarSign/> </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-                <CommentBox/>
-              </div>
-            ))
-          }
+          {comment.replies.map((reply, i) => (
+            <Reply
+              key={i}
+              reply={reply}
+              commentId={comment._id}
+            />
+          ))}
         </CardContent>
       </Card>
     </div>

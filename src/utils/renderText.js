@@ -75,7 +75,7 @@ export const renderText = (text, mentions) => {
             <Link 
               key={index}
               href={`/profile/${userId}`}
-              className="text-blue-500 hover:underline text-sm"
+              className="text-primary hover:underline text-sm"
             >
               @{displayName}
             </Link>
