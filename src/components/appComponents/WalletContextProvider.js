@@ -37,7 +37,7 @@ const WalletContextProvider= ({ children }) => {
 
   return (
     <ConnectionProvider endpoint={`https://api.devnet.solana.com`}>
-      <WalletProvider wallets={wallets}>
+      <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

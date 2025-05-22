@@ -115,8 +115,7 @@ export default function EditSnippetPage() {
           type: snippetData.type
         })
       } catch (error) {
-        toast.error('Failed to load snippet')
-        router.push('/')
+        toast.error(error?.response?.data?.message || 'Failed to load snippet');
       } finally {
         setIsLoading(false)
       }
@@ -127,11 +126,19 @@ export default function EditSnippetPage() {
 
   const handleUpdate = async () => {
     try {
-        formData.folder = userData.folders[0]._id;
-      await api.patch(`/edit-snippet/${snippetId}`, formData, {
-        headers: { Authorization: `Bearer ${jwtToken}` }
-      })
-      toast.success('Snippet updated successfully!')
+      formData.folder = userData.folders[0]._id;
+      await toast.promise(
+        await api.patch(`/edit-snippet/${snippetId}`, formData, {
+          headers: { Authorization: `Bearer ${jwtToken}` }
+        }),
+        {
+          loading: 'Updating snippet...',
+          success: () => {
+            return 'Snippet updated successfully!'
+          },
+          error: (err) => err.response?.data?.message || 'Failed to update snippet'
+        }
+      )
     } catch (error) {
         console.log(error)
       toast.error(`Failed to update snippet: ${error?.response?.data?.message}`)

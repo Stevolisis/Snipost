@@ -48,8 +48,8 @@ export function AccountSidebar({ ...props }) {
       icon: NewspaperIcon,
     },
     {
-      title: "SnipCard",
-      url: "/account/snipcard",
+      title: "DevCard",
+      url: "/account/devcard",
       icon: IdCard,
     },
     {

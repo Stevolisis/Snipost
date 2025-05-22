@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink } from 'lucide-react'
+import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink, Trash2 } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 import { 
@@ -13,7 +13,7 @@ import {
 } from '@/lib/redux/slices/profile'
 import { toast } from 'sonner'
 import api from '@/utils/axiosConfig'
-import Link from 'next/link';
+import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { use, useEffect, useState } from 'react'
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from '@/lib/redux/slices/snippets'
@@ -105,6 +105,20 @@ export default function ProfilePage({ params }) {
     }
   }
 
+  const fetchBookmarks = async () => {
+    if (!isOwner) return
+    try {
+      const response = await api.get('/get-bookmarks', {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`
+        }
+      })
+      dispatch(updateUserData({ ...userData, bookmarks: response.data.bookmarks }))
+    } catch (err) {
+      console.error('Failed to fetch bookmarks:', err)
+    }
+  }
+
   const handleFollow = async () => {
     try {
       await toast.promise(
@@ -153,12 +167,33 @@ export default function ProfilePage({ params }) {
     }
   }
 
+  const handleDeleteSnippet = async (snippetId) => {
+    try {
+      await toast.promise(
+        api.delete(`/delete-snippet/${snippetId}`, {
+          headers: { Authorization: `Bearer ${jwtToken}` }
+        }),
+        {
+          loading: 'Deleting snippet...',
+          success: () => {
+            fetchSnippets()
+            return 'Snippet deleted successfully!'
+          },
+          error: (err) => err.response?.data?.message || 'Failed to delete snippet'
+        }
+      )
+    } catch (err) {
+      console.error('Delete error:', err)
+    }
+  }
+
   useEffect(() => {
     fetchProfile()
     fetchSnippets()
     if (isOwner) {
       fetchTransactions()
       fetchEarningSummary()
+      fetchBookmarks()
     }
   }, [userId])
 
@@ -233,6 +268,81 @@ export default function ProfilePage({ params }) {
             </CardContent>
           </Card>
 
+          {/* XP Display */}
+          <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-300 shadow-lg shadow-purple-500/10">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  Developer XP
+                </span>
+                <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  {profile.xp || 0}
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Level {Math.floor((profile.xp || 0) / 1000) + 1}
+                </p>
+                <div className="w-full bg-gray-700 rounded-full h-2.5 mt-3">
+                  <div 
+                    className="bg-gradient-to-r from-purple-500 to-blue-500 h-2.5 rounded-full" 
+                    style={{ width: `${((profile.xp || 0) % 1000) / 10}%` }}
+                  ></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Bookmarks Section */}
+          {isOwner && (
+            <Card className="bg-transparent hover:border-gray-600 transition-colors duration-200">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Your Bookmarks</span>
+                  <Bookmark className="h-5 w-5 text-yellow-500" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {userData?.bookmarks?.length > 0 ? (
+                  <div className="space-y-2">
+                    {userData.bookmarks.slice(0, 3).map(bookmark => (
+                      <Link 
+                        key={bookmark._id} 
+                        href={`/snippet/${bookmark.snippetId}`}
+                        className="block p-2 hover:bg-muted rounded transition-colors"
+                      >
+                        <p className="font-medium line-clamp-1">{bookmark.snippetTitle}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-1">
+                          {bookmark.snippetDescription}
+                        </p>
+                      </Link>
+                    ))}
+                    {userData.bookmarks.length > 3 && (
+                      <Link 
+                        href="/account/bookmarks" 
+                        className="text-sm text-primary hover:underline mt-2 inline-block"
+                      >
+                        View all ({userData.bookmarks.length})
+                      </Link>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-muted-foreground mb-2">No bookmarks yet</p>
+                    <Link href="/explore" className="text-sm text-primary hover:underline">
+                      Explore snippets
+                    </Link>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <Card className="bg-transparent hover:border-gray-600 transition-colors duration-200">
             <CardHeader>
               <CardTitle>About</CardTitle>
@@ -285,11 +395,30 @@ export default function ProfilePage({ params }) {
               {snippets?.length > 0 ? (
                 <div className="space-y-4">
                   {snippets.map(snippet => (
-                    <Card key={snippet._id} className="hover:border-primary transition-colors">
+                    <Card key={snippet._id} className="hover:border-primary transition-colors group">
                       <CardHeader>
-                        <Link href={`/snippet/${snippet._id}`} className="hover:underline">
-                          <CardTitle>{snippet.title}</CardTitle>
-                        </Link>
+                        <div className="flex justify-between items-start">
+                          <Link href={`/snippet/${snippet._id}`} className="hover:underline">
+                            <CardTitle>{snippet.title}</CardTitle>
+                          </Link>
+                          {isOwner && (
+                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Link href={`/edit-snippet/${snippet._id}`}>
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                  <SquarePen className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-8 w-8 text-destructive hover:text-destructive"
+                                onClick={() => handleDeleteSnippet(snippet._id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                         <CardDescription className="line-clamp-2">
                           {snippet.description}
                         </CardDescription>
@@ -317,6 +446,11 @@ export default function ProfilePage({ params }) {
                 <Card>
                   <CardContent className="p-6 text-center text-muted-foreground">
                     No snippets yet
+                    {isOwner && (
+                      <Link href="/create-snippet" className="block mt-2 text-primary hover:underline">
+                        Create your first snippet
+                      </Link>
+                    )}
                   </CardContent>
                 </Card>
               )}
@@ -418,6 +552,8 @@ export default function ProfilePage({ params }) {
                 </Card>
               )}
             </TabsContent>
+
+
           </Tabs>
         </div>
       </div>
