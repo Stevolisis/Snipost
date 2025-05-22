@@ -78,19 +78,24 @@ const Page = ({params}) => {
 
     try {
       await toast.promise(
-        api.put('/follow-user', {
-          followId: targetUser._id,
-          role: userData.role
-        }, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`
-          }
-        }),
+        (async()=>{
+
+          const response = api.put('/follow-user', {
+            followId: targetUser._id,
+            role: userData.role
+          }, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
+          });
+          return (await response).data;
+
+        })(),
         {
           loading: 'Following user...',
-          success: async(response) => {
+          success: async(data) => {
             await fetchUser();
-            return 'Followed successfully!';
+            return data?.message || 'Followed successfully!';
           },
           error: (err) => {
             return err.response?.data?.message || 'Failed to follow user';
@@ -110,19 +115,22 @@ const Page = ({params}) => {
 
     try {
       await toast.promise(
-        api.put('/unfollow-user', {
-          followId: targetUser._id,
-          role: targetUser.role
-        }, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`
-          }
-        }),
+       (async()=> {   
+          const response = api.put('/unfollow-user', {
+            followId: targetUser._id,
+            role: targetUser.role
+          }, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
+          });
+          return response.data;
+        })(),
         {
           loading: 'Unfollowing user...',
-          success: async(response) => {
+          success: async(data) => {
             await fetchUser();
-            return 'Unfollowed successfully!';
+            return data?.message || 'Unfollowed successfully!';
           },
           error: (err) => {
             return err.response?.data?.message || 'Failed to unfollow user';

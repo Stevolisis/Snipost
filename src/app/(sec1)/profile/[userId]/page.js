@@ -122,20 +122,25 @@ export default function ProfilePage({ params }) {
   const handleFollow = async () => {
     try {
       await toast.promise(
-        api.put('/follow-user', {
-          followId: profile._id,
-          role: userData.role
-        }, {
-          headers: { Authorization: `Bearer ${jwtToken}` }
-        }),
+        (async()=> {  
+          const response = api.put('/follow-user', {
+            followId: profile._id,
+            role: userData.role
+          }, {
+            headers: { Authorization: `Bearer ${jwtToken}` }
+          });
+          return response.data;
+        })(),
         {
           loading: 'Following...',
-          success: async () => {
+          success: async (data) => {
             await fetchUser()
-            return 'Followed successfully!'
+            return data?.message || 'Followed successfully!'
           },
-          error: (err) => err.response?.data?.message || 'Failed to follow'
-        }
+          error: (err) =>{
+            return err.response?.data?.message || 'Failed to follow'
+            }
+          }
       )
     } catch (err) {
       console.error('Follow error:', err)
@@ -146,20 +151,26 @@ export default function ProfilePage({ params }) {
   const handleUnfollow = async () => {
     try {
       await toast.promise(
-        api.put('/unfollow-user', {
-          followId: profile._id,
-          role: userData.role
-        }, {
-          headers: { Authorization: `Bearer ${jwtToken}` }
-        }),
+        (async=()=> {
+          const response = api.put('/unfollow-user', {
+            followId: profile._id,
+            role: userData.role
+          }, {
+            headers: { Authorization: `Bearer ${jwtToken}` }
+          });
+          return response.data;
+        })(),
         {
           loading: 'Unfollowing...',
-          success: async () => {
+          success: async (data) => {
+            console.log(data);
             await fetchUser()
-            return 'Unfollowed successfully!'
+            return data?.message || 'Unfollowed successfully!'
           },
-          error: (err) => err.response?.data?.message || 'Failed to unfollow'
-        }
+          error: (err) =>{
+            return err.response?.data?.message || 'Failed to unfollow'
+            }
+          }
       )
     } catch (err) {
       console.error('Unfollow error:', err)
@@ -170,16 +181,23 @@ export default function ProfilePage({ params }) {
   const handleDeleteSnippet = async (snippetId) => {
     try {
       await toast.promise(
-        api.delete(`/delete-snippet/${snippetId}`, {
-          headers: { Authorization: `Bearer ${jwtToken}` }
-        }),
+        (async() => {  
+          const response = api.delete(`/delete-snippet/${snippetId}`, {
+            headers: { Authorization: `Bearer ${jwtToken}` }
+          });
+          return response.data;
+        })(),
         {
           loading: 'Deleting snippet...',
-          success: () => {
+          success: (data) => {
+            console.log("pppppppp: ", data);
             fetchSnippets()
-            return 'Snippet deleted successfully!'
+            return data?.message || 'Snippet deleted successfully!'
           },
-          error: (err) => err.response?.data?.message || 'Failed to delete snippet'
+          error: (err) => {
+            console.log(err);
+            return err.response?.data?.message || 'Failed to delete snippet'
+          }
         }
       )
     } catch (err) {
@@ -334,7 +352,7 @@ export default function ProfilePage({ params }) {
                 ) : (
                   <div className="text-center py-4">
                     <p className="text-muted-foreground mb-2">No bookmarks yet</p>
-                    <Link href="/explore" className="text-sm text-primary hover:underline">
+                    <Link href="/feed/snippets" className="text-sm text-primary hover:underline">
                       Explore snippets
                     </Link>
                   </div>
@@ -447,7 +465,7 @@ export default function ProfilePage({ params }) {
                   <CardContent className="p-6 text-center text-muted-foreground">
                     No snippets yet
                     {isOwner && (
-                      <Link href="/create-snippet" className="block mt-2 text-primary hover:underline">
+                      <Link href="/snippet-editor" className="block mt-2 text-primary hover:underline">
                         Create your first snippet
                       </Link>
                     )}

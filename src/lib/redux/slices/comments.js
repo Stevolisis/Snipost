@@ -91,7 +91,22 @@ const commentsSlice = createSlice({
           state.comments[commentIndex].replies[replyIndex].downvotes = downvotes;
         }
       }
-    }
+    },
+
+    deleteComment: (state, action) => {
+      const commentId = action.payload;
+      state.comments = state.comments.filter(comment => comment._id !== commentId);
+    },
+
+    deleteReply: (state, action) => {
+      const { commentId, replyId } = action.payload;
+      const commentIndex = state.comments.findIndex(c => c._id === commentId);
+      if (commentIndex !== -1) {
+        state.comments[commentIndex].replies = state.comments[commentIndex].replies.filter(
+          reply => reply._id !== replyId
+        );
+      }
+    },
   },
 });
 
@@ -103,7 +118,9 @@ export const {
   upvoteCommentOptimistic,
   downvoteCommentOptimistic,
   updateCommentAfterVote,
-  updateReplyVotes
+  updateReplyVotes,
+  deleteComment,
+  deleteReply
 } = commentsSlice.actions;
 
 export default commentsSlice.reducer;

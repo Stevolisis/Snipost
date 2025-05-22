@@ -1,20 +1,35 @@
 "use client"
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowBigDown, ArrowBigUp } from 'lucide-react';
+import { ArrowBigDown, ArrowBigUp, MoreVertical, Trash2 } from 'lucide-react';
 import { renderText } from '@/utils/renderText';
 import { Tip } from './Tip';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import api from '@/utils/axiosConfig';
 import { toast } from 'sonner';
-import { updateReplyVotes } from '@/lib/redux/slices/comments'; // Make sure this action exists
+import { deleteReply, updateReplyVotes } from '@/lib/redux/slices/comments'; // Make sure this action exists
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 const Reply = ({ reply, commentId }) => {
   const dispatch = useAppDispatch();
   const { jwtToken, userData } = useAppSelector((state) => state.auth);
+  const [isMobile, setIsMobile] = useState(false);
+  const isReplyOwner = userData?._id === reply.author?.entity?._id;
   const upvotes = Array.isArray(reply.upvotes) ? 
     reply.upvotes.filter(v => v && (typeof v === 'object')) : 
     [];
@@ -114,24 +129,116 @@ const Reply = ({ reply, commentId }) => {
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    handleResize(); // Set initial value
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  const handleDelete = async () => {
+    if (!isReplyOwner) return;
+    
+    try {
+      await toast.promise(
+          (async () => {
+              const response = await api.delete(`/delete-reply/${commentId}/${reply._id}`,{
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`
+                }
+              });
+              return response.data;
+          })(),
+          {
+              loading: 'deleting your comment...',
+              success: (data) => {
+                dispatch(deleteReply({ commentId,replyId: reply._id}));
+                return data.message;
+              },
+              error: (err) => {
+                return err.response?.data?.message || 'Failed to delete comment';
+              }
+          }
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to delete comment');
+    }
+  };
+console.log("isReplyOwner: ", isReplyOwner);
   return (
     <Card className="hover:bg-background hover:border-gray-600 my-4">
+
+
       <CardHeader>
-        <Link href={`/profile/${reply.author?.entity?._id}`} className='flex items-start gap-x-2 my-2 mb-5'>
-          <div>
-            <Image
-              src={reply.author?.entity?.avatar?.url || "/logo2.svg"}
-              alt="Avatar"
-              width={20}
-              height={20}
-              className='w-8 h-8 rounded-full object-cover aspect-square'
-            />
+        <div className='flex items-start justify-between gap-x-2'>
+          <Link href={`/profile/${reply.author?.entity?._id}`} className='flex items-start justify-between gap-x-2 my-2 mb-5'>
+            <div>
+              <Image
+                src={reply.author?.entity?.avatar?.url || "/logo2.svg"}
+                alt="Avatar"
+                width={20}
+                height={20}
+                className='w-8 h-8 rounded-full object-cover aspect-square'
+              />
+            </div>
+            <div className="grid -mt-0.5 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">{reply?.author?.entity?.name}</span>
+              <span className="truncate text-xs text-muted-foreground">@{reply?.author?.entity?.userName}</span>
+            </div>
+          </Link>
+
+          <div className="">
+            {isMobile ? (
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>Comment Actions</DrawerTitle>
+                  </DrawerHeader>
+                  {isReplyOwner && <div className="p-4">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-red-500 hover:text-red-600"
+                      onClick={handleDelete}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete Comment
+                    </Button>
+                  </div>}
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {isReplyOwner && <DropdownMenuItem 
+                    className="text-red-500 focus:text-red-600 focus:bg-red-50"
+                    onClick={handleDelete}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
-          <div className="grid -mt-0.5 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{reply?.author?.entity?.name}</span>
-            <span className="truncate text-xs text-muted-foreground">@{reply?.author?.entity?.userName}</span>
-          </div>
-        </Link>
+        </div>
+
+
+
+
         <CardTitle>{renderText(reply.text, reply.mentions)}</CardTitle>
         <div className='flex gap-x-2 items-center justify-between pt-3'>
           <div className='flex gap-x-2 items-center'>

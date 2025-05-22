@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Tip } from './Tip'
-import { downvoteCommentOptimistic, updateCommentAfterVote, upvoteCommentOptimistic } from '@/lib/redux/slices/comments'
+import { deleteComment, downvoteCommentOptimistic, updateCommentAfterVote, upvoteCommentOptimistic } from '@/lib/redux/slices/comments'
 import api from '@/utils/axiosConfig'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { toast } from 'sonner'
@@ -38,8 +38,6 @@ const Comment = ({comment}) => {
 
   const isCommentOwner = userData?._id === comment.author?.entity?._id;
 
-    const deleteComment = ()=>{}
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -54,13 +52,26 @@ const Comment = ({comment}) => {
     if (!isCommentOwner) return;
     
     try {
-      await api.delete(`/comments/${comment._id}`, {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`
-        }
-      });
-      dispatch(deleteComment(comment._id));
-      toast.success('Comment deleted successfully');
+      await toast.promise(
+          (async () => {
+              const response = await api.delete(`/delete-comment/${comment._id}`,{
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`
+                }
+              });
+              return response.data;
+          })(),
+          {
+              loading: 'deleting your comment...',
+              success: (data) => {
+                dispatch(deleteComment(comment._id));
+                return data.message;
+              },
+              error: (err) => {
+                return err.response?.data?.message || 'Failed to delete comment';
+              }
+          }
+      );
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || 'Failed to delete comment');
@@ -122,54 +133,11 @@ const Comment = ({comment}) => {
   return (
     <div>
       <Card className="bg-transparent hover:border-gray-600 hover:bg-card my-6 gap-0 relative">
-        {!isCommentOwner && (
-          <div className="absolute top-4 right-4">
-            {isMobile ? (
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                  <DrawerHeader>
-                    <DrawerTitle>Comment Actions</DrawerTitle>
-                  </DrawerHeader>
-                  <div className="p-4">
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-start text-red-500 hover:text-red-600"
-                      onClick={handleDelete}
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete Comment
-                    </Button>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem 
-                    className="text-red-500 focus:text-red-600 focus:bg-red-50"
-                    onClick={handleDelete}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
-        )}
+        
 
         <CardHeader>
-            <Link href={`/profile/${comment.author?.entity?._id}`} className='flex items-start gap-x-2 my-2 mb-5'>
+            <div className='flex items-start justify-between gap-x-2'>
+              <Link href={`/profile/${comment.author?.entity?._id}`} className='flex items-start gap-x-2 my-2 mb-5'>
                 <div>
                   <Image
                     src={comment.author?.entity?.avatar?.url || "/logo2.svg"}
@@ -179,11 +147,56 @@ const Comment = ({comment}) => {
                     className='w-8 h-8 rounded-full object-cover aspect-square'
                   />
                 </div>
-              <div className="grid -mt-0.5 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{comment?.author?.entity?.name}</span>
-                <span className="truncate text-xs text-muted-foreground">@{comment?.author?.entity?.userName}</span>
+                <div className="grid -mt-0.5 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">{comment?.author?.entity?.name}</span>
+                  <span className="truncate text-xs text-muted-foreground">@{comment?.author?.entity?.userName}</span>
+                </div>
+              </Link>
+
+              <div className="">
+                {isMobile ? (
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Comment Actions</DrawerTitle>
+                      </DrawerHeader>
+                      {isCommentOwner && <div className="p-4">
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start text-red-500 hover:text-red-600"
+                          onClick={handleDelete}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete Comment
+                        </Button>
+                      </div>}
+                    </DrawerContent>
+                  </Drawer>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {isCommentOwner && <DropdownMenuItem 
+                        className="text-red-500 focus:text-red-600 focus:bg-red-50"
+                        onClick={handleDelete}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
-            </Link>
+            </div>
 
           <CardTitle className=' break-all'>{renderText(comment.text, comment.mentions)}</CardTitle>
             <div className='flex gap-x-2 items-center justify-between pt-3'>
