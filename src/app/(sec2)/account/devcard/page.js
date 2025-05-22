@@ -43,12 +43,13 @@ const ProfileCard = () => {
       
       // Create download link
       const link = document.createElement('a');
-      link.download = `${profile.userName}-card.png`;
+      link.download = `${profile?.userName}-card.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
+      toast.success("DevCard downloaded successfully!!")
     } catch (error) {
       console.error('Error downloading card:', error);
-      alert('Error downloading card. Please try again.');
+      toast.error('Error downloading card. Please try again.');
     }
   };
 
@@ -114,7 +115,7 @@ const ProfileCard = () => {
     }
   }, []);
 console.log(profile)
-  return !loading ? (
+  return profile ? (
     <div className="flex items-center justify-center flex-col min-h-screen p-4">
       <div className="relative w-80 bg-transparent" ref={cardRef} >
         {/* Animated holographic border */}
