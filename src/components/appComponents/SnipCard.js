@@ -207,7 +207,7 @@ const SnipCard = ({snippet}) => {
 
             <div className='flex gap-x-2 items-center justify-between pt-3'>
                 <div className='flex gap-x-2 items-center'>
-                <div className='flex items-center gap-x-2 mr-3'>
+                <div className='flex items-center gap-x-2'>
                 <Button
                     variant="outline"
                     onClick={() => handleVote('upvote', snippet._id)}
