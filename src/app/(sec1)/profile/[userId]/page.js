@@ -262,7 +262,7 @@ export default function ProfilePage({ params }) {
                   <div className='flex gap-x-2 items-center justify-center'>
                     <h2 className="text-xl font-bold">{profile.name}</h2>
                     {isOwner && (
-                      <Link href={`/account/profile`} className='text-muted-foreground hover:text-primary'>
+                      <Link href={`/account/settings`} className='text-muted-foreground hover:text-primary'>
                         <SquarePen className="h-4 w-4" />
                       </Link>
                     )}
@@ -342,7 +342,7 @@ export default function ProfilePage({ params }) {
                         </p>
                       </Link>
                     ))}
-                    {userData.bookmarks.length > 3 && (
+                    {userData?.bookmarks?.length > 3 && (
                       <Link 
                         href="/account/bookmarks" 
                         className="text-sm text-primary hover:underline mt-2 inline-block"
