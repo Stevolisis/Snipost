@@ -48,10 +48,10 @@ const Page = ({params}) => {
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
   const targetUser = snippet?.user;
-  const hasUpvoted = snippet?.upvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
-  const hasDownvoted = snippet?.downvotes?.some(v => (v.entity._id || v.entity ) === userData?._id);
-  const hasBookmark = snippet?.bookmarkedBy?.some(v => (v.entity._id || v.entity ) === userData?._id);
-  const hasForked = snippet?.forks?.some(v => (v.forkedBy.entity || v.forkedBy.entity._id) === userData?._id);
+  const hasUpvoted = snippet?.upvotes?.some(v => (v.entity?._id || v.entity ) === userData?._id);
+  const hasDownvoted = snippet?.downvotes?.some(v => (v.entity?._id || v.entity ) === userData?._id);
+  const hasBookmark = snippet?.bookmarkedBy?.some(v => (v.entity?._id || v.entity ) === userData?._id);
+  const hasForked = snippet?.forks?.some(v => (v.forkedBy.entity || v.forkedBy.entity?._id) === userData?._id);
 
   // Check if current user is already following the target user
   const isFollowing = userData?.following?.some(
