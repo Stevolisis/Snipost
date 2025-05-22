@@ -154,7 +154,25 @@ const page = () => {
     
     // Append tags as JSON array
     if (tags.length > 0) {
-      formData.append('followedTags', JSON.stringify(tags))
+      // Handle tags - SIMPLE AND CLEAN
+      let tagsToSend = [];
+      
+      // Case 1: Already correct format (array of strings)
+      if (Array.isArray(tags) && tags.every(tag => typeof tag === 'string')) {
+        tagsToSend = tags;
+      } 
+      // Case 2: Needs conversion (array of objects)
+      else if (Array.isArray(tags) && tags.every(tag => tag?.value)) {
+        tagsToSend = tags.map(tag => tag.value);
+      }
+      // Case 3: Invalid format - send empty array
+      else {
+        tagsToSend = [];
+      }
+
+      // Always append as JSON string
+      formData.append('followedTags', JSON.stringify(tagsToSend));
+
     }else{
       formData.append('followedTags', JSON.stringify([]))
     }

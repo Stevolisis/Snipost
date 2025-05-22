@@ -31,7 +31,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function ProfilePage({ params }) {
-  const { userId } = use(params)
+  const { userId } = use(params);
+  const [bookmarks, setBookmarks] = useState([]);
   const { userData, jwtToken } = useAppSelector((state) => state.auth)
   const { snippets } = useAppSelector((state) => state.snippets)
   const { profile, loading, error, transactions, earned } = useAppSelector((state) => state.profile)
@@ -108,16 +109,17 @@ export default function ProfilePage({ params }) {
   const fetchBookmarks = async () => {
     if (!isOwner) return
     try {
-      const response = await api.get('/get-bookmarks', {
+      const response = await api.get('/get-bookmark', {
         headers: {
           Authorization: `Bearer ${jwtToken}`
         }
       })
-      dispatch(updateUserData({ ...userData, bookmarks: response.data.bookmarks }))
+      setBookmarks(response.data.bookmarks);
     } catch (err) {
       console.error('Failed to fetch bookmarks:', err)
     }
   }
+  console.log("usedata: ", userData);
 
   const handleFollow = async () => {
     try {
@@ -322,21 +324,21 @@ export default function ProfilePage({ params }) {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Your Bookmarks</span>
-                  <Bookmark className="h-5 w-5 text-yellow-500" />
+                  <Link href={`/profile/${profile._id}/bookmark`} className='underline text-sm text-muted-foreground hover:text-primary transition-colors duration-150'>View all</Link>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {userData?.bookmarks?.length > 0 ? (
+                {bookmarks?.length > 0 ? (
                   <div className="space-y-2">
-                    {userData.bookmarks.slice(0, 3).map(bookmark => (
+                    {bookmarks.slice(0, 3).map((bookmark, i) => (
                       <Link 
-                        key={bookmark._id} 
-                        href={`/snippet/${bookmark.snippetId}`}
+                        key={i} 
+                        href={`/snippet/${bookmark?.entity?._id}`}
                         className="block p-2 hover:bg-muted rounded transition-colors"
                       >
-                        <p className="font-medium line-clamp-1">{bookmark.snippetTitle}</p>
+                        <p className="font-medium line-clamp-1">{bookmark?.entity?.title}</p>
                         <p className="text-sm text-muted-foreground line-clamp-1">
-                          {bookmark.snippetDescription}
+                          {bookmark?.entity?.description}
                         </p>
                       </Link>
                     ))}

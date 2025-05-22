@@ -179,7 +179,7 @@ export function AppSidebar({ ...props }) {
           <SidebarMenu>
             {userData && <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
-                <Link href="#">
+                <Link href={`/profile/${userData._id}`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {
                       userData?.avatar.url ? 
