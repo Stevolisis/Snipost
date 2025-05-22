@@ -122,7 +122,7 @@ const Comment = ({comment}) => {
   return (
     <div>
       <Card className="bg-transparent hover:border-gray-600 hover:bg-card my-6 gap-0 relative">
-        {isCommentOwner && (
+        {!isCommentOwner && (
           <div className="absolute top-4 right-4">
             {isMobile ? (
               <Drawer>
@@ -185,7 +185,7 @@ const Comment = ({comment}) => {
               </div>
             </Link>
 
-          <CardTitle>{renderText(comment.text, comment.mentions)}</CardTitle>
+          <CardTitle className=' break-all'>{renderText(comment.text, comment.mentions)}</CardTitle>
             <div className='flex gap-x-2 items-center justify-between pt-3'>
               <div className='flex gap-x-2 items-center'>
                 <div className='flex items-center gap-x-2'>
