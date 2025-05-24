@@ -351,7 +351,7 @@ const Page = ({params}) => {
                   </div>
                 }
 
-                <p className="text-sm text-muted-foreground">{snippet.description}</p>
+                <p className="text-base text-muted-foreground">{snippet.description}</p>
 
                 <div className="mt-2 flex flex-wrap gap-2">
                   {snippet.tags.map((tag, i) => (
