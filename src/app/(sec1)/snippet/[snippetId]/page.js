@@ -561,7 +561,7 @@ const Page = ({params}) => {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Image
-                    src={snippet.user?.avatar?.url || '/default-avatar.png'}
+                    src={snippet.user?.avatar?.url || '/logo.svg'}
                     alt={snippet.user?.name || 'User'}
                     width={32}
                     height={32}

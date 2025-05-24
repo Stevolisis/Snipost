@@ -1,4 +1,3 @@
-// src/components/layout/Header.jsx
 "use client"
 import React, { useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
@@ -20,8 +19,27 @@ const Header = () => {
   const dispatch = useDispatch()
   const { isConnected, walletAddress, jwtToken, userData, isLoading } = useAppSelector((state) => state.auth)
 
+  const detectMobileWallet = () => {
+    const userAgent = navigator.userAgent;
+    const isMobile = /Android|iPhone|iPad/i.test(userAgent);
+    
+    if (isMobile) {
+      // Try Phantom first
+      window.location.href = 'https://phantom.app/ul/browse/' + window.location.href;
+      setTimeout(() => {
+        // Fallback to Solflare if Phantom fails
+        window.location.href = 'solflare://browse/' + window.location.href;
+      }, 250);
+      return true;
+    }
+    return false;
+  }
+
   const handleWalletClick = useCallback(async () => {
     try {
+      // Check if on mobile first
+      if (detectMobileWallet()) return;
+
       dispatch(connectWalletStart())
       const installedWallets = wallets.filter(w => w.readyState === 'Installed')
       const solflare = installedWallets.find(w => w.adapter.name === SolflareWalletName)
@@ -31,7 +49,7 @@ const Header = () => {
 
       if (!walletToConnect) {
         const choice = window.confirm(
-          'No wallet detected. Would you like to install Phantom Wallet?'
+          'No wallet extension detected. Would you like to install Phantom Wallet?'
         )
         if (choice) {
           window.open('https://phantom.app/', '_blank')
@@ -74,6 +92,7 @@ const Header = () => {
       signInWithBackend()
     }
   }, [publicKey, wallet])
+
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">

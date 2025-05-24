@@ -80,7 +80,7 @@ export function ProfileDropDown({ children }) {
                 userData?.avatar.url ? 
                 <Image
                   src={userData.avatar.url}
-                  alt={userData.avatar.id}
+                  alt={userData.avatar.public_id || "Profile Avatar"}
                   width={50}
                   height={50}
                   className='object-cover'

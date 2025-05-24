@@ -118,7 +118,7 @@ const page = () => {
         {snippets.map((snippet, i) => {
             const hasBookmark = snippet.entity?.bookmarkedBy?.some(v => v.entity === userData?._id);
 
-            return snippets.entity && <Card key={i} className="w-full hover:shadow-md hover:border-gray-600 transition-colors duration-200">
+            return snippet.entity && <Card key={i} className="w-full hover:shadow-md hover:border-gray-600 transition-colors duration-200">
                 <CardHeader>
                 
                 <div className='flex justify-between items-center'>

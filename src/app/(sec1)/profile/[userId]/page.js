@@ -253,7 +253,7 @@ export default function ProfilePage({ params }) {
             <CardContent className="p-6">
               <div className="flex flex-col items-center space-y-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={profile.avatar?.url} className="object-cover" />
+                  <AvatarImage src={profile.avatar?.url || "/logo.svg"} className="object-cover" />
                   <AvatarFallback>
                     {profile.name?.charAt(0) || 'U'}
                   </AvatarFallback>
