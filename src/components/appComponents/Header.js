@@ -13,11 +13,12 @@ import bs58 from "bs58"
 import { useAppSelector } from '@/lib/redux/hooks'
 import Link from 'next/link'
 import SearchComponent from './Search'
+import { toast } from 'sonner'
 
 const Header = () => {
   const { connect, connected, connecting, select, wallets, wallet, publicKey } = useWallet()
   const dispatch = useDispatch()
-  const { isConnected, walletAddress, jwtToken, userData, isLoading } = useAppSelector((state) => state.auth)
+  const { isConnected, walletAddress } = useAppSelector((state) => state.auth)
 
   const detectMobileWallet = () => {
     const userAgent = navigator.userAgent;
@@ -57,12 +58,13 @@ const Header = () => {
         return
       }
 
-      await select(walletToConnect.adapter.name)
-      await connect()
+      await select(walletToConnect.adapter.name);
+      await connect();
+
     } catch (err) {
-      alert(`Connection failed: ${err.message}`)
+      toast.error(`Connection failed: ${err.message}`)
     }
-  }, [wallets, select, connect])
+  }, [wallets, select, connect]);
 
   useEffect(() => {
     if (publicKey) {
@@ -92,7 +94,9 @@ const Header = () => {
       signInWithBackend()
     }
   }, [publicKey, wallet])
-
+// console.log(publicKey, walletAddress);
+// console.log(connected);
+// console.log(isConnected);
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">
@@ -110,11 +114,11 @@ const Header = () => {
 
       <SearchComponent />
 
-      {publicKey ? 
+      {connected ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
-            {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
+            {publicKey?.toString().slice(0, 4)}...{publicKey?.toString().slice(-4)}
           </Button>
         </ProfileDropDown>
         :

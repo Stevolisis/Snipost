@@ -124,7 +124,7 @@ const page = () => {
                 <div className='flex justify-between items-center'>
                     <div className="flex items-center gap-2">
                         <Image
-                            src={(snippet?.entity?.user?.entity?.avatar?.url) || '/default-avatar.png'}
+                            src={(snippet?.entity?.user?.entity?.avatar?.url) || '/logo.svg'}
                             alt={(snippet?.entity?.user?.entity?.name) || 'User'}
                             width={32}
                             height={32}
