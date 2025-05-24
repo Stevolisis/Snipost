@@ -164,7 +164,6 @@ const Reply = ({ reply, commentId }) => {
           }
       );
     } catch (error) {
-      console.error(error);
       toast.error(error.response?.data?.message || 'Failed to delete comment');
     }
   };
