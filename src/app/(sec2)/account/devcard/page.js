@@ -117,7 +117,7 @@ const ProfileCard = () => {
       fetchTransactions();
     }
   }, []);
-console.log(profile)
+
   return profile ? (
     <div className="flex items-center justify-center flex-col min-h-screen p-4">
       

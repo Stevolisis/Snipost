@@ -167,7 +167,7 @@ const Reply = ({ reply, commentId }) => {
       toast.error(error.response?.data?.message || 'Failed to delete comment');
     }
   };
-console.log("isReplyOwner: ", isReplyOwner);
+
   return (
     <Card className="hover:bg-background hover:border-gray-600 my-4">
 
