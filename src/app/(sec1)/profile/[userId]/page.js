@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink, Trash2, Copy } from 'lucide-react'
+import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink, Trash2, Copy, Twitter, Github } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 import { 
@@ -288,6 +288,22 @@ export default function ProfilePage({ params }) {
                       </p>
                     </div>
                   )}
+                  <div className='flex items-center justify-center gap-x-2 my-5'>
+                    {
+                      profile.socialLinks.map((social,i)=> {
+                        if (social.platform === 'Twitter') {
+                          return <Link href={social.link} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
+                              <Twitter size={20}/>
+                            </Link>
+                        }
+                        if (social.platform === 'Github') {
+                          return <Link href={social.link} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
+                              <Github size={20}/>
+                            </Link>
+                        }
+                      })
+                    }
+                  </div>
                 </div>
 
                 {!isOwner && (
@@ -383,7 +399,7 @@ export default function ProfilePage({ params }) {
               <CardTitle>About</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{profile.about || 'No description available'}</p>
+              <p className="text-sm" style={{ whiteSpace: 'pre-line' }}>{profile.about || 'No description available'}</p>
             </CardContent>
           </Card>
 

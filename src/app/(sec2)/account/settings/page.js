@@ -83,7 +83,8 @@ const page = () => {
     email: '',
     position: '',
     about: '',
-    twitterLink: ''
+    twitterLink: '',
+    githubLink: ''
   })
   const [avatarFile, setAvatarFile] = useState(null)
   const [tags, setTags] = useState([])
@@ -98,7 +99,8 @@ const page = () => {
         email: userData.email || '',
         position: userData.position || '',
         about: userData.about || '',
-        twitterLink:  userData.socialLinks && userData?.socialLinks[0]?.link
+        twitterLink:  userData.socialLinks && userData?.socialLinks[0]?.link,
+        githubLink:  userData.socialLinks && userData?.socialLinks[1]?.link,
       });
 
     }
@@ -150,7 +152,10 @@ const page = () => {
     formData.append('email', formValues.email)
     formData.append('position', formValues.position)
     formData.append('about', formValues.about)
-    formData.append('socialLinks', JSON.stringify([{platform:"Twitter",link:formValues.twitterLink}]))
+    formData.append('socialLinks', JSON.stringify([
+      {platform:"Twitter", link:formValues.twitterLink},
+      {platform:"Github",  link:formValues.githubLink},
+    ]))
     
     // Append tags as JSON array
     if (tags.length > 0) {
@@ -271,6 +276,17 @@ const page = () => {
             type="text" 
             name="position"
             value={formValues.position}
+            onChange={handleChange}
+            placeholder="Software Engineer" 
+          />
+        </div>
+
+        <div className='flex flex-col gap-y-3'>
+          <Label className="text-sm md:text-base">Github Link</Label>
+          <Input 
+            type="text" 
+            name="githubLink"
+            value={formValues.githubLink}
             onChange={handleChange}
             placeholder="Software Engineer" 
           />
