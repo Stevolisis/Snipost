@@ -79,7 +79,7 @@ export function ProfileDropDown({ children }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>
-          <Link href="#" className="flex items-center gap-x-2">
+          <div href="#" className="flex items-center gap-x-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
               {
                 userData?.avatar.url ? 
@@ -102,7 +102,7 @@ export function ProfileDropDown({ children }) {
               <span className="truncate font-semibold">{userData?.name}</span>
               <span className="truncate text-xs text-muted-foreground">@{userData?.userName}</span>
             </div>
-          </Link>
+          </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
@@ -111,7 +111,7 @@ export function ProfileDropDown({ children }) {
             <DropdownMenuGroup>
               {section.group.map((item) => (
                 <Link href={item.href} key={item.label}>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className='cursor-pointer'>
                     <div className="flex items-center gap-x-2">
                       <item.icon />
                       {item.label}

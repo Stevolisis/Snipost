@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink, Trash2 } from 'lucide-react'
+import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink, Trash2, Copy } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 import { 
@@ -119,8 +119,6 @@ export default function ProfilePage({ params }) {
       console.error('Failed to fetch bookmarks:', err)
     }
   }
-  console.log("usedata: ", userData);
-
   const handleFollow = async () => {
     try {
       await toast.promise(
@@ -207,6 +205,20 @@ export default function ProfilePage({ params }) {
     }
   }
 
+  async function handleCopy(content) {
+    try {
+      await navigator.clipboard.writeText(content);
+      toast("Copied!!", {
+        description: "Copied to clipboard"
+      });
+    } catch (err) {
+      toast("Error!!", {
+        description: "Failed to copy to clipboard"
+      });
+    }
+  }
+
+
   useEffect(() => {
     fetchProfile()
     fetchSnippets()
@@ -269,9 +281,12 @@ export default function ProfilePage({ params }) {
                   </div>
                   <p className="text-muted-foreground">@{profile.userName}</p>
                   {profile.walletAddress && (
-                    <p className="text-sm font-mono mt-1 bg-muted px-2 py-1 rounded">
-                      {profile.walletAddress.slice(0, 6)}...{profile.walletAddress.slice(-4)}
-                    </p>
+                    <div className=''>
+                      <p className="text-sm font-mono mt-1 bg-muted px-2 py-1 rounded flex items-center justify-center gap-x-2">
+                        {profile.walletAddress.slice(0, 6)}...{profile.walletAddress.slice(-4)}
+                        <span className=' cursor-pointer'><Copy onClick={() => handleCopy(profile.walletAddress)} size={15}/></span>
+                      </p>
+                    </div>
                   )}
                 </div>
 
