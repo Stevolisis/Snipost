@@ -257,7 +257,7 @@ const SnippetEditor = () => {
         <div className="">
           <Textarea 
             placeholder="Description" 
-            className="h-32" 
+            className="h-50" 
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />

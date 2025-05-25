@@ -135,7 +135,7 @@ const ProfileCard = () => {
               {/* Header */}
               <div className="mb-6 flex items-center gap-x-1">
                 <img 
-                    src="/default_avatar.png"
+                    src='/logo.png'
                     alt={profile.userName}
                     className="w-[18px] h-[18px] rounded-full object-cover"
                   />
@@ -146,7 +146,7 @@ const ProfileCard = () => {
                 {/* Profile image with green border */}
                 <div className="w-16 h-16 rounded-full border-2 border-lime-400 p-0.5 flex-shrink-0">
                   <img 
-                    src={profile?.avatar?.url}
+                    src={profile?.avatar?.url || "/default_avatar.png"}
                     alt={profile.userName}
                     className="w-full h-full rounded-full object-cover"
                   />
