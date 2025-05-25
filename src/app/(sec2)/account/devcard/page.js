@@ -135,7 +135,7 @@ console.log(profile)
               {/* Header */}
               <div className="mb-6 flex items-center gap-x-1">
                 <img 
-                    src='/logo.png'
+                    src="/default_avatar.png"
                     alt={profile.userName}
                     className="w-[18px] h-[18px] rounded-full object-cover"
                   />

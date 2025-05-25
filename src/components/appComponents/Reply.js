@@ -177,7 +177,7 @@ console.log("isReplyOwner: ", isReplyOwner);
           <Link href={`/profile/${reply.author?.entity?._id}`} className='flex items-start justify-between gap-x-2 my-2 mb-5'>
             <div>
               <Image
-                src={reply.author?.entity?.avatar?.url || "/logo2.svg"}
+                src={reply.author?.entity?.avatar?.url || "/default_avatar.png"}
                 alt="Avatar"
                 width={20}
                 height={20}
@@ -238,7 +238,7 @@ console.log("isReplyOwner: ", isReplyOwner);
 
 
 
-        <CardTitle>{renderText(reply.text, reply.mentions)}</CardTitle>
+        <CardTitle className='break-all'>{renderText(reply.text, reply.mentions)}</CardTitle>
         <div className='flex gap-x-2 items-center justify-between pt-3'>
           <div className='flex gap-x-2 items-center'>
             <Button 

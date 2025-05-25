@@ -124,8 +124,88 @@ const SnippetEditor = () => {
     newCodeBlocks[index][field] = value;
     setCodeBlocks(newCodeBlocks);
   };
+// const yu=`// Simple Task Manager App (Free Tier Limit Example)
 
+// class Task {
+//   constructor(title, description = "") {
+//     this.id = Date.now();
+//     this.title = title;
+//     this.description = description;
+//     this.completed = false;
+//     this.createdAt = new Date();
+//   }
+// }
 
+// class TaskManager {
+//   constructor() {
+//     this.tasks = [];
+//   }
+
+//   addTask(title, description) {
+//     if (!title) throw new Error("Task must have a title");
+//     const task = new Task(title, description);
+//     this.tasks.push(task);
+//     return task;
+//   }
+
+//   getTasks() {
+//     return this.tasks;
+//   }
+
+//   toggleTaskCompletion(id) {
+//     const task = this.tasks.find((t) => t.id === id);
+//     if (!task) throw new Error("Task not found");
+//     task.completed = !task.completed;
+//     return task;
+//   }
+
+//   deleteTask(id) {
+//     const index = this.tasks.findIndex((t) => t.id === id);
+//     if (index === -1) throw new Error("Task not found");
+//     this.tasks.splice(index, 1);
+//   }
+
+//   searchTasks(query) {
+//     return this.tasks.filter(
+//       (task) =>
+//         task.title.toLowerCase().includes(query.toLowerCase()) ||
+//         task.description.toLowerCase().includes(query.toLowerCase())
+//     );
+//   }
+
+//   getCompletedTasks() {
+//     return this.tasks.filter((task) => task.completed);
+//   }
+
+//   getPendingTasks() {
+//     return this.tasks.filter((task) => !task.completed);
+//   }
+
+//   editTask(id, newTitle, newDescription) {
+//     const task = this.tasks.find((t) => t.id === id);
+//     if (!task) throw new Error("Task not found");
+//     if (newTitle) task.title = newTitle;
+//     if (newDescription) task.description = newDescription;
+//     return task;
+//   }
+
+//   printTasks() {
+//     this.tasks.forEach((t) =>
+//       console.log(
+//         '''t.completed ' "[x]" : "[ ]"} ''t.title' - ''t.description' (''t.id')'
+//       )
+//     );
+//   }
+// }
+
+// // Sample usage
+// const manager = new TaskManager();
+// manager.addTask("Buy groceries", "Milk, eggs, and bread");
+// manager.addTask("Read a book", "Finish the last chapter");
+// manager.toggleTaskCompletion(manager.getTasks()[0].id);
+// manager.printTasks();
+// `;
+// console.log("yu: ", yu.length)
   const handlePublish = async() => {
     setIsLoading(true);
     const snippetData = {
@@ -158,7 +238,7 @@ const SnippetEditor = () => {
         return
       }
       toast("Uh oh! Something went wrong.", {
-        description: err.message,
+        description: err.response?.data?.message || 'Failed to publish snippet',
       })
     }
   };

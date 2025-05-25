@@ -306,7 +306,7 @@ const CommentBox = () => {
                 <TabsContent value="preview">
                     <div className="min-h-32">
                         {comment ? (
-                            <div>{renderText(comment,mentions)}</div>
+                            <div className='break-all'>{renderText(comment,mentions)}</div>
                         ) : (
                             <p className="text-muted-foreground">Nothing to preview</p>
                         )}

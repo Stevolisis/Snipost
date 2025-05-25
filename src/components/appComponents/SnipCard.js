@@ -120,7 +120,7 @@ const SnipCard = ({snippet}) => {
             <div className='flex justify-between items-center'>
                 <div className="flex items-center gap-2">
                     <Image
-                        src={snippet.user?.avatar?.url || '/logo.svg'}
+                        src={snippet.user?.avatar?.url || "/default_avatar.png"}
                         alt={snippet.user?.name || 'User'}
                         width={32}
                         height={32}
@@ -256,7 +256,7 @@ const SnipCard = ({snippet}) => {
 
                 <div>
                 {/* <Button variant={"link"}> <CircleDollarSign/> </Button> */}
-                <Tip walletAddress={snippet.user.walletAddress} />
+                <Tip walletAddress={snippet?.user?.walletAddress} />
                 </div>
             </div>
             </CardContent>

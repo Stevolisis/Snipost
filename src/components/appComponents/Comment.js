@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { renderText } from '@/utils/renderText'
-import { ArrowBigDown, ArrowBigUp, MessageCircle, MoreVertical, Trash2 } from 'lucide-react'
+import { ArrowBigDown, ArrowBigUp, MessageCircle, MoreVertical, Trash2, UserCheck, UserX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -35,8 +35,12 @@ const Comment = ({comment}) => {
   const [isMobile, setIsMobile] = useState(false);
   const hasUpvoted = comment.upvotes?.some(v => (v.entity || v.entity._id ) === userData?._id);
   const hasDownvoted = comment.downvotes?.some(v => (v.entity || v.entity._id ) === userData?._id);
-
-  const isCommentOwner = userData?._id === comment.author?.entity?._id;
+  const targetUser = comment.author?.entity;
+  const isFollowing = userData?.following?.some(
+    follow => follow.entity === targetUser?._id
+  );
+  const isCommentOwner = userData?._id === targetUser?._id;
+  const { snippet, isLoading } = useAppSelector((state) => state.snippets);
 
   useEffect(() => {
     const handleResize = () => {
@@ -130,6 +134,80 @@ const Comment = ({comment}) => {
     }
   };
 
+
+  const handleFollow = async () => {
+    if (!jwtToken) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      await toast.promise(
+        (async()=>{
+
+          const response = api.put('/follow-user', {
+            followId: targetUser._id,
+            role: userData.role
+          }, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
+          });
+          return (await response).data;
+
+        })(),
+        {
+          loading: 'Following user...',
+          success: async(data) => {
+            await fetchUser();
+            return data?.message || 'Followed successfully!';
+          },
+          error: (err) => {
+            return err.response?.data?.message || 'Failed to follow user';
+          }
+        }
+      );
+    } catch (err) {
+      console.error('Follow error:', err);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    if (!jwtToken) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      await toast.promise(
+       (async()=> {   
+          const response = api.put('/unfollow-user', {
+            followId: targetUser._id,
+            role: targetUser.role
+          }, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
+          });
+          return response.data;
+        })(),
+        {
+          loading: 'Unfollowing user...',
+          success: async(data) => {
+            await fetchUser();
+            return data?.message || 'Unfollowed successfully!';
+          },
+          error: (err) => {
+            return err.response?.data?.message || 'Failed to unfollow user';
+          }
+        }
+      );
+    } catch (err) {
+      console.error('Unfollow error:', err);
+    }
+  };
+
+
   return (
     <div>
       <Card className="bg-transparent hover:border-gray-600 hover:bg-card my-6 gap-0 relative">
@@ -140,7 +218,7 @@ const Comment = ({comment}) => {
               <Link href={`/profile/${comment.author?.entity?._id}`} className='flex items-start gap-x-2 my-2 mb-5'>
                 <div>
                   <Image
-                    src={comment.author?.entity?.avatar?.url || "/logo2.svg"}
+                    src={comment.author?.entity?.avatar?.url || "/default_avatar.png"}
                     alt="Avatar"
                     width={20}
                     height={20}
@@ -165,16 +243,32 @@ const Comment = ({comment}) => {
                       <DrawerHeader>
                         <DrawerTitle>Comment Actions</DrawerTitle>
                       </DrawerHeader>
-                      {isCommentOwner && <div className="p-4">
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start text-red-500 hover:text-red-600"
-                          onClick={handleDelete}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Comment
-                        </Button>
-                      </div>}
+                      
+                        <>
+                          {isCommentOwner && 
+                            <div className="px-4 py-2">
+                              <Button 
+                                variant="ghost" 
+                                className="w-full justify-start text-red-500 hover:text-red-600"
+                                onClick={handleDelete}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete Comment
+                              </Button>
+                            </div>
+                          }
+                          {/* <div className="px-4 py-2">
+                            <Button 
+                              variant="ghost" 
+                              className="w-full justify-start text-blue-500 hover:text-blue-600"
+                              onClick={isFollowing ? handleUnfollow : handleFollow}
+                            >
+                              {isFollowing ? <UserX  className="mr-2 h-4 w-4"/> :<UserCheck className="mr-2 h-4 w-4" />}
+                              {isFollowing ? "Unfollow user" : "Follow user"}
+                            </Button>
+                          </div> */}
+                        </>
+                      
                     </DrawerContent>
                   </Drawer>
                 ) : (
@@ -185,13 +279,26 @@ const Comment = ({comment}) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      {isCommentOwner && <DropdownMenuItem 
-                        className="text-red-500 focus:text-red-600 focus:bg-red-50"
-                        onClick={handleDelete}
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>}
+                      
+                        <>
+                          {isCommentOwner && 
+                            <DropdownMenuItem 
+                              className="text-red-500 focus:text-red-600 focus:bg-red-50"
+                              onClick={handleDelete}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          }
+                          {/* <DropdownMenuItem 
+                            className="text-blue-500 focus:text-blue-600 focus:bg-blue-50"
+                            onClick={isFollowing ? handleUnfollow : handleFollow}
+                          >
+                            {isFollowing ? <UserX  className="mr-2 h-4 w-4"/> :<UserCheck className="mr-2 h-4 w-4" />}
+                            {isFollowing ? "Unfollow user" : "Follow user"}
+                          </DropdownMenuItem> */}
+                        </>
+                      
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}

@@ -7,20 +7,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu"
-import { useAppSelector } from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { disconnectWallet } from "@/lib/redux/slices/auth";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
+import { toast } from "sonner";
 
 export function ProfileDropDown({ children }) {
-    const { 
-    isConnected, 
-    walletAddress, 
-    jwtToken, 
-    userData,
-    isLoading 
-  } = useAppSelector((state) => state.auth);
+  const { isConnected, walletAddress, jwtToken, userData, isLoading } = useAppSelector((state) => state.auth);
+  const { disconnect } = useWallet();
+  const dispatch = useAppDispatch();
 
   const menuItems = [
     {
@@ -67,6 +66,12 @@ export function ProfileDropDown({ children }) {
     },
   ];
 
+  const handleLogout = async() => {
+    await disconnect();
+    dispatch(disconnectWallet());
+    toast.success("Logged out succesfully")
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -86,7 +91,7 @@ export function ProfileDropDown({ children }) {
                   className='object-cover'
                 /> :
                 <Image
-                  src="/logo2.svg"
+                  src="/default_avatar.png"
                   alt="Avatar"
                   width={20}
                   height={20}
@@ -123,12 +128,10 @@ export function ProfileDropDown({ children }) {
         ))}
 
         <DropdownMenuSeparator />
-        <Link href="/logout">
-          <DropdownMenuItem>
+          <DropdownMenuItem className=' cursor-pointer hover:bg-red-500! transition-colors duration-150' onClick={()=> handleLogout()}>
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>
-        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   )

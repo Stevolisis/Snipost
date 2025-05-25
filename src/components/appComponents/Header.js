@@ -91,11 +91,11 @@ const Header = () => {
 
       <SearchComponent />
 
-      {(publicKey && isConnected) ? 
+      {(walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
-            {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
+            {walletAddress.toString().slice(0, 4)}...{walletAddress.toString().slice(-4)}
           </Button>
         </ProfileDropDown>
         :
