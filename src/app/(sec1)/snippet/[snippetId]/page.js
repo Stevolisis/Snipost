@@ -331,7 +331,7 @@ const Page = ({params}) => {
             <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
               <CardHeader>
                 <div className='-mb-8 py-3'>
-                  <h1 className="text-2xl text-foreground font-bold">
+                  <h1 className="text-3xl text-foreground font-bold">
                     {snippet.title}
                   </h1>
                 </div>
@@ -351,7 +351,9 @@ const Page = ({params}) => {
                   </div>
                 }
 
-                <p className="text-base text-muted-foreground">{snippet.description}</p>
+                <div style={{ whiteSpace: 'pre-line' }}>
+                  {snippet.description}
+                </div>
 
                 <div className="mt-2 flex flex-wrap gap-2">
                   {snippet.tags.map((tag, i) => (
