@@ -71,7 +71,7 @@ export default function NotificationPage() {
             className=''
           >
             <Check className="w-4 h-4 mr-1" />
-            <span classname="">Mark all as read</span>
+            <span className="">Mark all as read</span>
           </Button>
         </div>
       </div>
