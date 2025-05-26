@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 import { Check, Trash2, Bell, ExternalLink, User } from "lucide-react"
 import api from "@/utils/axiosConfig"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
-import { loadNotificationsFailure, loadNotificationsStart, markAllAsRead } from "@/lib/redux/slices/notifications"
+import { deleteNotificationSuccess, loadNotificationsFailure, loadNotificationsStart, markAllAsRead } from "@/lib/redux/slices/notifications"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -34,17 +34,45 @@ export default function NotificationPage() {
     }
 
     const markAllRead = async () => {
-        try {
-            await api.patch("/read-all",{},{
-                headers: {
-                    Authorization: `Bearer ${jwtToken}`
-                }
-            });
-            dispatch(markAllAsRead());
-        } catch (err) {
-            toast.error(err?.response?.data?.message || "Failed to mark all as read");
-        }
-    }
+        toast.promise(
+            api.patch("/read-all", {}, {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`
+            }
+            }),
+            {
+            loading: "Marking all as read...",
+            success: () => {
+                dispatch(markAllAsRead());
+                return "All notifications marked as read";
+            },
+            error: (err) => {
+                return err?.response?.data?.message || "Failed to mark all as read";
+            }
+            }
+        );
+    };
+
+    const deleteNotification = async (id) => {
+        toast.promise(
+            api.delete(`/delete-notification/${id}`, {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`
+            }
+            }),
+            {
+            loading: "Deleting notification...",
+            success: () => {
+                dispatch(deleteNotificationSuccess(id));
+                return "Notification deleted successfully";
+            },
+            error: (err) => {
+                console.error("Delete failed", err);
+                return err?.response?.data?.message || "Failed to delete notification";
+            }
+            }
+        );
+    };
 
   useEffect(() => {
     fetchNotifications()
@@ -109,7 +137,7 @@ export default function NotificationPage() {
             <Card 
               key={n._id} 
               className={cn(
-                "group transition-colors hover:bg-muted/30",
+                "group transition-colors hover:bg-muted/30 bg-transparent",
                 !n.isRead && "bg-muted/20 border-l-4 border-l-primary"
               )}
             >
@@ -118,33 +146,39 @@ export default function NotificationPage() {
                   <div className="flex items-start space-x-3 flex-1">
                     {/* Notification indicator */}
                     <div className="flex items-center space-x-2">
-                      <Bell className="h-4 w-4 text-primary" />
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={n?.recipient.entity.avatar.url} />
-                        <AvatarFallback>
-                          <User className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
+                        <div className=" rounded-full bg-primary/10 p-2 mr-3">
+                            <Bell className="h-4 w-4 text-primary" />
+                        </div>
+
                     </div>
                     
-                    <div className="flex-1 space-y-2">
-                      {/* Main notification text */}
-                      <div className="space-y-1">
-                        <p className={cn(
-                          "text-sm leading-relaxed",
-                          !n.isRead && "font-medium"
-                        )}>
-                          {n.message}
-                        </p>
-                        
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(n.createdAt).toLocaleString()}
-                        </p>
+                    <div className="flex-1 space-y-2 -ml-3">                
+                      <div className="flex gap-x-4">
+                        <Avatar className="h-8 w-8">
+                            <AvatarImage src={n?.recipient.entity.avatar.url} />
+                            <AvatarFallback>
+                            <User className="h-4 w-4" />
+                            </AvatarFallback>
+                        </Avatar>
+
+                        {/* Main notification text */}
+                        <div className="space-y-1">
+                            <p className={cn(
+                            "text-sm leading-relaxed",
+                            !n.isRead && "font-medium"
+                            )}>
+                            {n.message}
+                            </p>
+                            
+                            <p className="text-xs text-muted-foreground">
+                            {new Date(n.createdAt).toLocaleString()}
+                            </p>
+                        </div>
                       </div>
                       
                       {/* Link preview card */}
                       {n.link && (
-                        <Card className="bg-muted/40 border-muted">
+                        <Card className="bg-muted/40 border-muted mt-6">
                           <CardContent className="p-3">
                             <div className="flex items-center justify-between">
                               <div className="flex-1">
@@ -172,6 +206,15 @@ export default function NotificationPage() {
                       
                     </div>
                   </div>
+                          {/* Delete button */}
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => deleteNotification(n._id)}
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-100 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
