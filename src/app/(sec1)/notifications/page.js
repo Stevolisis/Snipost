@@ -135,10 +135,10 @@ export default function NotificationPage() {
         <div className="space-y-3">
           {notifications.map(n => (
             <Card 
-              key={n._id} 
+              key={n?._id} 
               className={cn(
                 "group transition-colors hover:bg-muted/30 bg-transparent",
-                !n.isRead && "bg-muted/20 border-l-4 border-l-primary"
+                !n?.isRead && "bg-muted/20 border-l-4 border-l-primary"
               )}
             >
               <CardContent className="p-4">
@@ -148,7 +148,7 @@ export default function NotificationPage() {
                     <div className="flex items-center space-x-2">
                         <div className=" rounded-full bg-primary/10 p-2 mr-3">
                             {
-                                n.type === "system_announcement" 
+                                n?.type === "system_announcement" 
                                 ? <Megaphone className="h-4 w-4 text-primary" />
                                 : <Bell className="h-4 w-4 text-primary" />
                             }
@@ -169,15 +169,15 @@ export default function NotificationPage() {
                             <div className="space-y-1">
                                 <p className={cn(
                                     "text-base leading-relaxed",
-                                    !n.isRead && "font-medium"
+                                    !n?.isRead && "font-medium"
                                     )}>
-                                    {n.message.title}
+                                    {n?.message?.title}
                                 </p>
                                 <p className="text-sm text-muted-foreground line-clamp-2">
-                                    {n.message.description}
+                                    {n?.message?.description}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                    {new Date(n.createdAt).toLocaleString()}
+                                    {new Date(n?.createdAt).toLocaleString()}
                                 </p>
                             </div>
                         </div>
@@ -213,7 +213,7 @@ export default function NotificationPage() {
                         </div>
                     </div>
                     {/* Delete button */}
-                    {n.recipient.entity._id === userData._id && <Button
+                    {n?.recipient?.entity._id === userData._id && <Button
                         size="icon"
                         variant="ghost"
                         onClick={() => deleteNotification(n._id)}
