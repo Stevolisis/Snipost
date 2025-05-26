@@ -182,7 +182,7 @@ export function AppSidebar({ ...props }) {
                 <Link href={`/profile/${userData._id}`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {
-                      userData?.avatar.url ? 
+                      userData?.avatar?.url ? 
                       <Image
                         src={userData.avatar.url}
                         alt={userData.avatar.public_id}
@@ -191,7 +191,7 @@ export function AppSidebar({ ...props }) {
                         className='object-cover'
                       /> :
                       <Image
-                        src="/logo2.svg"
+                        src="/default_avatar.png"
                         alt="Avatar"
                         width={40}
                         height={40}

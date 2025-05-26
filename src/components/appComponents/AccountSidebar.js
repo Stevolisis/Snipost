@@ -104,7 +104,7 @@ export function AccountSidebar({ ...props }) {
                   <Link href={`/profile/${userData._id}`}>
                     <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {
-                      userData?.avatar.url ? 
+                      userData?.avatar?.url ? 
                       <Image
                         src={userData.avatar.url}
                         alt={userData.avatar.public_id}

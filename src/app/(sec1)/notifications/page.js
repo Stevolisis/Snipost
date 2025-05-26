@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { Check, Trash2, Bell, ExternalLink, User } from "lucide-react"
+import { Check, Trash2, Bell, ExternalLink, User, Megaphone } from "lucide-react"
 import api from "@/utils/axiosConfig"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { deleteNotificationSuccess, loadNotificationsFailure, loadNotificationsStart, markAllAsRead } from "@/lib/redux/slices/notifications"
@@ -15,8 +15,8 @@ import Link from "next/link"
 import { toast } from "sonner"
 
 export default function NotificationPage() {
-    const { notifications, unreadCount, loading, error } = useAppSelector((state) => state.notifications)
-    const { jwtToken } = useAppSelector((state) => state.auth);
+    const { notifications, unreadCount, loading } = useAppSelector((state) => state.notifications)
+    const { jwtToken, userData } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     
     const fetchNotifications = async () => {
@@ -147,74 +147,80 @@ export default function NotificationPage() {
                     {/* Notification indicator */}
                     <div className="flex items-center space-x-2">
                         <div className=" rounded-full bg-primary/10 p-2 mr-3">
-                            <Bell className="h-4 w-4 text-primary" />
+                            {
+                                n.type === "system_announcement" 
+                                ? <Megaphone className="h-4 w-4 text-primary" />
+                                : <Bell className="h-4 w-4 text-primary" />
+                            }
                         </div>
 
                     </div>
                     
                     <div className="flex-1 space-y-2 -ml-3">                
                       <div className="flex gap-x-4">
-                        <Avatar className="h-8 w-8">
-                            <AvatarImage src={n?.recipient.entity.avatar.url} />
-                            <AvatarFallback>
-                            <User className="h-4 w-4" />
-                            </AvatarFallback>
-                        </Avatar>
+                            <Avatar className="h-8 w-8">
+                                <AvatarImage src={n?.meta?.avatar} />
+                                    <AvatarFallback>
+                                    <User className="h-4 w-4" />
+                                </AvatarFallback>
+                            </Avatar>
 
-                        {/* Main notification text */}
-                        <div className="space-y-1">
-                            <p className={cn(
-                            "text-sm leading-relaxed",
-                            !n.isRead && "font-medium"
-                            )}>
-                            {n.message}
-                            </p>
-                            
-                            <p className="text-xs text-muted-foreground">
-                            {new Date(n.createdAt).toLocaleString()}
-                            </p>
-                        </div>
-                      </div>
-                      
-                      {/* Link preview card */}
-                      {n.link && (
-                        <Card className="bg-muted/40 border-muted mt-6">
-                          <CardContent className="p-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1">
-                                <p className="text-sm font-medium truncate">
-                                  Related Content
+                            {/* Main notification text */}
+                            <div className="space-y-1">
+                                <p className={cn(
+                                    "text-base leading-relaxed",
+                                    !n.isRead && "font-medium"
+                                    )}>
+                                    {n.message.title}
                                 </p>
-                                <p className="text-xs text-muted-foreground truncate">
-                                  Click to view details
+                                <p className="text-sm text-muted-foreground line-clamp-2">
+                                    {n.message.description}
                                 </p>
-                              </div>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="h-8 w-8 p-0"
-                                asChild
-                              >
-                                <Link href={n.link}>
-                                  <ExternalLink className="h-3 w-3" />
-                                </Link>
-                              </Button>
+                                <p className="text-xs text-muted-foreground">
+                                    {new Date(n.createdAt).toLocaleString()}
+                                </p>
                             </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                      
+                        </div>
+                        
+                        {/* Link preview card */}
+                        {n.link && (
+                            <Link href={n.link}>
+                                <Card className="bg-muted/40 border-muted mt-6">
+                                    <CardContent className="p-3">
+                                        <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium truncate">
+                                            Related Content
+                                            </p>
+                                            <p className="text-xs text-muted-foreground truncate">
+                                            Click to view details
+                                            </p>
+                                        </div>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            className="h-8 w-8 p-0"
+                                            asChild
+                                        >
+                                        <ExternalLink className="h-5! w-5!" />
+                                        </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        )}
+                        
+                        </div>
                     </div>
-                  </div>
-                          {/* Delete button */}
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => deleteNotification(n._id)}
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-100 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                    {/* Delete button */}
+                    {n.recipient.entity._id === userData._id && <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => deleteNotification(n._id)}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-100 transition-colors"
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </Button>}
                 </div>
               </CardContent>
             </Card>
