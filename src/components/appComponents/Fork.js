@@ -62,7 +62,7 @@ export const Fork = ({ snippet, contentType, hasForked }) => {
         <DropdownMenuTrigger asChild>
           <Button 
             variant="outline" 
-            className={`hover:bg-[#A246FD]/10 hover:text-[#A246FD] 
+            className={`hover:bg-[#A246FD]/10 border hover:text-[#A246FD] hover:border-[#A246FD]! 
               ${hasForked && "border-[#A246FD]!"}`}
           >
             <GitFork className={`h-4 w-4 ${hasForked ? "text-[#A246FD]" : ""}`} />

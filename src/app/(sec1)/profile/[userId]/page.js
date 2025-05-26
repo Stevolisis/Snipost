@@ -134,7 +134,7 @@ export default function ProfilePage({ params }) {
         {
           loading: 'Following...',
           success: async (data) => {
-            await fetchUser()
+            await fetchUser();
             return data?.message || 'Followed successfully!'
           },
           error: (err) =>{
@@ -151,7 +151,7 @@ export default function ProfilePage({ params }) {
   const handleUnfollow = async () => {
     try {
       await toast.promise(
-        (async=()=> {
+        (async()=> {
           const response = api.put('/unfollow-user', {
             followId: profile._id,
             role: userData.role
@@ -164,7 +164,7 @@ export default function ProfilePage({ params }) {
           loading: 'Unfollowing...',
           success: async (data) => {
             console.log(data);
-            await fetchUser()
+            await fetchUser();
             return data?.message || 'Unfollowed successfully!'
           },
           error: (err) =>{
@@ -292,13 +292,13 @@ export default function ProfilePage({ params }) {
                     {
                       profile.socialLinks.map((social,i)=> {
                         if (social.platform === 'Twitter') {
-                          return <Link href={social.link} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
-                              <Twitter size={20}/>
+                          return <Link href={social.link} key={i} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
+                              <Twitter size={18}/>
                             </Link>
                         }
                         if (social.platform === 'Github') {
-                          return <Link href={social.link} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
-                              <Github size={20}/>
+                          return <Link href={social.link} key={i} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
+                              <Github size={18}/>
                             </Link>
                         }
                       })

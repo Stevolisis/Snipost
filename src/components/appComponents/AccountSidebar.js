@@ -115,8 +115,9 @@ export function AccountSidebar({ ...props }) {
                       <Image
                         src="/default_avatar.png"
                         alt="Avatar"
-                        width={20}
-                        height={20}
+                        width={40}
+                        height={40}
+                        className='object-cover'
                       />
                     }
                     </div>

@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { disconnectWallet } from "@/lib/redux/slices/auth";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react";
+import { Bell, History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
 import { toast } from "sonner";
@@ -29,6 +29,12 @@ export function ProfileDropDown({ children }) {
           icon: User,
           href: `/profile/${userData?._id}`,
           shortcut: "⇧⌘P",
+        },
+        {
+          label: "Notifications",
+          icon: Bell,
+          href: `/notifications`,
+          shortcut: "⇧⌘N",
         },
         {
           label: "DevCard",
@@ -93,8 +99,9 @@ export function ProfileDropDown({ children }) {
                 <Image
                   src="/default_avatar.png"
                   alt="Avatar"
-                  width={20}
-                  height={20}
+                  width={50}
+                  height={50}
+                  className='object-cover'
                 />
               }
             </div>

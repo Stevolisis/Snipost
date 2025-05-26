@@ -193,8 +193,9 @@ export function AppSidebar({ ...props }) {
                       <Image
                         src="/logo2.svg"
                         alt="Avatar"
-                        width={20}
-                        height={20}
+                        width={40}
+                        height={40}
+                        className='object-cover'
                       />
                     }
                   </div>

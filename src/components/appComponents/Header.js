@@ -14,6 +14,7 @@ import bs58 from "bs58"
 import { useAppSelector } from '@/lib/redux/hooks'
 import Link from 'next/link'
 import SearchComponent from './Search'
+import { loadNotificationsFailure, loadNotificationsStart, loadNotificationsSuccess } from '@/lib/redux/slices/notifications'
 
 const Header = () => {
   const { connect, connected, connecting, select, wallets, wallet, publicKey } = useWallet()
@@ -46,34 +47,56 @@ const Header = () => {
     }
   }, [wallets, select, connect])
 
+  const signInWithBackend = async () => {
+    dispatch(authenticateStart())
+    try{
+      const timestamp = Date.now()
+      const message = `signin-user:${timestamp}`
+      const messageBytes = new TextEncoder().encode(message)
+      const signature = await wallet.adapter.signMessage(messageBytes)
+      const signatureBase58 = bs58.encode(signature)
+      
+      const response = await api.post("/user-sign-in",{
+        publicKey: publicKey.toBase58(),
+        signature: signatureBase58,
+        message
+      })
+      dispatch(authenticateSuccess(response.data))
+    } catch(err) {
+      dispatch(authFailure(err.message))
+    }
+  }
+
+  
+  const getNotifications = async () => {
+    try{
+      dispatch(loadNotificationsStart())
+      const response = await api.get("/get-notifications",{
+        headers: {
+          Authorization: `Bearer ${jwtToken}`
+        }
+      })
+      dispatch(loadNotificationsSuccess(response.data));
+    } catch(err) {
+      dispatch(loadNotificationsFailure(err?.response?.data?.message || "Failed to load notifications"))
+      console.error("Error loading notifications:", err);
+    }
+  }
+
   useEffect(() => {
     if (publicKey) {
       dispatch(connectWalletSuccess({
           walletAddress: publicKey.toBase58()
       }))
-
-      const signInWithBackend = async () => {
-        dispatch(authenticateStart())
-        try{
-          const timestamp = Date.now()
-          const message = `signin-user:${timestamp}`
-          const messageBytes = new TextEncoder().encode(message)
-          const signature = await wallet.adapter.signMessage(messageBytes)
-          const signatureBase58 = bs58.encode(signature)
-          
-          const response = await api.post("/user-sign-in",{
-            publicKey: publicKey.toBase58(),
-            signature: signatureBase58,
-            message
-          })
-          dispatch(authenticateSuccess(response.data))
-        } catch(err) {
-          dispatch(authFailure(err.message))
-        }
-      }
-      signInWithBackend()
+      signInWithBackend();
     }
-  }, [publicKey, wallet])
+  }, [publicKey, wallet]);
+
+  useEffect(() => {
+    if (jwtToken) {
+      getNotifications();
+    }
+  }, []);
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">
