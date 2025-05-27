@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 import { Check, Trash2, Bell, ExternalLink, User, Megaphone } from "lucide-react"
 import api from "@/utils/axiosConfig"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
-import { deleteNotificationSuccess, loadNotificationsFailure, loadNotificationsStart, markAllAsRead } from "@/lib/redux/slices/notifications"
+import { deleteNotificationSuccess, loadNotificationsFailure, loadNotificationsStart, loadNotificationsSuccess, markAllAsRead } from "@/lib/redux/slices/notifications"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -22,7 +22,7 @@ export default function NotificationPage() {
     const fetchNotifications = async () => {
         try {
             dispatch(loadNotificationsStart())
-            const res = await api.get("/get-notifications",{
+            const response = await api.get("/get-notifications",{
                 headers:{
                     Authorization: `Bearer ${jwtToken}`
                 }
@@ -121,7 +121,7 @@ export default function NotificationPage() {
             </Card>
           ))}
         </div>
-      ) : notifications.length === 0 ? (
+      ) : notifications?.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -133,7 +133,7 @@ export default function NotificationPage() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {notifications.map(n => (
+          {notifications?.map(n => (
             <Card 
               key={n?._id} 
               className={cn(

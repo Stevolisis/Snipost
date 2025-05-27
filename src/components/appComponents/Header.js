@@ -114,7 +114,7 @@ const Header = () => {
 
       <SearchComponent />
 
-      {(walletAddress && jwtToken && userData && isConnected) ? 
+      {(connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
