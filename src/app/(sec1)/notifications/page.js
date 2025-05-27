@@ -174,7 +174,7 @@ export default function NotificationPage() {
                                     {n?.message?.title}
                                 </p>
                                 <p className="text-sm text-muted-foreground line-clamp-2">
-                                    {n?.message?.description}
+                                    {n?.message?.description?.replace(/[%*`]/g, '') || ''}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                     {new Date(n?.createdAt).toLocaleString()}

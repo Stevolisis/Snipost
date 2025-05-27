@@ -20,9 +20,9 @@ import { useState } from "react"
 import { useAppSelector } from "@/lib/redux/hooks"
 import api from "@/utils/axiosConfig"
 
-export function Tip({ walletAddress }) {
+export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiverType }) {
   const { connection } = useConnection()
-  const { connected ,publicKey, sendTransaction } = useWallet()
+  const { connected ,publicKey, sendTransaction } = useWallet();
   const [amount, setAmount] = useState(0.1) // Default tip amount
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -41,7 +41,11 @@ export function Tip({ walletAddress }) {
         fee: 0.000005,
         sender: publicKey?.toString(),
         receiver: walletAddress,
-        description: "Content creator tip"
+        description: "Content creator tip",
+        snippetId,
+        snippetTitle,
+        receiverId,
+        receiverType
       }, {
         headers: { 
           Authorization: `Bearer ${jwtToken}` 

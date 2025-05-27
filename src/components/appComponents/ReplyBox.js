@@ -164,7 +164,9 @@ const ReplyBox = ({comment, setShowReplyBox}) => {
                 mentions: [{
                     entity: comment.author.entity._id,
                     model: comment.author.entity.role
-                }]
+                },
+                ...mentions
+            ]
             }
 
             await toast.promise(

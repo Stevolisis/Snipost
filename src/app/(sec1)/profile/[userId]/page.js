@@ -119,6 +119,7 @@ export default function ProfilePage({ params }) {
       console.error('Failed to fetch bookmarks:', err)
     }
   }
+  
   const handleFollow = async () => {
     try {
       await toast.promise(
@@ -438,7 +439,7 @@ export default function ProfilePage({ params }) {
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="snippets">Snippets</TabsTrigger>
               <TabsTrigger value="activity" disabled={!isOwner}>
-                {isOwner ? 'Activity' : 'Public Activity'}
+                {isOwner ? 'Transactions' : 'Public Activity'}
               </TabsTrigger>
             </TabsList>
 
@@ -531,7 +532,7 @@ export default function ProfilePage({ params }) {
                           </TableHeader>
                           <TableBody>
                             {transactions.map((tx) => (
-                              <TableRow key={tx._id}>
+                              <TableRow key={tx._id} className={tx.receiver === userData.walletAddress ? 'border-l-2 border-l-primary' : 'border-l-2 border-l-muted-foreground/20'}>
                                 <TableCell>
                                   {format(new Date(tx.createdAt), 'MMM d, yyyy')}
                                 </TableCell>
@@ -540,13 +541,20 @@ export default function ProfilePage({ params }) {
                                   {tx.sender.slice(0, 4)}...{tx.sender.slice(-4)}
                                 </TableCell>
                                 <TableCell>
-                                  <Badge 
+                                  <Badge
                                     variant={
-                                      tx.status === 'confirmed' ? 'success' : 
-                                      tx.status === 'failed' ? 'destructive' : 'warning'
+                                      tx.status === 'failed' 
+                                        ? 'destructive'
+                                        : tx.receiver === userData.walletAddress
+                                          ? 'received'
+                                          : tx.status === 'confirmed'
+                                            ? 'success'
+                                            : 'warning'
                                     }
                                   >
-                                    {tx.status}
+                                    {tx.receiver === userData.walletAddress && tx.status === 'confirmed'
+                                      ? 'received'
+                                      : tx.status}
                                   </Badge>
                                 </TableCell>
                                 <TableCell>

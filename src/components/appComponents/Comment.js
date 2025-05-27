@@ -209,7 +209,7 @@ const Comment = ({comment}) => {
 
 
   return (
-    <div>
+    <div id={comment._id}>
       <Card className="bg-transparent hover:border-gray-600 hover:bg-card my-6 gap-0 relative">
         
 

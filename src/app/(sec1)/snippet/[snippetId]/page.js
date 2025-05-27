@@ -422,7 +422,13 @@ const Page = ({params}) => {
                   </div>
 
                   <div>
-                    <Tip walletAddress={snippet.user?.walletAddress} />
+                    <Tip 
+                      walletAddress={snippet.user?.walletAddress}  
+                      snippetId={snippet._id} 
+                      snippetTitle={snippet.title}
+                      receiverId={snippet.user?._id}
+                      receiverType={snippet?.user?.role}
+                    />
                   </div>
                 </div>
               </CardContent>

@@ -200,19 +200,19 @@ const page = () => {
       })
       dispatch(updateUserData(data.user));
       setIsLoading(false);
-    } catch (error) {
+    } catch (err) {
       setIsLoading(false);
-      if (err.response?.status === 401) {
-        // Handle unauthorized error
-        dispatch(disconnectWallet());
-        disconnect();
-        toast("Uh oh! Something went wrong.", {
-          description: "Connect your wallet"
-        });
-        return
-      }
+      // if (err.response?.status === 401) {
+      //   // Handle unauthorized err
+      //   dispatch(disconnectWallet());
+      //   disconnect();
+      //   toast("Uh oh! Something went wrong.", {
+      //     description: "Connect your wallet"
+      //   });
+      //   return
+      // }
       toast("Uh oh! Something went wrong.", {
-        description: err.message,
+        description: err?.response?.data?.message || err.message,
       })
     }
   }

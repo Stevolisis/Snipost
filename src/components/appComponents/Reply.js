@@ -169,7 +169,7 @@ const Reply = ({ reply, commentId }) => {
   };
 
   return (
-    <Card className="hover:bg-background hover:border-gray-600 my-4">
+    <Card id={reply._id} className="hover:bg-background hover:border-gray-600 my-4">
 
 
       <CardHeader>
