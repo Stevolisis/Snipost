@@ -272,16 +272,16 @@ export default function ProfilePage({ params }) {
 
 
 const DevRanks = [
-  { title: "Newbie", threshold: 0, multiplier: 1.0 },
-  { title: "Contributor", threshold: 300, multiplier: 1.05 },
-  { title: "Builder", threshold: 700, multiplier: 1.10 },
-  { title: "Explorer", threshold: 1500, multiplier: 1.15 },
-  { title: "Innovator", threshold: 3000, multiplier: 1.20 },
-  { title: "Strategist", threshold: 5000, multiplier: 1.25 },
-  { title: "Architect", threshold: 7500, multiplier: 1.30 },
-  { title: "Mentor", threshold: 10000, multiplier: 1.35 },
-  { title: "Visionary", threshold: 15000, multiplier: 1.40 },
-  { title: "Icon", threshold: 20000, multiplier: 1.50 },
+  { title: "Newbie", threshold: 0, level: 1, multiplier: 1.0 },
+  { title: "Contributor", threshold: 300, level: 2, multiplier: 1.05 },
+  { title: "Builder", threshold: 700, level: 3, multiplier: 1.10 },
+  { title: "Explorer", threshold: 1500, level: 4, multiplier: 1.15 },
+  { title: "Innovator", threshold: 3000, level: 5, multiplier: 1.20 },
+  { title: "Strategist", threshold: 5000, level: 6, multiplier: 1.25 },
+  { title: "Architect", threshold: 7500, level: 7, multiplier: 1.30 },
+  { title: "Mentor", threshold: 10000, level: 8, multiplier: 1.35 },
+  { title: "Visionary", threshold: 15000, level: 9, multiplier: 1.40 },
+  { title: "Icon", threshold: 20000, level: 10, multiplier: 1.50 },
 ];
 
 const getDevRankWithNext = (xp) => {
@@ -420,41 +420,41 @@ const gradientClasses = getRankGradient(devRank.title);
           </Card>
 
           {/* XP Display */}
-<Card className={`bg-gradient-to-br ${gradientClasses} transition-all duration-300 border-2`}>
-  <CardHeader>
-    <CardTitle className="flex items-center justify-between">
-      <span className="text-white font-semibold tracking-tight">
-        Developer XP
-      </span>
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-semibold text-white/90">{devRank.title}</span>
-        <svg className="w-5 h-5 text-white/80" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      </div>
-    </CardTitle>
-  </CardHeader>
-  <CardContent>
-    <div className="text-center">
-      <p className="text-4xl font-bold text-white">
-        {xp}
-      </p>
-      <p className="text-sm text-white/80 mt-2">
-        Level {Math.floor(xp / 1000) + 1}
-      </p>
-      {nextRank && (
-        <div className="w-full bg-gray-800/50 rounded-full h-2.5 mt-3">
-          <div 
-            className="bg-white/90 h-2.5 rounded-full" 
-            style={{ 
-              width: `${((xp - devRank.threshold) / (nextRank.threshold - devRank.threshold)) * 100}%` 
-            }}
-          ></div>
-        </div>
-      )}
-    </div>
-  </CardContent>
-</Card>
+          <Card className={`bg-gradient-to-br ${gradientClasses} transition-all duration-300 border-2`}>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="text-white font-semibold tracking-tight">
+                  Developer XP
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-white/90">{devRank.title}</span>
+                  <svg className="w-5 h-5 text-white/80" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold text-white">
+                  {xp}
+                </p>
+                <p className="text-sm text-white/80 mt-2">
+                  Level {devRank.level}
+                </p>
+                {nextRank && (
+                  <div className="w-full bg-gray-800/50 rounded-full h-2.5 mt-3">
+                    <div 
+                      className="bg-white/90 h-2.5 rounded-full" 
+                      style={{ 
+                        width: `${((xp - devRank.threshold) / (nextRank.threshold - devRank.threshold)) * 100}%` 
+                      }}
+                    ></div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
           {/* Bookmarks Section */}
           {isOwner && (
             <Card className="bg-transparent hover:border-gray-600 transition-colors duration-200">
