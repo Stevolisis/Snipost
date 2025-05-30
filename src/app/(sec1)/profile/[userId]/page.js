@@ -327,7 +327,7 @@ const getRankGradient = (title) => {
   } 
 };
 
-const xp = profile && profile.xp || 0;
+const xp = profile && (profile.xp || 0);
 const { devRank, nextRank } = getDevRankWithNext(xp);
 const gradientClasses = getRankGradient(devRank.title);
 

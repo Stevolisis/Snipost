@@ -15,37 +15,42 @@ import { useAppSelector } from '@/lib/redux/hooks'
 import Link from 'next/link'
 import SearchComponent from './Search'
 import { loadNotificationsFailure, loadNotificationsStart, loadNotificationsSuccess } from '@/lib/redux/slices/notifications'
+import { useWalletModal } from '@solana/wallet-adapter-react-ui'
+import { toast } from 'sonner';
 
 const Header = () => {
   const { connect, connected, connecting, select, wallets, wallet, publicKey } = useWallet()
   const dispatch = useDispatch()
   const { isConnected, walletAddress, jwtToken, userData, isLoading } = useAppSelector((state) => state.auth)
+  const { setVisible,  } = useWalletModal();
 
   const handleWalletClick = useCallback(async () => {
     try {
       dispatch(connectWalletStart())
-      const installedWallets = wallets.filter(w => w.readyState === 'Installed')
-      const solflare = installedWallets.find(w => w.adapter.name === SolflareWalletName)
-      const phantom = installedWallets.find(w => w.adapter.name === PhantomWalletName)
+      // const installedWallets = wallets.filter(w => w.readyState === 'Installed')
+      // const solflare = installedWallets.find(w => w.adapter.name === SolflareWalletName)
+      // const phantom = installedWallets.find(w => w.adapter.name === PhantomWalletName)
       
-      const walletToConnect = solflare || phantom || installedWallets[0]
+      // const walletToConnect = solflare || phantom || installedWallets[0]
 
-      if (!walletToConnect) {
-        const choice = window.confirm(
-          'No wallet detected. Would you like to install Phantom Wallet?'
-        )
-        if (choice) {
-          window.open('https://phantom.app/', '_blank')
-        }
-        return
-      }
+      // if (!walletToConnect) {
+      //   const choice = window.confirm(
+      //     'No wallet detected. Would you like to install Phantom Wallet?'
+      //   )
+      //   if (choice) {
+      //     window.open('https://phantom.app/', '_blank')
+      //   }
+      //   return
+      // }
 
-      await select(walletToConnect.adapter.name)
-      await connect()
+      // await select(walletToConnect.adapter.name)
+      // await connect()
+      setVisible(true);
+      connect()
     } catch (err) {
       toast.error(`Connection failed: ${err.message}`)
     }
-  }, [wallets, select, connect])
+  }, [setVisible, dispatch])
 
   const signInWithBackend = async () => {
     dispatch(authenticateStart())
@@ -97,6 +102,7 @@ const Header = () => {
       getNotifications();
     }
   }, []);
+  console.log("wjak: ", wallets, wallet, publicKey);
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">
