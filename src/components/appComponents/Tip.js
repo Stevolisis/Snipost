@@ -85,8 +85,14 @@ const handleTip = async () => {
     const platformFee = Math.floor(totalLamports * 0.12); // 12%
     const recipientAmount = totalLamports - platformFee;
 
+    console.log("rrrrrr: ", publicKey?.toString(), recipientAddress?.toString());
+    if(publicKey.toString() == recipientAddress.toString()) {
+      return toast.error("You are not allowed to tip yourself");
+    }
     // Get recent blockhash
     const { blockhash } = await connection.getLatestBlockhash();
+
+
     
     // Create transaction with two transfers
     const transaction = new Transaction({
@@ -151,12 +157,12 @@ const handleTip = async () => {
       {
         loading: "Processing transaction...",
         success: (data) => data,
-        error: (err) => err.message || "Failed to complete transaction"
+        error: (err) => err?.response?.data?.message || "Failed to complete transaction"
       }
     );
   } catch (error) {
     console.error("Tip error:", error);
-    toast.error(error.message || "An error occurred while sending tip");
+    toast.error(error?.response?.data?.message || "An error occurred while sending tip");
   } finally {
     setIsLoading(false);
     setIsOpen(false);

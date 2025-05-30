@@ -257,6 +257,105 @@ export default function ProfilePage({ params }) {
     )
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const DevRanks = [
+  { title: "Newbie", threshold: 0, multiplier: 1.0 },
+  { title: "Contributor", threshold: 300, multiplier: 1.05 },
+  { title: "Builder", threshold: 700, multiplier: 1.10 },
+  { title: "Explorer", threshold: 1500, multiplier: 1.15 },
+  { title: "Innovator", threshold: 3000, multiplier: 1.20 },
+  { title: "Strategist", threshold: 5000, multiplier: 1.25 },
+  { title: "Architect", threshold: 7500, multiplier: 1.30 },
+  { title: "Mentor", threshold: 10000, multiplier: 1.35 },
+  { title: "Visionary", threshold: 15000, multiplier: 1.40 },
+  { title: "Icon", threshold: 20000, multiplier: 1.50 },
+];
+
+const getDevRankWithNext = (xp) => {
+  let currentRank = DevRanks[0];
+  let nextRank = null;
+
+  for (let i = 1; i < DevRanks.length; i++) {
+    if (xp >= DevRanks[i].threshold) {
+      currentRank = DevRanks[i];
+    } else {
+      nextRank = DevRanks[i];
+      break;
+    }
+  }
+
+  return { devRank: currentRank, nextRank };
+};
+
+const getRankGradient = (title) => { 
+  switch (title) { 
+    case "Newbie": 
+      return "from-gray-800 via-gray-700 to-slate-600 border-gray-500 hover:border-gray-400 shadow-gray-400/50 bg-gradient-to-br"; 
+    case "Contributor": 
+      return "from-emerald-600 via-teal-500 to-cyan-400 border-teal-400 hover:border-cyan-300 shadow-cyan-400/60 bg-gradient-to-br"; 
+    case "Builder": 
+      return "from-blue-600 via-indigo-500 to-purple-400 border-indigo-400 hover:border-purple-300 shadow-purple-400/60 bg-gradient-to-br"; 
+    case "Explorer": 
+      return "from-violet-600 via-purple-500 to-fuchsia-400 border-purple-400 hover:border-fuchsia-300 shadow-fuchsia-400/60 bg-gradient-to-br"; 
+    case "Innovator": 
+      return "from-fuchsia-600 via-pink-500 to-rose-400 border-pink-400 hover:border-rose-300 shadow-rose-400/70 bg-gradient-to-br"; 
+    case "Strategist": 
+      return "from-orange-600 via-amber-500 to-yellow-400 border-amber-400 hover:border-yellow-300 shadow-yellow-400/70 bg-gradient-to-br"; 
+    case "Architect": 
+      return "from-red-600 via-orange-500 to-amber-400 border-orange-400 hover:border-amber-300 shadow-amber-400/80 bg-gradient-to-br"; 
+    case "Mentor": 
+      return "from-indigo-600 via-blue-500 to-cyan-300 border-blue-400 hover:border-cyan-200 shadow-cyan-300/80 bg-gradient-to-br"; 
+    case "Visionary": 
+      return "from-purple-700 via-fuchsia-600 to-pink-400 border-fuchsia-500 hover:border-pink-300 shadow-pink-400/90 bg-gradient-to-br"; 
+    case "Icon": 
+      return "from-yellow-500 via-orange-400 to-red-400 border-orange-400 hover:border-yellow-300 shadow-orange-400/100 shadow-2xl bg-gradient-to-br animate-bounce"; 
+    default: 
+      return "from-gray-800 via-gray-700 to-slate-600 border-gray-500 hover:border-gray-400 shadow-gray-400/50 bg-gradient-to-br"; 
+  } 
+};
+
+const xp = profile && profile.xp || 0;
+const { devRank, nextRank } = getDevRankWithNext(xp);
+const gradientClasses = getRankGradient(devRank.title);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-5">
@@ -321,35 +420,41 @@ export default function ProfilePage({ params }) {
           </Card>
 
           {/* XP Display */}
-          <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-300 shadow-lg shadow-purple-500/10">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                  Developer XP
-                </span>
-                <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center">
-                <p className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                  {profile.xp || 0}
-                </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Level {Math.floor((profile.xp || 0) / 1000) + 1}
-                </p>
-                <div className="w-full bg-gray-700 rounded-full h-2.5 mt-3">
-                  <div 
-                    className="bg-gradient-to-r from-purple-500 to-blue-500 h-2.5 rounded-full" 
-                    style={{ width: `${((profile.xp || 0) % 1000) / 10}%` }}
-                  ></div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
+<Card className={`bg-gradient-to-br ${gradientClasses} transition-all duration-300 border-2`}>
+  <CardHeader>
+    <CardTitle className="flex items-center justify-between">
+      <span className="text-white font-semibold tracking-tight">
+        Developer XP
+      </span>
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-semibold text-white/90">{devRank.title}</span>
+        <svg className="w-5 h-5 text-white/80" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      </div>
+    </CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="text-center">
+      <p className="text-4xl font-bold text-white">
+        {xp}
+      </p>
+      <p className="text-sm text-white/80 mt-2">
+        Level {Math.floor(xp / 1000) + 1}
+      </p>
+      {nextRank && (
+        <div className="w-full bg-gray-800/50 rounded-full h-2.5 mt-3">
+          <div 
+            className="bg-white/90 h-2.5 rounded-full" 
+            style={{ 
+              width: `${((xp - devRank.threshold) / (nextRank.threshold - devRank.threshold)) * 100}%` 
+            }}
+          ></div>
+        </div>
+      )}
+    </div>
+  </CardContent>
+</Card>
           {/* Bookmarks Section */}
           {isOwner && (
             <Card className="bg-transparent hover:border-gray-600 transition-colors duration-200">
