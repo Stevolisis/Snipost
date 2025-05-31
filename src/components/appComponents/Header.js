@@ -1,12 +1,11 @@
 // src/components/layout/Header.jsx
 "use client"
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Wallet } from 'lucide-react'
 import Image from 'next/image'
 import { ProfileDropDown } from './ProfileDropDown'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { PhantomWalletName, SolflareWalletName } from '@solana/wallet-adapter-wallets'
 import { useDispatch } from 'react-redux'
 import { authenticateStart, authenticateSuccess, authFailure, connectWalletStart, connectWalletSuccess, disconnectWallet } from '@/lib/redux/slices/auth'
 import api from '@/utils/axiosConfig'
@@ -17,23 +16,19 @@ import SearchComponent from './Search'
 import { loadNotificationsFailure, loadNotificationsStart, loadNotificationsSuccess } from '@/lib/redux/slices/notifications'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { toast } from 'sonner';
-import dynamic from 'next/dynamic'
-const WalletMultiButtonDynamic = dynamic(
-  async () =>
-    (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
-  { ssr: false }
-);
+
 
 const Header = () => {
   const { connect, connected, connecting, wallet, publicKey, disconnect } = useWallet()
   const dispatch = useDispatch()
   const { isConnected, walletAddress, jwtToken, userData } = useAppSelector((state) => state.auth)
-  const { setVisible,  } = useWalletModal();
-
+  const { setVisible, visible } = useWalletModal();
+  const [userInitiatedConnection, setUserInitiatedConnection] = useState(false);
+  const [prevVisible, setPrevVisible] = useState(false);
+  
   const handleWalletClick = useCallback(async () => {
     try {
-      dispatch(connectWalletStart())
-
+      dispatch(connectWalletStart());
       setVisible(true);
     } catch (err) {
       toast.error(`Connection failed: ${err.message}`);
@@ -42,7 +37,6 @@ const Header = () => {
     }
   }, [setVisible, dispatch, disconnect])
 
-  
   const signInWithBackend = async () => {
     dispatch(authenticateStart())
     try{
@@ -59,30 +53,49 @@ const Header = () => {
       })
       dispatch(authenticateSuccess(response.data))
     } catch(err) {
-      dispatch(authFailure(err.message))
+      dispatch(authFailure(err.message));
+      await disconnect();
     }
   }
 
   const connectToSelectedWallet = useCallback(async() => {
+    if (!userInitiatedConnection || !wallet) return
+
     try{
       await connect();
     }catch(err){
       dispatch(disconnectWallet());
       await disconnect();
+    }finally {
+      setUserInitiatedConnection(false) // Reset after attempt
     }
-  },[wallet])
+  },[wallet, connect, disconnect, userInitiatedConnection])
 
+  // Track when modal closes and user selected a wallet
   useEffect(() => {
-    connectToSelectedWallet();
+    if (prevVisible && !visible && wallet) {
+      // Modal just closed and we have a wallet selected
+      setUserInitiatedConnection(true);
+    }
+    setPrevVisible(visible);
+  }, [visible, wallet, prevVisible]);
+
+  // Trigger connection when user selects wallet from modal
+  useEffect(() => {
+    if (userInitiatedConnection && wallet && !connected) {
+      connectToSelectedWallet();
+    }
+  }, [userInitiatedConnection, wallet, connected, connectToSelectedWallet]);
+
+  // Handle successful connection
+  useEffect(() => {
     if (publicKey) {
       dispatch(connectWalletSuccess({
           walletAddress: publicKey.toBase58()
       }))
       signInWithBackend();
     }
-  }, [publicKey, wallet]);
-
-
+  }, [publicKey]);
   
   
   const getNotifications = async () => {
@@ -106,7 +119,7 @@ const Header = () => {
       getNotifications();
     }
   }, []);
-  // console.log("wjak: ", wallet, publicKey);
+  console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">
