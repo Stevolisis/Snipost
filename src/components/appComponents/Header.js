@@ -8,7 +8,7 @@ import { ProfileDropDown } from './ProfileDropDown'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { PhantomWalletName, SolflareWalletName } from '@solana/wallet-adapter-wallets'
 import { useDispatch } from 'react-redux'
-import { authenticateStart, authenticateSuccess, authFailure, connectWalletStart, connectWalletSuccess } from '@/lib/redux/slices/auth'
+import { authenticateStart, authenticateSuccess, authFailure, connectWalletStart, connectWalletSuccess, disconnectWallet } from '@/lib/redux/slices/auth'
 import api from '@/utils/axiosConfig'
 import bs58 from "bs58"
 import { useAppSelector } from '@/lib/redux/hooks'
@@ -17,41 +17,32 @@ import SearchComponent from './Search'
 import { loadNotificationsFailure, loadNotificationsStart, loadNotificationsSuccess } from '@/lib/redux/slices/notifications'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { toast } from 'sonner';
+import dynamic from 'next/dynamic'
+const WalletMultiButtonDynamic = dynamic(
+  async () =>
+    (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+  { ssr: false }
+);
 
 const Header = () => {
-  const { connect, connected, connecting, select, wallets, wallet, publicKey } = useWallet()
+  const { connect, connected, connecting, wallet, publicKey, disconnect } = useWallet()
   const dispatch = useDispatch()
-  const { isConnected, walletAddress, jwtToken, userData, isLoading } = useAppSelector((state) => state.auth)
+  const { isConnected, walletAddress, jwtToken, userData } = useAppSelector((state) => state.auth)
   const { setVisible,  } = useWalletModal();
 
   const handleWalletClick = useCallback(async () => {
     try {
       dispatch(connectWalletStart())
-      // const installedWallets = wallets.filter(w => w.readyState === 'Installed')
-      // const solflare = installedWallets.find(w => w.adapter.name === SolflareWalletName)
-      // const phantom = installedWallets.find(w => w.adapter.name === PhantomWalletName)
-      
-      // const walletToConnect = solflare || phantom || installedWallets[0]
 
-      // if (!walletToConnect) {
-      //   const choice = window.confirm(
-      //     'No wallet detected. Would you like to install Phantom Wallet?'
-      //   )
-      //   if (choice) {
-      //     window.open('https://phantom.app/', '_blank')
-      //   }
-      //   return
-      // }
-
-      // await select(walletToConnect.adapter.name)
-      // await connect()
       setVisible(true);
-      connect()
     } catch (err) {
-      toast.error(`Connection failed: ${err.message}`)
+      toast.error(`Connection failed: ${err.message}`);
+      dispatch(disconnectWallet());
+      await disconnect();
     }
-  }, [setVisible, dispatch])
+  }, [setVisible, dispatch, disconnect])
 
+  
   const signInWithBackend = async () => {
     dispatch(authenticateStart())
     try{
@@ -72,6 +63,27 @@ const Header = () => {
     }
   }
 
+  const connectToSelectedWallet = useCallback(async() => {
+    try{
+      await connect();
+    }catch(err){
+      dispatch(disconnectWallet());
+      await disconnect();
+    }
+  },[wallet])
+
+  useEffect(() => {
+    connectToSelectedWallet();
+    if (publicKey) {
+      dispatch(connectWalletSuccess({
+          walletAddress: publicKey.toBase58()
+      }))
+      signInWithBackend();
+    }
+  }, [publicKey, wallet]);
+
+
+  
   
   const getNotifications = async () => {
     try{
@@ -88,21 +100,13 @@ const Header = () => {
     }
   }
 
-  useEffect(() => {
-    if (publicKey) {
-      dispatch(connectWalletSuccess({
-          walletAddress: publicKey.toBase58()
-      }))
-      signInWithBackend();
-    }
-  }, [publicKey, wallet]);
 
   useEffect(() => {
     if (jwtToken) {
       getNotifications();
     }
   }, []);
-  console.log("wjak: ", wallets, wallet, publicKey);
+  // console.log("wjak: ", wallet, publicKey);
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">
@@ -119,7 +123,7 @@ const Header = () => {
       </Link>
 
       <SearchComponent />
-
+      {/* <WalletMultiButtonDynamic> */}
       {(connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2" onClick={() => handleWalletClick()}>
@@ -132,7 +136,9 @@ const Header = () => {
           <Wallet className="h-4 w-4" />
           {connecting ? "Connecting..." : "Connect Wallet"}
         </Button>
-      }
+      }  
+      {/* </WalletMultiButtonDynamic> */}
+
     </header>
   )
 }
