@@ -120,3 +120,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+pre{
+  height: 202px;
+  min-height: 190px;
+}
