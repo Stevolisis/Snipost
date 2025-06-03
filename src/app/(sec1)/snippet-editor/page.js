@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -24,13 +24,29 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from '@/components/ui/button';
-import { Users, X } from 'lucide-react';
+import { Users, X, CreditCard, Crown } from 'lucide-react';
 import { MultiSelect } from '@/components/appComponents/MultiSelect';
 import api from '@/utils/axiosConfig';
 import { useAppSelector } from '@/lib/redux/hooks';
 import { toast } from "sonner"
-
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer"
+import Link from 'next/link';
 
 const allTags = [
   { value: 'react', label: 'React' },
@@ -105,7 +121,22 @@ const SnippetEditor = () => {
   ]);
   const [folder, setFolder] = useState("");
   const [type, setType] = useState("public");
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitErrorMessage, setLimitErrorMessage] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   const { jwtToken, userData } = useAppSelector((state) => state.auth)
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   const handleAddCodeBlock = () => {
     setCodeBlocks([...codeBlocks, { name: "", language: "javascript", content: "" }]);
@@ -124,88 +155,7 @@ const SnippetEditor = () => {
     newCodeBlocks[index][field] = value;
     setCodeBlocks(newCodeBlocks);
   };
-// const yu=`// Simple Task Manager App (Free Tier Limit Example)
 
-// class Task {
-//   constructor(title, description = "") {
-//     this.id = Date.now();
-//     this.title = title;
-//     this.description = description;
-//     this.completed = false;
-//     this.createdAt = new Date();
-//   }
-// }
-
-// class TaskManager {
-//   constructor() {
-//     this.tasks = [];
-//   }
-
-//   addTask(title, description) {
-//     if (!title) throw new Error("Task must have a title");
-//     const task = new Task(title, description);
-//     this.tasks.push(task);
-//     return task;
-//   }
-
-//   getTasks() {
-//     return this.tasks;
-//   }
-
-//   toggleTaskCompletion(id) {
-//     const task = this.tasks.find((t) => t.id === id);
-//     if (!task) throw new Error("Task not found");
-//     task.completed = !task.completed;
-//     return task;
-//   }
-
-//   deleteTask(id) {
-//     const index = this.tasks.findIndex((t) => t.id === id);
-//     if (index === -1) throw new Error("Task not found");
-//     this.tasks.splice(index, 1);
-//   }
-
-//   searchTasks(query) {
-//     return this.tasks.filter(
-//       (task) =>
-//         task.title.toLowerCase().includes(query.toLowerCase()) ||
-//         task.description.toLowerCase().includes(query.toLowerCase())
-//     );
-//   }
-
-//   getCompletedTasks() {
-//     return this.tasks.filter((task) => task.completed);
-//   }
-
-//   getPendingTasks() {
-//     return this.tasks.filter((task) => !task.completed);
-//   }
-
-//   editTask(id, newTitle, newDescription) {
-//     const task = this.tasks.find((t) => t.id === id);
-//     if (!task) throw new Error("Task not found");
-//     if (newTitle) task.title = newTitle;
-//     if (newDescription) task.description = newDescription;
-//     return task;
-//   }
-
-//   printTasks() {
-//     this.tasks.forEach((t) =>
-//       console.log(
-//         '''t.completed ' "[x]" : "[ ]"} ''t.title' - ''t.description' (''t.id')'
-//       )
-//     );
-//   }
-// }
-
-// // Sample usage
-// const manager = new TaskManager();
-// manager.addTask("Buy groceries", "Milk, eggs, and bread");
-// manager.addTask("Read a book", "Finish the last chapter");
-// manager.toggleTaskCompletion(manager.getTasks()[0].id);
-// manager.printTasks();
-// `;
-// console.log("yu: ", yu.length)
   const handlePublish = async() => {
     setIsLoading(true);
     const snippetData = {
@@ -228,6 +178,14 @@ const SnippetEditor = () => {
       setIsLoading(false);
     }catch(err){
       setIsLoading(false);
+      
+      // Check for LimitExceeded error
+      if (err.response?.data?.message?.includes('LimitExceeded')) {
+        setLimitErrorMessage(err.response.data.message);
+        setShowLimitModal(true);
+        return;
+      }
+      
       if (err.response?.status === 401) {
         // Handle unauthorized error
         dispatch(disconnectWallet());
@@ -242,6 +200,78 @@ const SnippetEditor = () => {
       })
     }
   };
+
+  const LimitExceededContent = () => (
+    <>
+      <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full">
+        <Crown className="w-8 h-8 text-primary" />
+      </div>
+      <div className="text-center mb-6">
+        <h3 className="text-lg font-semibold mb-2">Limit Reached</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          {limitErrorMessage.replace('LimitExceeded - ', '')}
+        </p>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center justify-center gap-2">
+            <CreditCard className="w-4 h-4" />
+            <span>Unlimited access</span>
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <Users className="w-4 h-4" />
+            <span>Priority support</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  // Desktop Dialog
+  const DesktopLimitDialog = () => (
+    <Dialog open={showLimitModal} onOpenChange={setShowLimitModal}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="sr-only">Upgrade Required</DialogTitle>
+        </DialogHeader>
+        <LimitExceededContent />
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={() => setShowLimitModal(false)} className="w-full sm:w-auto">
+            Maybe Later
+          </Button>
+          <Link href="/account/subscription" className="w-full sm:w-auto">
+            <Button className="w-full bg-primary hover:bg-primary/90">
+              Upgrade Now
+            </Button>
+          </Link>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+
+  // Mobile Drawer
+  const MobileLimitDrawer = () => (
+    <Drawer open={showLimitModal} onOpenChange={setShowLimitModal}>
+      <DrawerContent className="px-4">
+        <DrawerHeader className="sr-only">
+          <DrawerTitle>Upgrade Required</DrawerTitle>
+        </DrawerHeader>
+        <div className="py-6">
+          <LimitExceededContent />
+        </div>
+        <DrawerFooter className="gap-2 pb-8">
+          <Link href="/account/subscription" className="w-full">
+            <Button className="w-full bg-primary hover:bg-primary/90">
+              Upgrade Now
+            </Button>
+          </Link>
+          <DrawerClose asChild>
+            <Button variant="outline" className="w-full">
+              Maybe Later
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
 
   return (
     <div className="flex justify-center">
@@ -288,19 +318,6 @@ const SnippetEditor = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-
-          {/* <Select value={folder} onValueChange={setFolder} className="w-full mt-6">
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Folder" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Folder</SelectLabel>
-                <SelectItem value="681a8ee804258036305755ec">My Folder</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select> */}
-          
         </div>
 
         {codeBlocks.map((block, index) => (
@@ -353,6 +370,9 @@ const SnippetEditor = () => {
           <Button onClick={()=>handlePublish()}>{isLoading ? "Publishing..." : "publish"}</Button>
         </div>
       </Card>
+
+      {/* Render appropriate modal based on device type */}
+      {isMobile ? <MobileLimitDrawer /> : <DesktopLimitDialog />}
     </div>
   )
 }

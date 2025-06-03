@@ -238,7 +238,7 @@ const Reply = ({ reply, commentId }) => {
 
 
 
-        <CardTitle className='break-all'>{renderText(reply.text, reply.mentions)}</CardTitle>
+        <CardTitle className='break-all whitespace-break-spaces'>{renderText(reply.text, reply.mentions)}</CardTitle>
         <div className='flex gap-x-2 items-center justify-between pt-3'>
           <div className='flex gap-x-2 items-center'>
             <Button 
