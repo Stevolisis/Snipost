@@ -33,7 +33,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 export default function ProfilePage({ params }) {
   const { userId } = use(params);
   const [bookmarks, setBookmarks] = useState([]);
-  const { userData, jwtToken } = useAppSelector((state) => state.auth)
+  const authState = useAppSelector((state) => state.auth)
+  const userData = authState?.userData || null
+  const jwtToken = authState?.jwtToken || null;
   const { snippets } = useAppSelector((state) => state.snippets)
   const { profile, loading, error, transactions, earned } = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
