@@ -16,7 +16,7 @@ const SyntaxHighlighter = dynamic(
 
 export const renderText = (text, mentions) => {
   if (!text) return null;
-  console.log(mentions)
+
   // Split by code blocks first
   const parts = text.split(/(`[^`]+`|\*[^*]+\*|%[^%]+%)/g);
   

@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink, Trash2, Copy, Twitter, Github, Award, Trophy, Star, Target, Zap, Crown } from 'lucide-react'
+import { ArrowBigUp, ArrowBigDown, MessageCircle, Bookmark, SquarePen, DollarSign, ExternalLink, Trash2, Copy, Twitter, Github, Award, Trophy, Star, Target, Zap, Crown, Flame } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 import { 
@@ -315,13 +315,13 @@ const getRankGradient = (title) => {
     case "Strategist": 
       return "from-orange-600 via-amber-500 to-yellow-400 border-amber-400 hover:border-yellow-300 shadow-yellow-400/70 bg-gradient-to-br"; 
     case "Architect": 
-      return "from-red-600 via-orange-500 to-amber-400 border-orange-400 hover:border-amber-300 shadow-amber-400/80 bg-gradient-to-br"; 
+      return "from-red-600 via-orange-500 to-amber-400 border-primary hover:border-amber-300 shadow-amber-400/80 bg-gradient-to-br"; 
     case "Mentor": 
       return "from-indigo-600 via-blue-500 to-cyan-300 border-blue-400 hover:border-cyan-200 shadow-cyan-300/80 bg-gradient-to-br"; 
     case "Visionary": 
       return "from-purple-700 via-fuchsia-600 to-pink-400 border-fuchsia-500 hover:border-pink-300 shadow-pink-400/90 bg-gradient-to-br"; 
     case "Icon": 
-      return "from-yellow-500 via-orange-400 to-red-400 border-orange-400 hover:border-yellow-300 shadow-orange-400/100 shadow-2xl bg-gradient-to-br animate-bounce"; 
+      return "from-yellow-500 via-primary to-red-400 border-primary hover:border-yellow-300 shadow-primary/100 shadow-2xl bg-gradient-to-br animate-bounce"; 
     default: 
       return "from-gray-800 via-gray-700 to-slate-600 border-gray-500 hover:border-gray-400 shadow-gray-400/50 bg-gradient-to-br"; 
   } 
@@ -418,6 +418,7 @@ const xp = profile && (profile.xp || 0);
 const { devRank, nextRank } = getDevRankWithNext(xp);
 const gradientClasses = getRankGradient(devRank.title);
 const achievements = getAchievements(profile, snippets, earned);
+const streakCount = 90;
 
 
 
@@ -500,6 +501,94 @@ const achievements = getAchievements(profile, snippets, earned);
               </div>
             </CardContent>
           </Card>
+          
+
+
+
+
+
+
+
+          {/* Streak Section */}
+          <Card className="bg-black/40 hover:border-amber-500/50 transition-all duration-300 ">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center justify-center gap-3 text-white">
+                <div className="relative">
+                  <Flame className="h-8 w-8 text-amber-500 animate-pulse drop-shadow-lg" />
+                  <div className="absolute inset-0 bg-amber-500/20 rounded-full blur-xl animate-pulse"></div>
+                </div>
+                <span className="text-lg font-bold tracking-wide">Daily Streak</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-center pb-6">
+              <div className="relative flex flex-col items-center">
+                {/* Main flame icon - largest */}
+                <div className="relative mb-4">
+                  <Flame className="h-20 w-20 text-amber-500 drop-shadow-2xl animate-bounce" style={{ animationDuration: '2s' }} />
+                  <div className="absolute inset-0 bg-amber-500/30 rounded-full blur-2xl animate-pulse"></div>
+                  <div className="absolute inset-2 bg-amber-500/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                </div>
+                
+                {/* Streak count */}
+                <div className="mb-3">
+                  <p className="text-5xl font-black text-white mb-1">
+                    {streakCount}
+                  </p>
+                  <p className="text-white font-semibold text-sm tracking-wider uppercase">
+                    {streakCount === 1 ? 'Day' : 'Days'}
+                  </p>
+                </div>
+                
+                {/* Motivational text */}
+                <div className="text-center">
+                  {streakCount === 0 ? (
+                    <p className="text-gray-400 text-sm">
+                      Start your coding journey today! 🚀
+                    </p>
+                  ) : streakCount < 7 ? (
+                    <p className="text-amber-200 text-sm">
+                      Keep the fire burning! 🔥
+                    </p>
+                  ) : streakCount < 30 ? (
+                    <p className="text-amber-200 text-sm">
+                      You're on fire! 🌟
+                    </p>
+                  ) : (
+                    <p className="text-white text-sm font-semibold">
+                      Legendary streak! 👑
+                    </p>
+                  )}
+                </div>
+                
+                {/* Decorative flames */}
+                <div className="absolute -top-2 -left-2">
+                  <Flame className="h-4 w-4 text-amber-400 opacity-60 animate-pulse" style={{ animationDelay: '1s' }} />
+                </div>
+                <div className="absolute -top-2 -right-2">
+                  <Flame className="h-4 w-4 text-amber-500 opacity-60 animate-pulse" style={{ animationDelay: '1.5s' }} />
+                </div>
+                <div className="absolute -bottom-2 left-1/4">
+                  <Flame className="h-3 w-3 text-amber-500 opacity-40 animate-pulse" style={{ animationDelay: '2s' }} />
+                </div>
+                <div className="absolute -bottom-2 right-1/4">
+                  <Flame className="h-3 w-3 text-amber-400 opacity-40 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
           {/* XP Display */}
           <Card className={`bg-gradient-to-br ${gradientClasses} transition-all duration-300 border-2`}>
@@ -519,7 +608,7 @@ const achievements = getAchievements(profile, snippets, earned);
             <CardContent>
               <div className="text-center">
                 <p className="text-4xl font-bold text-white">
-                  {xp}
+                  {xp.toFixed(2)}
                 </p>
                 <p className="text-sm text-white/80 mt-2">
                   Level {devRank.level}
@@ -537,6 +626,14 @@ const achievements = getAchievements(profile, snippets, earned);
               </div>
             </CardContent>
           </Card>
+
+
+
+
+
+
+
+
 
           {/* Achievements Section */}  
           <Card className="bg-transparent hover:border-gray-600 transition-colors duration-200">
@@ -579,6 +676,18 @@ const achievements = getAchievements(profile, snippets, earned);
               )}
             </CardContent>
           </Card>
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Bookmarks Section */}
           {isOwner && (
             <Card className="bg-transparent hover:border-gray-600 transition-colors duration-200">

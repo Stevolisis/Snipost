@@ -28,13 +28,14 @@ const SyntaxHighlighter = dynamic(
 );
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { disconnectWallet, updateUserData } from '@/lib/redux/slices/auth';
+import { disconnectWallet, setVisitorId, updateUserData } from '@/lib/redux/slices/auth';
 import { Tip } from '@/components/appComponents/Tip';
 import { bookmarkSnippetApiSuccess, bookmarkSnippetSuccess, downvoteSnippetApiSuccess, downvoteSnippetSuccess, loadSnippetStart, loadSnippetSuccess, snippetsFailure, upvoteSnippetApiSuccess, upvoteSnippetSuccess } from '@/lib/redux/slices/snippets';
 import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Fork } from '@/components/appComponents/Fork';
 import { useRouter } from 'next/navigation';
+import { useIntersectionObserver } from 'react-haiku';
 
 
 const Page = ({params}) => {
@@ -42,7 +43,7 @@ const Page = ({params}) => {
   const router = useRouter();
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
-  const { userData, jwtToken, disconnect } = useAppSelector((state) => state.auth)
+  const { userData, visitorId, jwtToken, disconnect } = useAppSelector((state) => state.auth)
   const { snippet, isLoading } = useAppSelector((state) => state.snippets);
   const commentState = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
@@ -52,6 +53,14 @@ const Page = ({params}) => {
   const hasDownvoted = snippet?.downvotes?.some(v => (v.entity?._id || v.entity ) === userData?._id);
   const hasBookmark = snippet?.bookmarkedBy?.some(v => (v.entity?._id || v.entity ) === userData?._id);
   const hasForked = snippet?.forks?.some(v => (v.forkedBy.entity || v.forkedBy.entity?._id) === userData?._id);
+  const {observeRef, isVisible} = useIntersectionObserver({
+    animateOnce: false,
+    options:{
+      threshold: .4, 
+      rootMargin: '-40% 0px -40% 0px'
+    }
+  });
+  console.log("Observ: ", isVisible, observeRef)
 
   // Check if current user is already following the target user
   const isFollowing = userData?.following?.some(
@@ -281,6 +290,26 @@ const Page = ({params}) => {
     fetchSnippetCommentData();
   }, [snippetId, dispatch]);
 
+  useEffect(() => {
+    if (!visitorId) {
+      dispatch(setVisitorId());
+    }
+  }, [visitorId, dispatch]);
+
+  useEffect(() => {
+    if(isVisible){
+      const recordView = async () => {
+        try {
+          const response = await api.put(`/view-snippet/${snippetId}`, { visitorId: visitorId});
+          console.log("View recorded:", response.data);
+        } catch (err) {
+          console.error("Error recording view:", err);
+        }
+      }
+      recordView();
+    }
+  },[isVisible]);
+
   async function handleCopy(content, blockId) {
     try {
       await navigator.clipboard.writeText(content);
@@ -361,7 +390,7 @@ const Page = ({params}) => {
                   ))}
                 </div>
 
-                <div className='flex gap-x-2 items-center justify-between pt-5'>
+                <div ref={observeRef} className='flex gap-x-2 items-center justify-between pt-5'>
                   <div className='flex gap-x-2 items-center'>
                     <div className='flex items-center gap-x-2'>
                       <Button

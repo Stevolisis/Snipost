@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
   isConnected: false,
@@ -6,7 +7,8 @@ const initialState = {
   jwtToken: null,
   isLoading: false,
   error: null,
-  userData: null
+  userData: null,
+  visitorId: null
 };
 
 const authSlice = createSlice({
@@ -58,7 +60,15 @@ const authSlice = createSlice({
       if (state.userData) {
         state.userData = { ...state.userData, ...action.payload };
       }
-    }
+    },
+
+    setVisitorId(state, action) {
+      if(state.userData?._id) {
+        state.visitorId = state.userData._id;
+      } else if (!state.visitorId) {
+        state.visitorId = `vis-${uuidv4().replace(/-/g, '')}` // Generate a new visitor ID if not authenticated
+      }
+    },
   }
 });
 
@@ -70,7 +80,8 @@ export const {
   authenticateSuccess,
   authFailure,
   disconnectWallet,
-  updateUserData
+  updateUserData,
+  setVisitorId
 } = authSlice.actions;
 
 // Export reducer
