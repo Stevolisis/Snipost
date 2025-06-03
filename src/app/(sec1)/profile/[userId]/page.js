@@ -418,7 +418,7 @@ const xp = profile && (profile.xp || 0);
 const { devRank, nextRank } = getDevRankWithNext(xp);
 const gradientClasses = getRankGradient(devRank.title);
 const achievements = getAchievements(profile, snippets, earned);
-const streakCount = 90;
+const streakCount = profile?.streak?.count || 0;
 
 
 
