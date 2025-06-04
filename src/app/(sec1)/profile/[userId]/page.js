@@ -330,96 +330,9 @@ const getRankGradient = (title) => {
 };
 
 
-// Sample achievements data - replace with actual data from your API
-const getAchievements = (profile, snippets, earned) => {
-  const achievements = [];
-  
-  // First Snippet Achievement
-  if (snippets?.length >= 1) {
-    achievements.push({
-      id: 'first-snippet',
-      title: 'First Code',
-      description: 'Published your first snippet',
-      icon: Trophy,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-500/20',
-      earned: true
-    });
-  }
-  
-  // Snippet Master Achievement
-  if (snippets?.length >= 10) {
-    achievements.push({
-      id: 'snippet-master',
-      title: 'Snippet Master',
-      description: 'Published 10+ snippets',
-      icon: Crown,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-500/20',
-      earned: true
-    });
-  }
-  
-  // Popular Creator Achievement
-  const totalUpvotes = snippets?.reduce((sum, snippet) => sum + (snippet.upvotes?.length || 0), 0) || 0;
-  if (totalUpvotes >= 50) {
-    achievements.push({
-      id: 'popular-creator',
-      title: 'Popular Creator',
-      description: 'Received 50+ upvotes',
-      icon: Star,
-      color: 'text-yellow-500',
-      bgColor: 'bg-yellow-500/20',
-      earned: true
-    });
-  }
-  
-  // Early Adopter Achievement
-  if (profile?.createdAt && new Date(profile.createdAt) < new Date('2024-01-01')) {
-    achievements.push({
-      id: 'early-adopter',
-      title: 'Early Adopter',
-      description: 'Joined in the early days',
-      icon: Zap,
-      color: 'text-green-500',
-      bgColor: 'bg-green-500/20',
-      earned: true
-    });
-  }
-  
-  // Tip Earner Achievement
-  if (earned?.length >= 5) {
-    achievements.push({
-      id: 'tip-earner',
-      title: 'Tip Earner',
-      description: 'Received 5+ tips',
-      icon: DollarSign,
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-500/20',
-      earned: true
-    });
-  }
-  
-  // Social Butterfly Achievement
-  if ((profile?.followers?.length || 0) >= 10) {
-    achievements.push({
-      id: 'social-butterfly',
-      title: 'Social Butterfly',
-      description: '10+ followers',
-      icon: Target,
-      color: 'text-pink-500',
-      bgColor: 'bg-pink-500/20',
-      earned: true
-    });
-  }
-  
-  return achievements;
-};
-
 const xp = profile && (profile.xp || 0);
 const { devRank, nextRank } = getDevRankWithNext(xp);
 const gradientClasses = getRankGradient(devRank.title);
-const achievements = getAchievements(profile, snippets, earned);
 const streakCount = profile?.streak?.count || 0;
 
 
@@ -477,12 +390,12 @@ const streakCount = profile?.streak?.count || 0;
                     {
                       profile.socialLinks.map((social,i)=> {
                         if (social.platform === 'Twitter') {
-                          return <Link href={social.link} key={i} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
+                          return <Link href={social?.link || "#"} key={i} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
                               <Twitter size={18}/>
                             </Link>
                         }
                         if (social.platform === 'Github') {
-                          return <Link href={social.link} key={i} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
+                          return <Link href={social?.link || "#"} key={i} className=' rounded-full border border-muted-foreground p-3 hover:border-primary hover:text-primary transition-colors duration-150'>
                               <Github size={18}/>
                             </Link>
                         }
@@ -519,7 +432,7 @@ const streakCount = profile?.streak?.count || 0;
                   <Flame className="h-8 w-8 text-amber-500 animate-pulse drop-shadow-lg" />
                   <div className="absolute inset-0 bg-amber-500/20 rounded-full blur-xl animate-pulse"></div>
                 </div>
-                <span className="text-lg font-bold tracking-wide">Daily Streak</span>
+                <span className="text-lg font-bold tracking-wide">Daily Engagement Streak</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center pb-6">
@@ -651,19 +564,18 @@ const streakCount = profile?.streak?.count || 0;
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {achievements?.length > 0 ? (
-                <div className="grid grid-cols-2 gap-2">
-                  {achievements.slice(0, 4).map((achievement) => {
-                    const IconComponent = achievement.icon;
+              {profile?.achievements?.length > 0 ? (
+                <div className="grid grid-cols-3 gap-2">
+                  {profile.achievements.slice(0, 4).map((achievement) => {
                     return (
                       <div
-                        key={achievement.id}
-                        className={`p-3 rounded-lg ${achievement.bgColor} border border-opacity-20 hover:border-opacity-40 transition-all duration-200 cursor-pointer group`}
+                        key={achievement.key}
+                        className={`p-3 rounded-lg border border-opacity-20 hover:border-opacity-40 transition-all duration-200 cursor-pointer group`}
                         title={achievement.description}
                       >
                         <div className="flex flex-col items-center text-center space-y-1">
-                          <IconComponent className={`h-6 w-6 ${achievement.color} group-hover:scale-110 transition-transform duration-200`} />
-                          <p className="text-xs font-medium line-clamp-1">{achievement.title}</p>
+                          <div className="text-4xl mb-2">{achievement?.title.split(' ')[0]}</div>
+                          <p className="text-xs font-medium line-clamp-1">{achievement.title.slice(2)}</p>
                         </div>
                       </div>
                     );
