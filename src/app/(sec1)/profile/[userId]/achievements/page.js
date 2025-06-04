@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { X, Award, Trophy, Flame, DollarSign, Users, Code, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,11 +18,13 @@ import {
 import api from '@/utils/axiosConfig';
 import { Achievements } from '@/constants/achievements';
 
-export default function AchievementPage() {
+export default function AchievementPage({params}) {
+  const { userId } = use(params);
   const [selectedAchievement, setSelectedAchievement] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [user, setUser] = useState(null);
   const dispatch = useAppDispatch();
-  const { jwtToken } = useAppSelector((state) => state.auth);
+  const { jwtToken, userData } = useAppSelector((state) => state.auth);
   const {
     unlocked,
     claimed,
@@ -36,17 +38,32 @@ export default function AchievementPage() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    fetchunlocked();
+    fetchUser();
     
     return () => {
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
 
+  useEffect(() => {
+    if(user){
+      fetchunlocked();
+    }
+  },[user]);
+
+  const fetchUser = async () => {
+    try {
+      const response = await api.get(`/get-user/${userId}`);
+      setUser(response.data.user);
+    } catch (err) {
+      toast.error(err.message)
+    }
+  }
+
   const fetchunlocked = async () => {
     try {
       dispatch(loadAchievementsStart());
-      const response = await api.get('/get-unlocked-achievements', {
+      const response = await api.get(`/get-unlocked-achievements/${user?._id}/${user?.role}`, {
         headers: { Authorization: `Bearer ${jwtToken}` }
       });
       dispatch(loadAchievementsSuccess(response.data));
@@ -165,13 +182,12 @@ export default function AchievementPage() {
 
           {unclaimed.length > 0 && (
             <div className="mb-6">
-              <Button 
+              {(userId === userData._id) && (<Button 
                 variant="default"
                 onClick={handleClaimAllAchievements}
-                className="bg-green-600 hover:bg-green-700"
               >
                 Claim All {unclaimed.length} Achievements
-              </Button>
+              </Button>)}
             </div>
           )}
         </div>
@@ -188,6 +204,8 @@ export default function AchievementPage() {
                 e.stopPropagation();
                 handleClaimAchievement(achievement.key);
               }}
+              userId={userId}
+              authId={userData?._id}
             />
           ))}
         </div>
@@ -221,7 +239,7 @@ export default function AchievementPage() {
                   </div>
                 </div>
                 
-                {unlocked.includes(selectedAchievement.key) && 
+                {(userId === userData._id) && (unlocked.includes(selectedAchievement.key) && 
                   (claimed.includes(selectedAchievement.key) ? 
                   <Button 
                     className="w-full"
@@ -237,7 +255,7 @@ export default function AchievementPage() {
                     }}
                   >
                     Claim +{selectedAchievement.xp} XP
-                  </Button>)
+                  </Button>))
                 }
               </div>
             )}
@@ -271,7 +289,7 @@ export default function AchievementPage() {
                   </div>
                 </div>
                 
-                {unlocked.includes(selectedAchievement.key) && 
+                {(userId === userData._id) && (unlocked.includes(selectedAchievement.key) && 
                   (claimed.includes(selectedAchievement.key) ? 
                     <Button 
                         className="w-full"
@@ -287,7 +305,7 @@ export default function AchievementPage() {
                         }}
                     >
                         Claim +{selectedAchievement.xp} XP
-                    </Button>)
+                    </Button>))
                 }
               </div>
             )}
@@ -298,7 +316,8 @@ export default function AchievementPage() {
   );
 }
 
-const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim }) => {
+const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim, userId, authId }) => {
+  console.log(userId, authId);
   return (
     <Card 
       className={`cursor-pointer hover:shadow-md hover:border-gray-600 transition-colors duration-200 ${
@@ -332,7 +351,7 @@ const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim })
               <span>+{achievement.xp} XP</span>
             </div>
             
-            {isEarned && 
+            {(userId === authId) && (isEarned && 
               isClaimed ? 
               <Button 
                 size="sm" 
@@ -348,7 +367,7 @@ const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim })
                 onClick={onClaim}
               >
                 Claim XP
-              </Button>
+              </Button>)
             }
           </div>
         </div>
