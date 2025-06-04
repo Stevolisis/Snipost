@@ -23,10 +23,7 @@ const ReplyBox = ({comment, setShowReplyBox}) => {
     const [mentions, setMentions] = useState([]);
     const textareaRef = useRef(null);
     const { jwtToken } = useAppSelector((state) => state.auth)
-
     const dispatch = useAppDispatch();
-
-    console.log("CommentReply:", comment);
 
     const fetchMentionedUsers = useCallback(async (query) => {
         try {

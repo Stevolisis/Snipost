@@ -47,7 +47,6 @@ const Reply = ({ reply, commentId }) => {
 
 
   const handleUpvote = async () => {
-    console.log("reply: ", reply || "error");
 
     try {
       // Optimistic update
@@ -66,7 +65,6 @@ const Reply = ({ reply, commentId }) => {
           Authorization: `Bearer ${jwtToken}`
         }
       });
-      console.log("response.data.reply: ", response.data.reply);
       // Update with actual data
       dispatch(updateReplyVotes({
         commentId,

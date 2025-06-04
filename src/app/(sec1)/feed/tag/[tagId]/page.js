@@ -1,6 +1,6 @@
 "use client"
 import api from '@/utils/axiosConfig';
-import React, { useEffect } from 'react'
+import React, { use, useEffect } from 'react'
 import {
   snippetsFailure,
   loadSnippetsStart,
@@ -12,7 +12,8 @@ import SnipCard from '@/components/appComponents/SnipCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import QuickNavigation from '@/components/appComponents/QuickNavigation';
 
-const page = () => {
+const page = ({params}) => {
+    const { tagId } = use(params)
   const dispatch = useAppDispatch();
   const { snippets = [], isLoading, error } = useAppSelector((state) => state.snippets);
   const { userData, jwtToken } = useAppSelector((state) => state.auth);
@@ -21,10 +22,8 @@ const page = () => {
     const fetchTrendingSnippets = async () => {
       try {
         dispatch(loadSnippetsStart());
-        const response = await api.get('/get-latest-snippets?timeRange=month&limit=10',{
-            headers:{
-                Authorization: `Bearer ${jwtToken}`
-            }
+        const response = await api.post(`/get-snippets-by-tags?limit=10`,{
+            tags: [tagId],
         });
         const snippets = response.data.snippets || [];
         dispatch(loadSnippetsSuccess(snippets));
@@ -66,7 +65,6 @@ const page = () => {
       </div>
     );
   }
-  
 
   return (
     <>

@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from './../../components/appComponents/WalletContextProvider';
 import { Wallet } from "@/components/appComponents/WalletProviderClient";
+import { ProfilePrompt } from "@/components/appComponents/ProfilePrompt";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -43,6 +44,7 @@ export default function Section1Layout({ children }) {
 
         <Wallet>
             <ReduxStateProvider>
+              <ProfilePrompt />
               <Header/>
               <SidebarProvider>
                 <AppSidebar className="mt-18"/>

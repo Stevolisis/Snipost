@@ -317,7 +317,6 @@ export default function AchievementPage({params}) {
 }
 
 const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim, userId, authId }) => {
-  console.log(userId, authId);
   return (
     <Card 
       className={`cursor-pointer hover:shadow-md hover:border-gray-600 transition-colors duration-200 ${

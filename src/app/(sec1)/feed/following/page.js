@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import SnipCard from '@/components/appComponents/SnipCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import QuickNavigation from '@/components/appComponents/QuickNavigation';
 
 const page = () => {
   const dispatch = useAppDispatch();
@@ -68,13 +69,23 @@ const page = () => {
 
 
   return (
-    <div className="w-full px-4 py-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-        {snippets.map((snippet) => {
-          return (<SnipCard snippet={snippet} key={snippet._id} />);
-        })}
+    <>
+      <QuickNavigation/>
+      <div className="w-full px-4 py-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+          {
+            snippets.length === 0 && (
+              <div className="w-full px-4 py-4">
+                <p>No snippets found</p>
+              </div>
+            )
+          }
+          {snippets.map((snippet) => {
+            return <SnipCard snippet={snippet} key={snippet._id} />
+          })}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -62,8 +62,6 @@ const SnipCard = ({snippet}) => {
                 }
             });
 
-            console.log("Api: ", response);
-
             type === "upvote" ? dispatch(upvoteSnippetApiSuccess(response.data.snippet)) 
             : dispatch(downvoteSnippetApiSuccess(response.data.snippet))
             

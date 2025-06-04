@@ -45,7 +45,6 @@ const CommentBox = () => {
     const { snippet } = useAppSelector((state) => state.snippets);
     const dispatch = useAppDispatch();
     const [popoverKey, setPopoverKey] = useState(0);
-    console.log("Users:", users);
 
     // Check if device is mobile
     useEffect(() => {

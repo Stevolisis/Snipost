@@ -135,6 +135,55 @@ const data = {
       emoji: "🧳",
     },
   ],
+
+
+  tags: [
+    {
+      name: "#turbine3",
+      url: "/feed/tag/turbine3",
+      emoji: "🚀",
+    },
+    {
+      name: "#hackerthon",
+      url: "/feed/tag/hackerthon",
+      emoji: "🛠️",
+    },
+    {
+      name: "#rust",
+      url: "/feed/tag/rust",
+      emoji: "🦀",
+    },
+    {
+      name: "#defi",
+      url: "/feed/tag/defi",
+      emoji: "💰",
+    },
+    {
+      name: "#javascript",
+      url: "/feed/tag/javascript",
+      emoji: "📜",
+    },
+    {
+      name: "#react",
+      url: "/feed/tag/react",
+      emoji: "⚛️",
+    },
+    // {
+    //   name: "#nextjs",
+    //   url: "/feed/tag/nextjs",
+    //   emoji: "🧜‍♂️",
+    // },
+    // {
+    //   name: "#web3",
+    //   url: "/feed/tag/web3",
+    //   emoji: "🔅",
+    // },
+    // {
+    //   name: "#blockchain",
+    //   url: "/feed/tag/blockchain",
+    //   emoji: "💻",
+    // },
+  ],
 }
 
 export function AppSidebar({ ...props }) {
@@ -236,11 +285,12 @@ export function AppSidebar({ ...props }) {
 
 
         <SidebarContent>
+          
           {/* <NavFavorites favorites={data.favorites} /> */}
           
           <SidebarGroup>
+
             <SidebarGroupLabel>Filter by most</SidebarGroupLabel>
-            
             <SidebarGroupContent>
               <SidebarMenu>
 
@@ -263,12 +313,33 @@ export function AppSidebar({ ...props }) {
 
               </SidebarMenu>
             </SidebarGroupContent>
+
+
+            <SidebarGroupLabel className='mt-4'>Filter by tags</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+
+                {data.tags.map((tag) => (
+                  <SidebarMenuItem key={tag.name} className="text-gray-400">
+                    <SidebarMenuButton 
+                      asChild
+                      isActive={tag.isActive}
+                      onClick={() => setActiveItem({
+                        value: tag.url
+                      })}
+                    >
+                      <Link href={tag.url}>
+                        <span>{tag.emoji}</span>
+                        <span>{tag.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+
+              </SidebarMenu>
+            </SidebarGroupContent>
+
           </SidebarGroup>
-
-
-
-
-
 
 
           {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}

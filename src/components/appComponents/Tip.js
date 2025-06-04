@@ -85,7 +85,6 @@ const handleTip = async () => {
     const platformFee = Math.floor(totalLamports * 0.12); // 12%
     const recipientAmount = totalLamports - platformFee;
 
-    console.log("rrrrrr: ", publicKey?.toString(), recipientAddress?.toString());
     if(publicKey.toString() == recipientAddress.toString()) {
       return toast.error("You are not allowed to tip yourself");
     }

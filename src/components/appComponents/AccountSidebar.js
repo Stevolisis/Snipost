@@ -39,7 +39,7 @@ export function AccountSidebar({ ...props }) {
   navMain: [
     {
       title: "My Account",
-      url: `/profile/${userData._id}`,
+      url: `/profile/${userData?._id}`,
       icon: User,
     },
     {

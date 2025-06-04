@@ -8,7 +8,8 @@ const initialState = {
   isLoading: false,
   error: null,
   userData: null,
-  visitorId: null
+  visitorId: null,
+  hasShownProfilePrompt: false
 };
 
 const authSlice = createSlice({
@@ -69,6 +70,10 @@ const authSlice = createSlice({
         state.visitorId = `vis-${uuidv4().replace(/-/g, '')}` // Generate a new visitor ID if not authenticated
       }
     },
+
+    markProfilePromptShown: (state) => {
+      state.hasShownProfilePrompt = true;
+    },
   }
 });
 
@@ -81,7 +86,8 @@ export const {
   authFailure,
   disconnectWallet,
   updateUserData,
-  setVisitorId
+  setVisitorId,
+  markProfilePromptShown
 } = authSlice.actions;
 
 // Export reducer

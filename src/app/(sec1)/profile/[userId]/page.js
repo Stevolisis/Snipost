@@ -166,7 +166,6 @@ export default function ProfilePage({ params }) {
         {
           loading: 'Unfollowing...',
           success: async (data) => {
-            console.log(data);
             await fetchUser();
             return data?.message || 'Unfollowed successfully!'
           },
@@ -193,7 +192,6 @@ export default function ProfilePage({ params }) {
         {
           loading: 'Deleting snippet...',
           success: (data) => {
-            console.log("pppppppp: ", data);
             fetchSnippets()
             return data?.message || 'Snippet deleted successfully!'
           },
@@ -523,7 +521,7 @@ const streakCount = profile?.streak?.count || 0;
             <CardContent>
               <div className="text-center">
                 <p className="text-4xl font-bold text-white">
-                  {xp.toFixed(2)}
+                  {/* {xp.toFixed(2)} */}
                 </p>
                 <p className="text-sm text-white/80 mt-2">
                   Level {devRank.level}
