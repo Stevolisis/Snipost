@@ -14,13 +14,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 const page = () => {
   const dispatch = useAppDispatch();
   const { snippets = [], isLoading, error } = useAppSelector((state) => state.snippets);
-  const { userData } = useAppSelector((state) => state.auth);
+  const { userData, jwtToken } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchTrendingSnippets = async () => {
       try {
         dispatch(loadSnippetsStart());
-        const response = await api.get('/get-trending-snippets?timeRange=month&limit=10');
+        const response = await api.get('/get-recommended-snippets?timeRange=month&limit=10',{
+            headers:{
+                Authorization: `Bearer ${jwtToken}`
+            }
+        });
         const snippets = response.data.snippets || [];
         dispatch(loadSnippetsSuccess(snippets));
       } catch (err) {

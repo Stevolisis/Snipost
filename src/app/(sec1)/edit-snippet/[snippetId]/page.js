@@ -12,8 +12,26 @@ import { MultiSelect } from '@/components/appComponents/MultiSelect'
 import api from '@/utils/axiosConfig'
 import { useAppSelector } from '@/lib/redux/hooks'
 import { toast } from "sonner"
-import { Loader2, X } from 'lucide-react'
+import { Users, X, CreditCard, Crown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer"
+import Link from 'next/link';
 
 const CodeEditor = dynamic(() => import('@/components/appComponents/CodeEditor/index'), {
   ssr: false,
@@ -96,6 +114,21 @@ export default function EditSnippetPage() {
     codeBlocks: [{ name: '', language: 'javascript', content: '' }],
     type: 'public'
   })
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitErrorMessage, setLimitErrorMessage] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   useEffect(() => {
     const loadSnippet = async () => {
@@ -139,9 +172,14 @@ export default function EditSnippetPage() {
           error: (err) => err.response?.data?.message || 'Failed to update snippet'
         }
       )
-    } catch (error) {
-        console.log(error)
-      toast.error(`Failed to update snippet: ${error?.response?.data?.message}`)
+    } catch (err) {
+        console.log(err)
+        if (err.response?.data?.message?.includes('LimitExceeded')) {
+          setLimitErrorMessage(err.response.data.message);
+          setShowLimitModal(true);
+          return;
+        }
+      toast.error(`Failed to update snippet: ${err?.response?.data?.message || err.message}}`);
     }
   }
 
@@ -152,6 +190,81 @@ export default function EditSnippetPage() {
       </div>
     )
   }
+
+
+  
+  const LimitExceededContent = () => (
+    <>
+      <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full">
+        <Crown className="w-8 h-8 text-primary" />
+      </div>
+      <div className="text-center mb-6">
+        <h3 className="text-lg font-semibold mb-2">Limit Reached</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          {limitErrorMessage.replace('LimitExceeded - ', '')}
+        </p>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center justify-center gap-2">
+            <CreditCard className="w-4 h-4" />
+            <span>Unlimited access</span>
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <Users className="w-4 h-4" />
+            <span>Priority support</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  // Desktop Dialog
+  const DesktopLimitDialog = () => (
+    <Dialog open={showLimitModal} onOpenChange={setShowLimitModal}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="sr-only">Upgrade Required</DialogTitle>
+        </DialogHeader>
+        <LimitExceededContent />
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={() => setShowLimitModal(false)} className="w-full sm:w-auto">
+            Maybe Later
+          </Button>
+          <Link href="/account/subscription" className="w-full sm:w-auto">
+            <Button className="w-full bg-primary hover:bg-primary/90">
+              Upgrade Now
+            </Button>
+          </Link>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+
+  // Mobile Drawer
+  const MobileLimitDrawer = () => (
+    <Drawer open={showLimitModal} onOpenChange={setShowLimitModal}>
+      <DrawerContent className="px-4">
+        <DrawerHeader className="sr-only">
+          <DrawerTitle>Upgrade Required</DrawerTitle>
+        </DrawerHeader>
+        <div className="py-6">
+          <LimitExceededContent />
+        </div>
+        <DrawerFooter className="gap-2 pb-8">
+          <Link href="/account/subscription" className="w-full">
+            <Button className="w-full bg-primary hover:bg-primary/90">
+              Upgrade Now
+            </Button>
+          </Link>
+          <DrawerClose asChild>
+            <Button variant="outline" className="w-full">
+              Maybe Later
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+
 
   return (
     <div className="flex justify-center">
@@ -249,6 +362,9 @@ export default function EditSnippetPage() {
           </Button>
         </div>
       </Card>
+
+      {/* Render appropriate modal based on device type */}
+      {isMobile ? <MobileLimitDrawer /> : <DesktopLimitDialog />}
     </div>
   )
 }
