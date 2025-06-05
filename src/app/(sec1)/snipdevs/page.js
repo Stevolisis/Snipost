@@ -26,7 +26,7 @@ import { toast } from 'sonner';
 
 const getRankGradient = (title) => { 
   switch (title) { 
-    case "Newbie": 
+    case "Cadet": 
       return "from-gray-800 via-gray-700 to-slate-600 border-gray-500 hover:border-gray-400 shadow-gray-400/50 bg-gradient-to-br"; 
     case "Contributor": 
       return "from-emerald-600 via-teal-500 to-cyan-400 border-teal-400 hover:border-cyan-300 shadow-cyan-400/60 bg-gradient-to-br"; 
@@ -53,7 +53,7 @@ const getRankGradient = (title) => {
 
 const getRankIcon = (title) => {
   switch (title) {
-    case "Newbie":
+    case "Cadet":
       return <Target className="w-4 h-4" />;
     case "Contributor":
       return <Code className="w-4 h-4" />;
@@ -93,7 +93,7 @@ const DeveloperCard = ({ user }) => {
     if (xp >= 1500) return 'Explorer';
     if (xp >= 700) return 'Builder';
     if (xp >= 300) return 'Contributor';
-    return 'Newbie';
+    return 'Cadet';
   };
 
   const userRank = getRankFromXP(user.xp || 0);

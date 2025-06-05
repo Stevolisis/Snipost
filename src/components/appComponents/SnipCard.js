@@ -25,7 +25,7 @@ import { Fork } from './Fork';
 
 
 
-const SnipCard = ({snippet}) => {
+const SnipCard = ({snippet, fix}) => {
     const router = useRouter();
     const { isLoading } = useAppSelector((state) => state.snippets);
     const { userData, jwtToken } = useAppSelector((state) => state.auth);
@@ -112,7 +112,7 @@ const SnipCard = ({snippet}) => {
     
 
     return (
-        <Card key={snippet._id} className="w-full hover:shadow-md hover:border-gray-600 transition-colors duration-200">
+        <Card key={snippet._id} className={`${fix ? "w-[400px]" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200"`}>
             <CardHeader>
             
             <div className='flex justify-between items-center'>

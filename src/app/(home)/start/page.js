@@ -1,84 +1,153 @@
 "use client"
+import SnipCard from "@/components/appComponents/SnipCard"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
+import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from "@/lib/redux/slices/snippets"
+import api from "@/utils/axiosConfig"
 import { Code2, PenTool, Trophy, Zap, Users, BarChart2, Gift, ArrowRight, Check, Star, Database, Shield, Sparkles, User } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export default function LandingPage() {
-  const [activeFaq, setActiveFaq] = useState(null);
+    const dispatch = useAppDispatch();
+  const { snippets = [], isLoading, error } = useAppSelector((state) => state.snippets);
+
+  useEffect(() => {
+    const fetchTrendingSnippets = async () => {
+      try {
+        dispatch(loadSnippetsStart());
+        const response = await api.get('/get-trending-snippets?timeRange=month&limit=10');
+        const snippets = response.data.snippets || [];
+        dispatch(loadSnippetsSuccess(snippets));
+      } catch (err) {
+        dispatch(snippetsFailure(err.message || 'Failed to load snippets'));
+      }
+    };
+
+    fetchTrendingSnippets();
+  }, []);
+
+const snaps = [
+  {
+    image: "/artboard.png",
+    title: "Anchor Framework Guide",
+    description: "A quick-start visual for building dApps with Anchor on Solana."
+  },
+  {
+    image: "/artboard.png",
+    title: "NFT Minting Flow",
+    description: "Document your NFT minting logic with real-time code snaps."
+  },
+  {
+    image: "/artboard.png",
+    title: "Token Swap Example",
+    description: "A minimal, tested token swap smart contract example."
+  },
+  {
+    image: "/artboard.png",
+    title: "Solana Airdrop Tool",
+    description: "Tool for developers to automate airdrops in devnet."
+  },
+    {
+    image: "/artboard.png",
+    title: "NFT Minting Flow",
+    description: "Document your NFT minting logic with real-time code snaps."
+  },
+  {
+    image: "/artboard.png",
+    title: "Token Swap Example",
+    description: "A minimal, tested token swap smart contract example."
+  },
+  {
+    image: "/artboard.png",
+    title: "Solana Airdrop Tool",
+    description: "Tool for developers to automate airdrops in devnet."
+  },
+];
 
   const features = [
     {
       icon: <Code2 className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
-      title: "Create & Share",
+      title: "Post & Share Snippets",
       description: "Build, edit and share code snippets with built-in syntax highlighting and collaborative tools."
     },
     {
-      icon: <PenTool className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
-      title: "Visual Learning",
+      icon: <Code2 className="w-6 h-6 text-primary" />,
+      title: "Organized Snips & Snaps",
+      description: "Find and share trusted Solana code snippets and snaps, tagged and upvoted by the community, so you skip the Discord chaos."
+    },
+    {
+      icon: <Zap className="w-6 h-6 text-primary" />,
+      title: "Snap Editor",
       description: "Create visual explainers with our snap editor to simplify complex Solana concepts."
     },
     {
-      icon: <Trophy className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
-      title: "Code Battles",
-      description: "Join competitive challenges, solve problems, and earn SOL while improving your skills."
+      icon: <Trophy className="w-6 h-6 text-primary" />,
+      title: "Sponsored Challenges",
+      description: "Tackle bounties from Web3 companies, earn SOL, and flex your skills on the leaderboard."
     },
-    {
-      icon: <Zap className="w-5 h-5 md:w-8 md:h-8 text-primary" />,
-      title: "SocialFi Rewards",
-      description: "Earn SOL through tips, sponsorships, and recognition for your contributions."
-    }
-  ]
+    // {
+    //   icon: <Users className="w-6 h-6 text-primary" />,
+    //   title: "Web3 Community",
+    //   description: "Join Solana devs to share code, get feedback, and build your on-chain reputation."
+    // }
+  ];
 
   const testimonials = [
     {
-      quote: "Snipost has completely transformed how I share Solana code solutions with the community.",
-      author: "Alex Wang",
-      role: "Senior Blockchain Developer",
+      quote: "Snipost’s organized snippets saved me hours of digging through Turbine3’s Discord for working Solana code.",
+      author: "Priya Sharma",
+      role: "Solana Developer",
       image: "/user1.png"
     },
     {
-      quote: "The visual explainers feature helped me understand complex Solana concepts much faster than text tutorials.",
-      author: "Maya Johnson",
+      quote: "As a Web2 dev, Snipost’s resources made Solana feel approachable, no more outdated tutorials!",
+      author: "Liam Chen",
       role: "Frontend Developer",
       image: "/user2.jpg"
     },
     {
-      quote: "Hosting code battles on Snipost helped us identify top talent for our DeFi project.",
-      author: "Jamal Thomas",
-      role: "Rust Developer",
+      quote: "Documenting my hackathon project with the snap editor helped me stand out and get featured!",
+      author: "Tunde Okoye",
+      role: "Hackathon Winner",
       image: "/user3.jpg"
     }
-  ]
+  ];
+
+
 
   const stats = [
-    { value: "5,000+", label: "Active Developers" },
-    { value: "12,000+", label: "Code Snippets" },
-    { value: "500+", label: "SOL Distributed" },
-    { value: "95%", label: "Satisfaction Rate" }
-  ]
+    { value: "6,000+", label: "Active Developers" },
+    { value: "15,000+", label: "Code Snippets" },
+    { value: "1,000+", label: "SOL Earned" },
+    { value: "92%", label: "Community Trust" }
+  ];
 
   const faqs = [
     {
-      question: "How do I earn SOL on Snipost?",
-      answer: "You can earn SOL in multiple ways: receiving tips from the community for helpful snippets, winning sponsored code battles, creating popular visual explainers, and through our reputation-based reward system."
+      question: "How does Snipost help Web2 devs get into Web3?",
+      answer: "Snipost offers curated Solana snippets and beginner guides, so you can learn smart contracts, NFTs, or wallets without wading through outdated blogs. It's like a Web3 mentor in your pocket."
     },
     {
-      question: "Is Snipost only for advanced Solana developers?",
-      answer: "Not at all! Snipost welcomes developers of all skill levels. Beginners can learn from the community's snippets and visual explainers, while more experienced developers can share knowledge and participate in advanced challenges."
+      question: "What's the snap editor, and why should I use it?",
+      answer: "The snap editor lets you create visual explainers and infographics to explain your code concepts. Perfect for making complex Solana development topics easy to understand and share with the community."
     },
     {
-      question: "How do sponsored code battles work?",
-      answer: "Companies sponsor challenges with specific requirements. Developers submit solutions, the community and sponsors vote on the best implementations, and winners receive SOL rewards. It's a great way to showcase your skills and earn while learning."
+      question: "What's the snip editor for?",
+      answer: "The snip editor is where you write or paste your Solana code snippets with descriptions, tags, and notes. Document your code, share solutions, and build your developer reputation in the community."
     },
     {
-      question: "What makes Snipost different from GitHub gists or other code-sharing platforms?",
-      answer: "Snipost is specifically built for Solana developers with integrated visual tools, a social ecosystem with direct SOL rewards, and focused learning resources. Our platform combines code sharing, visual learning, social interaction, and financial incentives in one ecosystem."
+      question: "How do sponsored challenges work?",
+      answer: "Web3 companies post bounties on Snipost with real-world problems. You submit your solutions, and the sponsoring company evaluates entries to select winners who earn SOL rewards and climb the leaderboard."
+    },
+    {
+      question: "Why not just use Discord or GitHub for Solana code?",
+      answer: "Discord's a mess - snippets get lost or don't work. GitHub's great but not built for quick Solana learning or community rewards. Snipost's tailored for Solana devs with tags, upvotes, and SOL incentives."
     }
-  ]
+  ];
 
   const pricingTiers = [
     {
@@ -145,19 +214,19 @@ export default function LandingPage() {
               <span className="text-sm font-medium text-primary">The SocialFi Platform for Solana Developers</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-              Code. Share. <span className="text-primary">Earn</span>.
+              Build. Share. <span className="text-primary">Win</span>.
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-              The first social ecosystem where Solana developers can share code, create visual explainers, and earn SOL rewards.
+            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-4xl mx-auto">
+              I’m a Solana dev like you, fed up with scattered resources and Discord chaos. Snipost’s your hub to find trusted code snippets, document your work, and earn SOL in the Web3 community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="gap-2 text-base md:text-lg md:h-13" asChild>
+              <Button size="lg" className="gap-2 text-sm md:text-base md:h-11" asChild>
                 <Link href="/feed/snippets">
                   <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Start Earning Now
+                  Jump In Now
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="gap-2 text-base md:text-lg md:h-13" asChild>
+              <Button variant="outline" size="lg" className="gap-2 text-sm md:text-base md:h-11" asChild>
                 <Link href="/feed/snippets">
                   <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   Explore Snippets
@@ -180,6 +249,46 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Pain Points Section */}
+      <section className="container mx-auto px-6 py-24">
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            The Web3 Dev Struggle Is Real
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            I’ve been there losing hours to bad tutorials and buried code. Here’s what we’re fixing.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <Card className="bg-background/80 border-destructive/20">
+            <CardHeader>
+              <CardTitle>Without Snipost</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-muted-foreground">
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> Scattered Solana resources - outdated blogs, broken Discord snippets.</li>
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> No clear use cases for some solana projects - wasting time guessing.</li>
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> Your killer feature? Lost because you didn't document it properly.</li>
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> Hesitant to share code, scared of harsh feedback or no response.</li>
+              </ul>
+            </CardContent>
+          </Card>
+          <Card className="bg-background/80 border-green-500/20">
+            <CardHeader>
+              <CardTitle>With Snipost</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-muted-foreground">
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Curated, upvoted Solana snippets - Web2 devs learn fast, experienced devs find what works.</li>
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Clear integration guides for hackathons - nail @Solana projects.</li>
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Snip editor to document your code & Snap editor for visual explainers - never forget a win.</li>
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Safe space to share code, get constructive feedback, and shine on the leaderboard.</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -210,50 +319,119 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="bg-muted/30 py-24">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">How Snipost Works</h2>
-            <p className="text-lg text-muted-foreground">
-              A simple process to start sharing and earning
+      <section className="container px-6 py-24 bg-muted/30">
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            How Snipost Levels You Up
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            From learning to earning, here’s the flow.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div>
+            <div className="bg-[#E5FF4A]/10 rounded-full w-14 h-14 flex items-center justify-center mb-6">
+              <span className="text-xl md:text-2xl font-bold text-primary">1</span>
+            </div>
+            <h3 className="text-xl font-bold mb-3">Learn & Explore</h3>
+            <p className="text-muted-foreground">
+              Web2 devs dive into Solana with curated snippets and guides. Turbine3 folks find organized code, no Discord mess.
             </p>
           </div>
-          
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="relative">
-                <div className="bg-primary/10 rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center mb-6">
-                  <span className="text-xl md:text-2xl font-bold text-primary">1</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Create Content</h3>
-                <p className="text-muted-foreground mb-4">
-                  Build code snippets or visual explainers using our specialized editors
-                </p>
-              </div>
-              
-              <div className="relative">
-                <div className="bg-primary/10 rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center mb-6">
-                  <span className="text-xl md:text-2xl font-bold text-primary">2</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Share with Community</h3>
-                <p className="text-muted-foreground mb-4">
-                  Post your content to the feed where other developers can discover it
-                </p>
-              </div>
-              
-              <div>
-                <div className="bg-primary/10 rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center mb-6">
-                  <span className="text-xl md:text-2xl font-bold text-primary">3</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Earn SOL Rewards</h3>
-                <p className="text-muted-foreground mb-4">
-                  Receive tips, win challenges, and build your reputation while earning
-                </p>
-              </div>
+          <div>
+            <div className="bg-[#E5FF4A]/10 rounded-full w-14 h-14 flex items-center justify-center mb-6">
+              <span className="text-xl md:text-2xl font-bold text-primary">2</span>
             </div>
+            <h3 className="text-xl font-bold mb-3">Document & Share</h3>
+            <p className="text-muted-foreground">
+              Use the snap editor to save your work—NFTs, smart contracts—and share it for community feedback.
+            </p>
+          </div>
+          <div>
+            <div className="bg-[#E5FF4A]/10 rounded-full w-14 h-14 flex items-center justify-center mb-6">
+              <span className="text-xl md:text-2xl font-bold text-primary">3</span>
+            </div>
+            <h3 className="text-xl font-bold mb-3">Earn & Shine</h3>
+            <p className="text-muted-foreground">
+              Win SOL in sponsored challenges, climb the leaderboard, get tipped, and get featured as a top Solana dev.
+            </p>
           </div>
         </div>
       </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* Snaps Marquee Section */}
+<section className="relative overflow-hidden py-12 bg-background">
+  <div className="relative w-full">
+    <div className="flex w-[200%] animate-[scroll_40s_linear_infinite] space-x-6 px-6">
+      {[...snippets, ...snippets].map((snip, i) => (
+        <SnipCard snippet={snip} fix={true} key={i}/>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+{/* Snaps Marquee Section */}
+<section className="relative overflow-hidden py-12 bg-background">
+  <div className="relative w-full">
+    <div className="flex w-[200%] animate-[scroll_20s_linear_infinite] space-x-6 px-6">
+      {[...snaps, ...snaps].map((snap, idx) => (
+        <Card key={idx} className="w-[500px] flex-shrink-0 border border-border bg-muted/10">
+          <CardContent className="p-4 flex flex-col h-full">
+            <Image
+              src={snap.image}
+              alt={snap.title}
+              width={500}
+              height={180}
+              className="rounded-md mb-3 object-cover"
+            />
+            <h3 className="text-base font-semibold mb-1">{snap.title}</h3>
+            <p className="text-sm text-muted-foreground line-clamp-3">
+              {snap.description}
+            </p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
 
       {/* Testimonials */}
       <section className="container mx-auto px-6 py-24">
@@ -295,8 +473,15 @@ export default function LandingPage() {
         </div>
       </section>
 
+
+
+
+
+
+
+
       {/* Pricing Section */}
-      <section className="bg-muted/20 py-24">
+      {/* <section className="bg-muted/20 py-24">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Choose Your Path</h2>
@@ -349,10 +534,10 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* FAQ Section */}
-      <section className="container mx-auto px-6 py-24">
+      <section className="container px-6 py-24 bg-muted/20">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Frequently Asked Questions</h2>
           <p className="text-lg text-muted-foreground">
@@ -412,7 +597,7 @@ export default function LandingPage() {
             <p className="text-lg mb-8 text-muted-foreground">
               Join thousands of Solana developers already building their reputation and earning rewards.
             </p>
-            <Button size="lg" className="text-base md:text-lg sm:h-13" asChild>
+            <Button size="lg" className="text-sm md:text-base sm:h-11" asChild>
               <Link href="/feed/snippets">
                 Get Started for Free
               </Link>

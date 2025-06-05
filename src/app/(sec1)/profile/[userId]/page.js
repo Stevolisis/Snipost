@@ -272,7 +272,7 @@ export default function ProfilePage({ params }) {
 
 
 const DevRanks = [
-  { title: "Newbie", threshold: 0, level: 1, multiplier: 1.0 },
+  { title: "Cadet", threshold: 0, level: 1, multiplier: 1.0 },
   { title: "Contributor", threshold: 300, level: 2, multiplier: 1.05 },
   { title: "Builder", threshold: 700, level: 3, multiplier: 1.10 },
   { title: "Explorer", threshold: 1500, level: 4, multiplier: 1.15 },
@@ -302,7 +302,7 @@ const getDevRankWithNext = (xp) => {
 
 const getRankGradient = (title) => { 
   switch (title) { 
-    case "Newbie": 
+    case "Cadet": 
       return "from-gray-800 via-gray-700 to-slate-600 border-gray-500 hover:border-gray-400 shadow-gray-400/50 bg-gradient-to-br"; 
     case "Contributor": 
       return "from-emerald-600 via-teal-500 to-cyan-400 border-teal-400 hover:border-cyan-300 shadow-cyan-400/60 bg-gradient-to-br"; 
