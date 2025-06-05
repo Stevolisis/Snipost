@@ -32,14 +32,14 @@ export default function LandingPage() {
 
 const snaps = [
   {
-    image: "/artboard.png",
-    title: "Anchor Framework Guide",
-    description: "A quick-start visual for building dApps with Anchor on Solana."
+    image: "/artboard3.png",
+    title: "Anatomy of a Solana Program",
+    description: "Key components in a Rust-based Solana smart contract"
   },
   {
-    image: "/artboard.png",
-    title: "NFT Minting Flow",
-    description: "Document your NFT minting logic with real-time code snaps."
+    image: "/artboard2.png",
+    title: "Secure Wallet Login Flow",
+    description: "How users sign in with their crypto wallet."
   },
   {
     image: "/artboard.png",
@@ -50,6 +50,16 @@ const snaps = [
     image: "/artboard.png",
     title: "Solana Airdrop Tool",
     description: "Tool for developers to automate airdrops in devnet."
+  },
+    {
+    image: "/artboard3.png",
+    title: "Anatomy of a Solana Program",
+    description: "Key components in a Rust-based Solana smart contract"
+  },
+  {
+    image: "/artboard2.png",
+    title: "Secure Wallet Login Flow",
+    description: "How users sign in with their crypto wallet."
   },
     {
     image: "/artboard.png",
