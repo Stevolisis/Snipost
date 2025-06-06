@@ -97,15 +97,15 @@ const DeveloperCard = ({ user }) => {
 
   // Calculate rank based on XP
   const getRankFromXP = (xp) => {
-    if (xp >= DevRanks[8].threshold) return 'Icon';
-    if (xp >= DevRanks[7].threshold) return 'Visionary';
-    if (xp >= DevRanks[6].threshold) return 'Mentor';
-    if (xp >= DevRanks[5].threshold) return 'Architect';
-    if (xp >= DevRanks[4].threshold) return 'Strategist';
-    if (xp >= DevRanks[3].threshold) return 'Innovator';
-    if (xp >= DevRanks[2].threshold) return 'Explorer';
-    if (xp >= DevRanks[1].threshold) return 'Builder';
-    if (xp >= DevRanks[0].threshold) return 'Contributor';
+    if (xp >= DevRanks[9].threshold) return 'Icon';
+    if (xp >= DevRanks[8].threshold) return 'Visionary';
+    if (xp >= DevRanks[7].threshold) return 'Mentor';
+    if (xp >= DevRanks[6].threshold) return 'Architect';
+    if (xp >= DevRanks[5].threshold) return 'Strategist';
+    if (xp >= DevRanks[4].threshold) return 'Innovator';
+    if (xp >= DevRanks[3].threshold) return 'Explorer';
+    if (xp >= DevRanks[2].threshold) return 'Builder';
+    if (xp >= DevRanks[1].threshold) return 'Contributor';
     return 'Cadet';
   };
 
