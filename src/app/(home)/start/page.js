@@ -374,18 +374,20 @@ const snaps = [
 
 
 {/* Snaps Marquee Section */}
-<section className="relative overflow-hidden py-12 bg-background">
-  <div className="max-w-3xl mx-auto text-center my-7 mb-9">
-    <h2 className="text-3xl md:text-4xl font-bold">Snips (Snippets)</h2>
-  </div>
-  <div className="relative w-full">
-    <div className="flex w-[200%] animate-[scroll_70s_linear_infinite] space-x-6 px-6">
-      {[...snippets, ...snippets].map((snip, i) => (
-        <SnipCard snippet={snip} fix={true} key={i}/>
-      ))}
+{snippets.length > 0 && 
+  <section className="relative overflow-hidden py-12 bg-background">
+    <div className="max-w-3xl mx-auto text-center my-7 mb-9">
+      <h2 className="text-3xl md:text-4xl font-bold">Snips (Snippets)</h2>
     </div>
-  </div>
-</section>
+    <div className="relative w-full">
+      <div className="flex w-[200%] animate-[scroll_70s_linear_infinite] space-x-6 px-6">
+        {[...snippets, ...snippets].map((snip, i) => (
+          <SnipCard snippet={snip} fix={true} key={i}/>
+        ))}
+      </div>
+    </div>
+  </section>
+}
 
 
 
@@ -403,7 +405,7 @@ const snaps = [
   <div className="flex w-full">
       <Marquee speed={100} pauseOnHover={true}>
         {[...snaps, ...snaps].map((snap, i) => (
-          <Card key={i}  className="mx-3 w-[500px]  flex-shrink-0  border border-border bg-muted/10">
+          <Card key={i}  className="mx-3 w-[380px] sm:w-[500px] flex-shrink-0  border border-border bg-muted/10">
             <CardContent className="p-4 flex flex-col h-full">
               <Image
                 src={snap.image}

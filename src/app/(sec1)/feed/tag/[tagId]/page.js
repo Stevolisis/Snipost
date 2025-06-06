@@ -23,7 +23,7 @@ const page = ({params}) => {
     const fetchTrendingSnippets = async () => {
       try {
         dispatch(loadSnippetsStart());
-        const response = await api.post(`/get-snippets-by-tags?limit=10`,{
+        const response = await api.post(`/get-snippets-by-tags?limit=50`,{
             tags: [tagId],
         });
         const snippets = response.data.snippets || [];

@@ -372,6 +372,7 @@ const SnippetEditor = () => {
                   placeholder="file name e.g index.ts"
                   value={block.name}
                   onChange={(e) => handleCodeBlockChange(index, 'name', e.target.value)}
+                  className="sm:w-[60%]"
                 />
               </div>
 

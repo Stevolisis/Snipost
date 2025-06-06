@@ -22,7 +22,7 @@ const page = () => {
     const fetchTrendingSnippets = async () => {
       try {
         dispatch(loadSnippetsStart());
-        const response = await api.get('/get-trending-snippets?timeRange=month&limit=10');
+        const response = await api.get('/get-trending-snippets?timeRange=month&limit=50');
         const snippets = response.data.snippets || [];
         dispatch(loadSnippetsSuccess(snippets));
       } catch (err) {
