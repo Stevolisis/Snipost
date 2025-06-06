@@ -157,7 +157,7 @@ export default function AchievementPage({params}) {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 text-foreground">
-            Your Achievements
+            {userData?._id === userId && "Your"} Achievements
           </h1>
           <p className="text-muted-foreground mb-6">
             Unlock achievements by being active in the Snipost community
