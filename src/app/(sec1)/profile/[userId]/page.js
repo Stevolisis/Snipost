@@ -273,15 +273,15 @@ export default function ProfilePage({ params }) {
 
 const DevRanks = [
   { title: "Cadet", threshold: 0, level: 1, multiplier: 1.0 },
-  { title: "Contributor", threshold: 300, level: 2, multiplier: 1.05 },
-  { title: "Builder", threshold: 700, level: 3, multiplier: 1.10 },
-  { title: "Explorer", threshold: 1500, level: 4, multiplier: 1.15 },
-  { title: "Innovator", threshold: 3000, level: 5, multiplier: 1.20 },
-  { title: "Strategist", threshold: 5000, level: 6, multiplier: 1.25 },
-  { title: "Architect", threshold: 7500, level: 7, multiplier: 1.30 },
-  { title: "Mentor", threshold: 10000, level: 8, multiplier: 1.35 },
-  { title: "Visionary", threshold: 15000, level: 9, multiplier: 1.40 },
-  { title: "Icon", threshold: 20000, level: 10, multiplier: 1.50 },
+  { title: "Contributor", threshold: 600, level: 2, multiplier: 1.05 },
+  { title: "Builder", threshold: 1400, level: 3, multiplier: 1.10 },
+  { title: "Explorer", threshold: 2800, level: 4, multiplier: 1.15 },
+  { title: "Innovator", threshold: 5000, level: 5, multiplier: 1.20 },
+  { title: "Strategist", threshold: 7500, level: 6, multiplier: 1.25 },
+  { title: "Architect", threshold: 10500, level: 7, multiplier: 1.30 },
+  { title: "Mentor", threshold: 14000, level: 8, multiplier: 1.35 },
+  { title: "Visionary", threshold: 19000, level: 9, multiplier: 1.40 },
+  { title: "Icon", threshold: 25000, level: 10, multiplier: 1.50 },
 ];
 
 const getDevRankWithNext = (xp) => {

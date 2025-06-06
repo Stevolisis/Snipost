@@ -78,21 +78,34 @@ const getRankIcon = (title) => {
   }
 };
 
+const DevRanks = [
+  { title: "Cadet", threshold: 0, multiplier: 1.0 },
+  { title: "Contributor", threshold: 600, multiplier: 1.05 },
+  { title: "Builder", threshold: 1400, multiplier: 1.10 },
+  { title: "Explorer", threshold: 2800, multiplier: 1.15 },
+  { title: "Innovator", threshold: 5000, multiplier: 1.20 },
+  { title: "Strategist", threshold: 7500, multiplier: 1.25 },
+  { title: "Architect", threshold: 10500, multiplier: 1.30 },
+  { title: "Mentor", threshold: 14000, multiplier: 1.35 },
+  { title: "Visionary", threshold: 19000, multiplier: 1.40 },
+  { title: "Icon", threshold: 25000, multiplier: 1.50 },
+];
+
 const DeveloperCard = ({ user }) => {
   const { userData } = useAppSelector((state) => state.auth);
   const isCurrentUser = userData?._id === user._id;
 
   // Calculate rank based on XP
   const getRankFromXP = (xp) => {
-    if (xp >= 20000) return 'Icon';
-    if (xp >= 15000) return 'Visionary';
-    if (xp >= 10000) return 'Mentor';
-    if (xp >= 7500) return 'Architect';
-    if (xp >= 5000) return 'Strategist';
-    if (xp >= 3000) return 'Innovator';
-    if (xp >= 1500) return 'Explorer';
-    if (xp >= 700) return 'Builder';
-    if (xp >= 300) return 'Contributor';
+    if (xp >= DevRanks[8].threshold) return 'Icon';
+    if (xp >= DevRanks[7].threshold) return 'Visionary';
+    if (xp >= DevRanks[6].threshold) return 'Mentor';
+    if (xp >= DevRanks[5].threshold) return 'Architect';
+    if (xp >= DevRanks[4].threshold) return 'Strategist';
+    if (xp >= DevRanks[3].threshold) return 'Innovator';
+    if (xp >= DevRanks[2].threshold) return 'Explorer';
+    if (xp >= DevRanks[1].threshold) return 'Builder';
+    if (xp >= DevRanks[0].threshold) return 'Contributor';
     return 'Cadet';
   };
 
