@@ -122,14 +122,14 @@ const DeveloperCard = ({ user }) => {
             </div>
             
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
+              <div className=" items-center gap-2 mb-1">
                 <Link href={`/profile/${user._id}`}>
                   <CardTitle className="text-lg hover:text-primary transition-colors cursor-pointer">
                     {user.name || 'Anonymous Developer'}
                   </CardTitle>
                 </Link>
                 {user.userName && (
-                  <span className="text-sm text-muted-foreground">@{user.userName}</span>
+                  <div className="text-[11px] text-muted-foreground">@{user.userName}</div>
                 )}
                 {isCurrentUser && (
                   <Badge variant="secondary" className="text-xs">You</Badge>

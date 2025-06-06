@@ -6,13 +6,15 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from "@/lib/redux/slices/snippets"
 import api from "@/utils/axiosConfig"
-import { Code2, PenTool, Trophy, Zap, Users, BarChart2, Gift, ArrowRight, Check, Star, Database, Shield, Sparkles, User } from "lucide-react"
+import { Code2, PenTool, Trophy, Zap, Users, BarChart2, Gift, ArrowRight, Check, Star, Database, Shield, Sparkles, User, Folder } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import Marquee from "react-fast-marquee"
+const { motion } = require("framer-motion");
 
 export default function LandingPage() {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const { snippets = [], isLoading, error } = useAppSelector((state) => state.snippets);
 
   useEffect(() => {
@@ -42,39 +44,19 @@ const snaps = [
     description: "How users sign in with their crypto wallet."
   },
   {
-    image: "/artboard.png",
-    title: "Token Swap Example",
-    description: "A minimal, tested token swap smart contract example."
+    image: "/artboard4.png",
+    title: "Initialize a Solana Account using Anchor",
+    description: "Learn how to define and create a custom on-chain account in Solana using Anchor's #[derive(Accounts)] pattern. This snippet shows how account initialization, rent payment, and memory allocation are handled"
   },
   {
-    image: "/artboard.png",
-    title: "Solana Airdrop Tool",
-    description: "Tool for developers to automate airdrops in devnet."
-  },
-    {
-    image: "/artboard3.png",
-    title: "Anatomy of a Solana Program",
-    description: "Key components in a Rust-based Solana smart contract"
+    image: "/artboard5.png",
+    title: "Transfer Tokens on Solana vs Ethereum",
+    description: "A side-by-side code comparison showing how to send native tokens (SOL and ETH) using @solana/web3.js and ethers.js. Solana uses lamports and system programs; Ethereum uses gwei and gas."
   },
   {
-    image: "/artboard2.png",
-    title: "Secure Wallet Login Flow",
-    description: "How users sign in with their crypto wallet."
-  },
-    {
-    image: "/artboard.png",
-    title: "NFT Minting Flow",
-    description: "Document your NFT minting logic with real-time code snaps."
-  },
-  {
-    image: "/artboard.png",
-    title: "Token Swap Example",
-    description: "A minimal, tested token swap smart contract example."
-  },
-  {
-    image: "/artboard.png",
-    title: "Solana Airdrop Tool",
-    description: "Tool for developers to automate airdrops in devnet."
+    image: "/artboard6.png",
+    title: "Setting things up for Turbine3",
+    description: "Follow these steps to set up a local Solana dev environment."
   },
 ];
 
@@ -85,7 +67,7 @@ const snaps = [
       description: "Build, edit and share code snippets with built-in syntax highlighting and collaborative tools."
     },
     {
-      icon: <Code2 className="w-6 h-6 text-primary" />,
+      icon: <Folder className="w-6 h-6 text-primary" />,
       title: "Organized Snips & Snaps",
       description: "Find and share trusted Solana code snippets and snaps, tagged and upvoted by the community, so you skip the Discord chaos."
     },
@@ -226,7 +208,7 @@ const snaps = [
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
               Build. Share. <span className="text-primary">Win</span>.
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-4xl mx-auto">
+            <p className="text-base md:text-xl text-muted-foreground mb-10 max-w-4xl mx-auto">
               I’m a Solana dev like you, fed up with scattered resources and Discord chaos. Snipost’s your hub to find trusted code snippets, document your work, and earn SOL in the Web3 community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -303,7 +285,7 @@ const snaps = [
       </section>
 
       {/* Feature Highlights */}
-      <section className="container mx-auto px-6 py-24">
+      <section className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Everything You Need to Succeed in Web3</h2>
           <p className="text-lg text-muted-foreground">
@@ -329,13 +311,13 @@ const snaps = [
       </section>
 
       {/* How It Works */}
-      <section className="container px-6 py-24 bg-muted/30">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+ <section className="container px-6 py-18 m-auto mt-12 bg-muted/30">
+        <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             How Snipost Levels You Up
           </h2>
           <p className="text-lg text-muted-foreground">
-            From learning to earning, here’s the flow.
+            From learning to earning, here's the flow.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -345,7 +327,7 @@ const snaps = [
             </div>
             <h3 className="text-xl font-bold mb-3">Learn & Explore</h3>
             <p className="text-muted-foreground">
-              Web2 devs dive into Solana with curated snippets and guides. Turbine3 folks find organized code, no Discord mess.
+              Web2 devs dive into Solana with curated snippets and guides. Experienced devs find organized code, no Discord mess.
             </p>
           </div>
           <div>
@@ -354,7 +336,7 @@ const snaps = [
             </div>
             <h3 className="text-xl font-bold mb-3">Document & Share</h3>
             <p className="text-muted-foreground">
-              Use the snap editor to save your work—NFTs, smart contracts—and share it for community feedback.
+              Use the snip editor to save your code snippets and the snap editor to create visual explainers, then share for community feedback.
             </p>
           </div>
           <div>
@@ -393,8 +375,11 @@ const snaps = [
 
 {/* Snaps Marquee Section */}
 <section className="relative overflow-hidden py-12 bg-background">
+  <div className="max-w-3xl mx-auto text-center my-7 mb-9">
+    <h2 className="text-3xl md:text-4xl font-bold">Snips (Snippets)</h2>
+  </div>
   <div className="relative w-full">
-    <div className="flex w-[200%] animate-[scroll_40s_linear_infinite] space-x-6 px-6">
+    <div className="flex w-[200%] animate-[scroll_70s_linear_infinite] space-x-6 px-6">
       {[...snippets, ...snippets].map((snip, i) => (
         <SnipCard snippet={snip} fix={true} key={i}/>
       ))}
@@ -412,26 +397,53 @@ const snaps = [
 
 {/* Snaps Marquee Section */}
 <section className="relative overflow-hidden py-12 bg-background">
-  <div className="relative w-full">
-    <div className="flex w-[200%] animate-[scroll_20s_linear_infinite] space-x-6 px-6">
-      {[...snaps, ...snaps].map((snap, idx) => (
-        <Card key={idx} className="w-[500px] flex-shrink-0 border border-border bg-muted/10">
-          <CardContent className="p-4 flex flex-col h-full">
-            <Image
-              src={snap.image}
-              alt={snap.title}
-              width={500}
-              height={180}
-              className="rounded-md mb-3 object-cover"
-            />
-            <h3 className="text-base font-semibold mb-1">{snap.title}</h3>
-            <p className="text-sm text-muted-foreground line-clamp-3">
-              {snap.description}
-            </p>
-          </CardContent>
-        </Card>
+  <div className="max-w-3xl mx-auto text-center mb-7">
+    <h2 className="text-3xl md:text-4xl font-bold">Snaps (Visual Explainers)</h2>
+  </div>
+  <div className="flex w-full">
+      <Marquee speed={100} pauseOnHover={true}>
+        {[...snaps, ...snaps].map((snap, i) => (
+          <Card key={i}  className="mx-3 w-[500px]  flex-shrink-0  border border-border bg-muted/10">
+            <CardContent className="p-4 flex flex-col h-full">
+              <Image
+                src={snap.image}
+                alt={snap.title}
+                width={500}
+                height={180}
+                className="rounded-md mb-3 object-cover"
+              />
+              <h3 className="text-base font-semibold mb-1">{snap.title}</h3>
+              <p className="text-sm text-muted-foreground line-clamp-3">
+                {snap.description}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </Marquee>
+        {/* <motion.div className="flex w-[200%] space-x-6 px-6 " 
+      initial={{ x: 0, opacity: 0 }} 
+      transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} 
+      animate={{ x: "-100%", opacity: 1, }} 
+    >
+      {[...snaps, ...snaps].map((snap, i) => (
+          <Card key={i}  className="w-[500px]  flex-shrink-0  border border-border bg-muted/10">
+            <CardContent className="p-4 flex flex-col h-full">
+              <Image
+                src={snap.image}
+                alt={snap.title}
+                width={500}
+                height={180}
+                className="rounded-md mb-3 object-cover"
+              />
+              <h3 className="text-base font-semibold mb-1">{snap.title}</h3>
+              <p className="text-sm text-muted-foreground line-clamp-3">
+                {snap.description}
+              </p>
+            </CardContent>
+          </Card>
       ))}
-    </div>
+    </motion.div> */}
+
   </div>
 </section>
 
@@ -444,7 +456,7 @@ const snaps = [
 
 
       {/* Testimonials */}
-      <section className="container mx-auto px-6 py-24">
+      <section className="container mx-auto px-6 py-12">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">What the Community Says</h2>
           <p className="text-lg text-muted-foreground">
@@ -547,8 +559,8 @@ const snaps = [
       </section> */}
 
       {/* FAQ Section */}
-      <section className="container px-6 py-24 bg-muted/20">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+      <section className="container m-auto px-6 py-18 bg-muted/20">
+        <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Frequently Asked Questions</h2>
           <p className="text-lg text-muted-foreground">
             Everything you need to know about SnipPost

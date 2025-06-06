@@ -21,11 +21,11 @@ const page = () => {
     const fetchTrendingSnippets = async () => {
       try {
         dispatch(loadSnippetsStart());
-        const response = await api.get('/get-recommended-snippets?timeRange=month&limit=10',{
+        const response = jwtToken ? await api.get('/get-recommended-snippets?timeRange=month&limit=10',{
             headers:{
                 Authorization: `Bearer ${jwtToken}`
             }
-        });
+        }): await api.get('/get-trending-snippets?timeRange=month&limit=10');
         const snippets = response.data.snippets || [];
         dispatch(loadSnippetsSuccess(snippets));
       } catch (err) {

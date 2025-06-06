@@ -63,9 +63,7 @@ export default function AchievementPage({params}) {
   const fetchunlocked = async () => {
     try {
       dispatch(loadAchievementsStart());
-      const response = await api.get(`/get-unlocked-achievements/${user?._id}/${user?.role}`, {
-        headers: { Authorization: `Bearer ${jwtToken}` }
-      });
+      const response = await api.get(`/get-unlocked-achievements/${user?._id}/${user?.role}`);
       dispatch(loadAchievementsSuccess(response.data));
     } catch (error) {
       dispatch(achievementsFailure(error.response?.data?.error || "Failed to fetch achievements"));
@@ -182,7 +180,7 @@ export default function AchievementPage({params}) {
 
           {unclaimed.length > 0 && (
             <div className="mb-6">
-              {(userId === userData._id) && (<Button 
+              {(userId === userData?._id) && (<Button 
                 variant="default"
                 onClick={handleClaimAllAchievements}
               >
@@ -239,7 +237,7 @@ export default function AchievementPage({params}) {
                   </div>
                 </div>
                 
-                {(userId === userData._id) && (unlocked.includes(selectedAchievement.key) && 
+                {(userId === userData?._id) && (unlocked.includes(selectedAchievement.key) && 
                   (claimed.includes(selectedAchievement.key) ? 
                   <Button 
                     className="w-full"
@@ -289,7 +287,7 @@ export default function AchievementPage({params}) {
                   </div>
                 </div>
                 
-                {(userId === userData._id) && (unlocked.includes(selectedAchievement.key) && 
+                {(userId === userData?._id) && (unlocked.includes(selectedAchievement.key) && 
                   (claimed.includes(selectedAchievement.key) ? 
                     <Button 
                         className="w-full"
