@@ -9,7 +9,12 @@ const page = () => {
             <CardHeader>
                 <CardTitle>For Feeback or Complaints</CardTitle>
                 <CardDescription>Reach out to us here </CardDescription>
-                <Button variant="default">Whatsapp</Button>
+                <a
+                  href="mailto:snipost62@gmail.com?subject=Feedback%20or%20Complaint"
+                  className="mt-4 inline-block"
+                >
+                  <Button variant="default" className="w-full">Email Us</Button>
+                </a>
             </CardHeader>
         </Card>
     </div>

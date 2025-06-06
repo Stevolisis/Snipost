@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { disconnectWallet } from "@/lib/redux/slices/auth";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Bell, History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react";
+import { Award, Bell, History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
 import { toast } from "sonner";
@@ -43,9 +43,9 @@ export function ProfileDropDown({ children }) {
           shortcut: "⌘B",
         },
         {
-          label: "History",
-          icon: History,
-          href: "/account/history",
+          label: "Achievement",
+          icon: Award,
+          href: `/profile/${userData?._id}/achievements`,
           shortcut: "⌘S",
         },
       ],

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
-import { History, IdCard, MessageCircle, NewspaperIcon, PackagePlus, Plus, Settings, User } from "lucide-react"
+import { Award, History, IdCard, MessageCircle, NewspaperIcon, PackagePlus, Plus, Settings, User } from "lucide-react"
 import { useAppSelector } from '@/lib/redux/hooks'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
@@ -41,22 +41,25 @@ export function AccountSidebar({ ...props }) {
       title: "My Account",
       url: `/profile/${userData?._id}`,
       icon: User,
+      isActive: false,
     },
     {
       title: "My Feed",
       url: "/feed/snippets",
       icon: NewspaperIcon,
+      isActive: false,
     },
     {
       title: "DevCard",
       url: "/account/devcard",
       icon: IdCard,
+      isActive: false,
     },
     {
-      title: "History",
-      url: "/account/history",
-      icon: History,
-      isActive: true,
+      title: "Achievement",
+      icon: Award,
+      url: `/profile/${userData?._id}/achievements`,
+      isActive: true
     },
     {
       title: "Subscription",
