@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import SnipCard from '@/components/appComponents/SnipCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import QuickNavigation from '@/components/appComponents/QuickNavigation';
+import { Card, CardContent } from '@/components/ui/card';
 
 const page = () => {
   const dispatch = useAppDispatch();
@@ -61,9 +62,13 @@ const page = () => {
 
   if (error) {
     return (
-      <div className="w-full px-4 py-4">
-        <p>Error loading snippets: {error}</p>
-      </div>
+       <div className="container mx-auto px-4 py-8">
+          <Card>
+            <CardContent className="p-4 text-center">
+              <p>Error loading snippets: {error}</p>
+            </CardContent>
+          </Card>
+        </div>
     );
   }
   
@@ -75,9 +80,20 @@ const page = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
           {
             snippets.length === 0 && (
-              <div className="w-full px-4 py-4">
-                <p>No snippets found</p>
+              <><div className="container mx-auto px-4 py-8">
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <p>No snippets found</p>
+                  </CardContent>
+                </Card>
               </div>
+              <div className="container mx-auto px-4 py-8">
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <p>No snippets found</p>
+                  </CardContent>
+                </Card>
+              </div></>
             )
           }
           {snippets.map((snippet) => {
