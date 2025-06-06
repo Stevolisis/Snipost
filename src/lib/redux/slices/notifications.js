@@ -5,6 +5,7 @@ const initialState = {
   notifications: [],
   unreadCount: 0,
   loading: false,
+  hasShownProfilePrompt: false,
   error: null
 };
 
@@ -35,7 +36,12 @@ const notificationSlice = createSlice({
     deleteNotificationSuccess(state, action) {
       state.notifications = state.notifications.filter(n => n._id !== action.payload);
       state.unreadCount = state.notifications.filter(n => !n.isRead).length;
-    }
+    },
+
+    
+    markProfilePromptShown: (state) => {
+      state.hasShownProfilePrompt = true;
+    },
   }
 });
 
@@ -44,7 +50,8 @@ export const {
   loadNotificationsSuccess,
   loadNotificationsFailure,
   markAllAsRead,
-  deleteNotificationSuccess
+  deleteNotificationSuccess,
+  markProfilePromptShown
 } = notificationSlice.actions;
 
 export default notificationSlice.reducer;

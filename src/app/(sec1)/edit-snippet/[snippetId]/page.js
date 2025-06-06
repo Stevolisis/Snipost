@@ -39,66 +39,110 @@ const CodeEditor = dynamic(() => import('@/components/appComponents/CodeEditor/i
 })
 
 const allTags = [
+  // Frameworks & Libraries
+  { value: 'turbine3', label: 'Turbine 3' },
   { value: 'react', label: 'React' },
   { value: 'nextjs', label: 'Next.js' },
-  { value: 'solana', label: 'Solana' },
+
+  // Core Web3 & Blockchain
   { value: 'web3', label: 'Web3' },
-  { value: 'javascript', label: 'JavaScript' },
   { value: 'blockchain', label: 'Blockchain' },
   { value: 'smartcontracts', label: 'Smart Contracts' },
-  { value: 'onchain', label: 'On-chain' },
+  { value: 'onchain', label: 'On-Chain' },
+  { value: 'defi', label: 'DeFi' },
+  { value: 'nfts', label: 'NFTs' },
+  { value: 'l1blockchain', label: 'Layer 1' },
+  { value: 'ledger', label: 'Ledger' },
+  { value: 'web3auth', label: 'Web3Auth' },
+  { value: 'arweave', label: 'Arweave' },
+  { value: 'ipfs', label: 'IPFS' },
+  { value: 'json-rpc', label: 'JSON-RPC' },
+  { value: 'graphql', label: 'GraphQL' },
+  { value: 'devnet', label: 'Devnet' },
+  { value: 'mainnet-beta', label: 'Mainnet Beta' },
+
+  // Solana Ecosystem
+  { value: 'solana', label: 'Solana' },
   { value: 'anchor', label: 'Anchor' },
   { value: 'metaplex', label: 'Metaplex' },
   { value: 'spl-tokens', label: 'SPL Tokens' },
   { value: 'solana-cli', label: 'Solana CLI' },
-  { value: 'rpc', label: 'RPC' },
-  { value: 'depin', label: 'DePIN' },
-  { value: 'defi', label: 'DeFi' },
-  { value: 'nfts', label: 'NFTs' },
   { value: 'solana-pay', label: 'Solana Pay' },
   { value: 'programs', label: 'Programs' },
   { value: 'validators', label: 'Validators' },
-  { value: 'l1blockchain', label: 'L1 Blockchain' },
-  { value: 'ledger', label: 'Ledger' },
-  { value: 'web3auth', label: 'Web3Auth' },
-  { value: 'arweave', label: 'Arweave' },
-  { value: 'rust', label: 'Rust' },
-  { value: 'typescript', label: 'TypeScript' },
-  { value: 'vscode', label: 'VS Code' },
-  { value: 'nodejs', label: 'Node.js' },
+  { value: 'jup', label: 'Jupiter' },
+  { value: 'borsh', label: 'Borsh' },
+  
+
+  // Ethereum Ecosystem
   { value: 'solidity', label: 'Solidity' },
   { value: 'hardhat', label: 'Hardhat' },
   { value: 'foundry', label: 'Foundry' },
+  { value: 'etherjs', label: 'Ethers.js' },
+  { value: 'web3js', label: 'Web3.js' },
+  { value: 'sepolia', label: 'Sepolia' },
+
+  // Development Languages
+  { value: 'javascript', label: 'JavaScript' },
+  { value: 'typescript', label: 'TypeScript' },
+  { value: 'rust', label: 'Rust' },
   { value: 'wasm', label: 'WASM' },
+  { value: 'move', label: 'Move' },
+
+  // Development Tools
+  { value: 'vscode', label: 'VS Code' },
+  { value: 'nodejs', label: 'Node.js' },
   { value: 'cli-tools', label: 'CLI Tools' },
-  { value: 'json-rpc', label: 'JSON-RPC' },
-  { value: 'graphql', label: 'GraphQL' },
-  { value: 'unit-testing', label: 'Unit Testing' },
-  { value: 'devnet', label: 'Devnet' },
-  { value: 'mainnet-beta', label: 'Mainnet Beta' },
-  { value: 'sdk', label: 'SDK' },
-  { value: 'borsh', label: 'Borsh' },
   { value: 'buildtools', label: 'Build Tools' },
-  { value: 'snipost', label: 'Snipost' },
-  { value: 'snap2earn', label: 'Snap2Earn' },
-  { value: 'upvotetoearn', label: 'Upvote to Earn' },
-  { value: 'codegems', label: 'CodeGems' },
-  { value: 'snips', label: 'Snips' },
+  { value: 'sdk', label: 'SDK' },
+  { value: 'unit-testing', label: 'Unit Testing' },
+  { value: 'remix', label: 'Remix IDE' },
+
+
+  // Web3 Services & Infrastructure
+  { value: 'rpc', label: 'RPC' },
+  { value: 'depin', label: 'DePIN' },
+  { value: 'walletconnect', label: 'WalletConnect' },
+  { value: 'chainlink', label: 'Chainlink' },
+  { value: 'thegraph', label: 'The Graph' },
+
+  // Community & Social
+  { value: 'socialcoding', label: 'Social Coding' },
+  { value: 'devcommunity', label: 'Dev Community' },
+  { value: 'opensource', label: 'Open Source' },
   { value: 'buildinpublic', label: 'Build in Public' },
   { value: 'showyourwork', label: 'Show Your Work' },
+  { value: 'dailydev', label: 'Daily Dev' },
+  { value: 'followdevs', label: 'Follow Devs' },
+  { value: 'hackerthon', label: 'Hackathon' },
+
+  // Platform-Specific Features
+  { value: 'snipost', label: 'Snipost' },
+  { value: 'snap2earn', label: 'Snap2Earn' },
+  { value: 'upvotetoearn', label: 'Upvote2Earn' },
+  { value: 'codegems', label: 'Code Gems' },
+  { value: 'snips', label: 'Snips' },
   { value: 'devprofile', label: 'Dev Profile' },
   { value: 'reputation', label: 'Reputation' },
   { value: 'devrewards', label: 'Dev Rewards' },
   { value: 'snippetdrop', label: 'Snippet Drop' },
-  { value: 'socialcoding', label: 'Social Coding' },
-  { value: 'dailydev', label: 'Daily Dev' },
-  { value: 'followdevs', label: 'Follow Devs' },
-  { value: 'devcommunity', label: 'Dev Community' },
   { value: 'snippetfeed', label: 'Snippet Feed' },
   { value: 'sharecode', label: 'Share Code' },
-  { value: 'opensource', label: 'Open Source' },
+
+  // Advanced Concepts
+  { value: 'zero-knowledge', label: 'Zero Knowledge' },
+  { value: 'zkproofs', label: 'ZK Proofs' },
+  { value: 'rollups', label: 'Rollups' },
+  { value: 'daos', label: 'DAOs' },
+  { value: 'governance', label: 'Governance' },
+  { value: 'oracles', label: 'Oracles' },
+  { value: 'staking', label: 'Staking' },
+  { value: 'bridges', label: 'Bridges' },
+
+  // Learning & Challenges
   { value: 'codewars', label: 'Codewars' },
   { value: 'techstack', label: 'Tech Stack' },
+  { value: 'ctf', label: 'CTF' }
 ];
 
 export default function EditSnippetPage() {

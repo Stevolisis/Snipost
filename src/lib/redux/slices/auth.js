@@ -9,7 +9,6 @@ const initialState = {
   error: null,
   userData: null,
   visitorId: null,
-  hasShownProfilePrompt: false
 };
 
 const authSlice = createSlice({
@@ -69,10 +68,6 @@ const authSlice = createSlice({
       } else if (!state.visitorId) {
         state.visitorId = `vis-${uuidv4().replace(/-/g, '')}` // Generate a new visitor ID if not authenticated
       }
-    },
-
-    markProfilePromptShown: (state) => {
-      state.hasShownProfilePrompt = true;
     },
   }
 });
