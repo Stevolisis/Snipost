@@ -232,7 +232,7 @@ const snaps = [
             <div className=" bg-black/80 rounded-xl shadow-2xl overflow-hidden border border-muted">
               <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-background p-2">
                 <Image
-                  src="/snipost2.png"
+                  src="/snipost_feed.png"
                   alt="App Screenshot"
                   width={1000}
                   height={1000}
