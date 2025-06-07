@@ -121,11 +121,6 @@
   }
 }
 
-pre{
-  height: 202px;
-  min-height: 190px;
-}
-
 @keyframes scroll {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }

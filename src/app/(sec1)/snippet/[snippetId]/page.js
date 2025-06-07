@@ -498,7 +498,7 @@ const Page = ({params}) => {
                           borderRadius: '0.5rem',
                           fontSize: '0.875rem',
                           background: '#1e1e1e',
-                          maxHeight: '350px',
+                          maxHeight: '550px',
                           overflowX: 'scroll',
                           scrollbarWidth: 'thin',
                           scrollbarColor: '#4b5563 transparent'

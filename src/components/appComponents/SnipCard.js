@@ -188,13 +188,17 @@ const SnipCard = ({snippet, fix}) => {
                     fontSize: '0.875rem',
                     background: '#1e1e1e',
                     maxHeight: '350px',
+                    minHeight: '225x',
                     overflowX: 'scroll',
                     scrollbarWidth: 'thin',
                     scrollbarColor: '#4b5563 transparent'
                     }}
                     showLineNumbers={true}
                 >
-                    {snippet.codeBlocks[0].content.substring(0, 400) + (snippet.codeBlocks[0].content.length > 400 ? '...' : '')}
+                    {
+                        snippet.codeBlocks[0].content.split('\n').slice(0, 9).join('\n') + 
+                        (snippet.codeBlocks[0].content.split('\n').length > 9 ? '...' : '')
+                    }
                 </SyntaxHighlighter>
                 ) : (
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
