@@ -188,7 +188,7 @@ const SnipCard = ({snippet, fix}) => {
                     fontSize: '0.875rem',
                     background: '#1e1e1e',
                     maxHeight: '350px',
-                    minHeight: '225x',
+                    minHeight: '225px',
                     overflowX: 'scroll',
                     scrollbarWidth: 'thin',
                     scrollbarColor: '#4b5563 transparent'
