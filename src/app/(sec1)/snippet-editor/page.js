@@ -219,6 +219,11 @@ const SnippetEditor = () => {
         description: response.data.message,
       })
       setIsLoading(false);
+      setTitle("");
+      setDescription("");
+      setTags([]);
+      setCodeBlocks([{ name: "", language: "javascript", content: "" }]);
+      setType("public");
     }catch(err){
       setIsLoading(false);
       
