@@ -112,57 +112,57 @@ const SnipCard = ({snippet, fix}) => {
     
 
     return (
-        <Card key={snippet._id} className={`${fix ? "w-[360px] md:w-[400px] mx-3" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200"`}>
+        <Card onClick={()=> router.push(`/snippet/${snippet._id}`)} key={snippet._id} className={`${fix ? "w-[360px] md:w-[400px] mx-3" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200 cursor-pointer"`}>
+            
             <CardHeader>
-            
-            <div className='flex justify-between items-center'>
-                <div className="flex items-center gap-2">
-                    <Image
-                        src={snippet.user?.avatar?.url || "/default_avatar.png"}
-                        alt={snippet.user?.name || 'User'}
-                        width={32}
-                        height={32}
-                        className="rounded-full min-h-[25px] aspect-square object-cover"
-                    />
-                    <div>
-                    <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
-                        <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
-                        {snippet.user?.name || 'Unknown User'}
-                        </CardTitle>
-                    </Link>
-                    </div>
+                <div className='flex justify-between items-center'>
+                    <div className="flex items-center gap-2">
+                        <Image
+                            src={snippet.user?.avatar?.url || "/default_avatar.png"}
+                            alt={snippet.user?.name || 'User'}
+                            width={32}
+                            height={32}
+                            className="rounded-full min-h-[25px] aspect-square object-cover"
+                        />
+                        <div>
+                        <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
+                            <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
+                            {snippet.user?.name || 'Unknown User'}
+                            </CardTitle>
+                        </Link>
+                        </div>
 
-                </div>
-                
-                <div>
-                    <Button 
-                        variant={"outline"}
-                        onClick={() => handleBookmark(snippet._id, "Snippet")}
-                        className={`gap-1
-                            ${hasBookmark ? "border-white!" : "border-white"}
-                            hover:bg-accent/50  // Subtle hover
-                        `}
-                    > 
-                    <Bookmark
-                        className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
-                    /> 
-                    </Button>
-                </div>
-            </div>
-            
-            <div className='-mb-6 py-3'>
-                <Link href={`/snippet/${snippet._id}`} className="text-2xl line-clamp-2 text-foreground 
-                font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
-                {snippet.title || 'Untitled Snippet'}
-                </Link>
-                
-                {snippet?.isFork && <div className='flex items-center gap-x-2 mt-2'>
-                    <GitFork size={12} /><span className='text-xs'>forked from</span>
-                    <Link href={`/snippet/${snippet?.originalContent.entity}`} className='hover:text-[#A246FD]'><FileText size={18} /></Link>
-                    <Link href={`/profile/${snippet?.originalAuthor.entity}`} className='hover:text-[#A246FD]'><UserPen size={18} /></Link>
+                    </div>
                     
-                </div>}
-            </div>
+                    <div>
+                        <Button 
+                            variant={"outline"}
+                            onClick={() => handleBookmark(snippet._id, "Snippet")}
+                            className={`gap-1
+                                ${hasBookmark ? "border-white!" : "border-white"}
+                                hover:bg-accent/50  // Subtle hover
+                            `}
+                        > 
+                        <Bookmark
+                            className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
+                        /> 
+                        </Button>
+                    </div>
+                </div>
+                
+                <div className='-mb-6 py-3'>
+                    <Link href={`/snippet/${snippet._id}`} className="text-2xl line-clamp-2 text-foreground 
+                    font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
+                    {snippet.title || 'Untitled Snippet'}
+                    </Link>
+                    
+                    {snippet?.isFork && <div className='flex items-center gap-x-2 mt-2'>
+                        <GitFork size={12} /><span className='text-xs'>forked from</span>
+                        <Link href={`/snippet/${snippet?.originalContent.entity}`} className='hover:text-[#A246FD]'><FileText size={18} /></Link>
+                        <Link href={`/profile/${snippet?.originalAuthor.entity}`} className='hover:text-[#A246FD]'><UserPen size={18} /></Link>
+                        
+                    </div>}
+                </div>
             </CardHeader>
 
             <CardContent>
@@ -176,7 +176,7 @@ const SnipCard = ({snippet, fix}) => {
                 ))}
             </div>
 
-            <div className='pt-4'>
+            <div className='pt-4 cursor-default!'>
                 {snippet.codeBlocks?.[0]?.content ? (
                 <SyntaxHighlighter
                     language={(snippet.codeBlocks[0].language || 'javascript').toLowerCase()}
