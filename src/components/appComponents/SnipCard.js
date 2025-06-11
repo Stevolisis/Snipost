@@ -166,107 +166,107 @@ const SnipCard = ({snippet, fix}) => {
             </CardHeader>
 
             <CardContent>
-            <p className="text-sm text-muted-foreground line-clamp-3">
-                {snippet.description || 'No description available'}
-            </p>
+                <p className="text-sm text-muted-foreground line-clamp-3">
+                    {snippet.description || 'No description available'}
+                </p>
 
-            <div className="mt-2 flex flex-wrap gap-2">
-                {(snippet.tags || []).map((tag, i) => (
-                <Button variant="outline" size={"sm"} key={i} className='text-xs text-muted-foreground'>#{tag}</Button>
-                ))}
-            </div>
-
-            <div className='pt-4 cursor-default!'>
-                {snippet.codeBlocks?.[0]?.content ? (
-                <SyntaxHighlighter
-                    language={(snippet.codeBlocks[0].language || 'javascript').toLowerCase()}
-                    style={atomDark}
-                    customStyle={{
-                    margin: 0,
-                    padding: '0.75rem',
-                    borderRadius: '0.5rem',
-                    fontSize: '0.875rem',
-                    background: '#1e1e1e',
-                    maxHeight: '350px',
-                    minHeight: '225px',
-                    overflowX: 'scroll',
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: '#4b5563 transparent'
-                    }}
-                    showLineNumbers={true}
-                >
-                    {
-                        snippet.codeBlocks[0].content.split('\n').slice(0, 9).join('\n') + 
-                        (snippet.codeBlocks[0].content.split('\n').length > 9 ? '...' : '')
-                    }
-                </SyntaxHighlighter>
-                ) : (
-                <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
-                    No code available
-                </div>
-                )}
-            </div>
-
-            <div className='flex gap-x-2 items-center justify-between pt-3'>
-                <div className='flex gap-x-2 items-center'>
-                <div className='flex items-center gap-x-2'>
-                <Button
-                    variant="outline"
-                    onClick={() => handleVote('upvote', snippet._id)}
-                    disabled={isLoading}
-                    className={`
-                        gap-1
-                        ${hasUpvoted ? "border-green-500!" : "border-green-500"}
-                        hover:bg-accent/50  // Subtle hover
-                    `}
-                >
-                    <ArrowBigUp 
-                        className={hasUpvoted ? "fill-green-500 text-green-500!" : "fill-transparent"} 
-                    />
-                    <span className={hasUpvoted ? "text-green-500" : ""}>
-                        {snippet.upvoteCount}
-                    </span>
-                </Button>
-
-                <Button
-                    variant="outline"
-                    onClick={() => handleVote('downvote', snippet._id)}
-                    disabled={isLoading}
-                    className={`
-                        gap-1
-                        ${hasDownvoted ? "border-red-500!" : "border-red-500"}
-                        hover:bg-accent/50  // Subtle hover
-                    `}
-                >
-                    <ArrowBigDown 
-                        className={hasDownvoted ? "fill-red-500 text-red-500!" : "fill-transparent"} 
-                    />
-                </Button>
+                <div className="mt-2 flex flex-wrap gap-2">
+                    {(snippet.tags || []).map((tag, i) => (
+                    <Button variant="outline" size={"sm"} key={i} className='text-xs text-muted-foreground'>#{tag}</Button>
+                    ))}
                 </div>
 
-                <div>
-                    <Button variant={"outline"} onClick={()=>router.push(`/snippet/${snippet._id}#comment`)}> 
-                    <MessageCircle/> 
-                    <p>{snippet.commentNo || 0}</p>
+                <div className='pt-4 cursor-default!'>
+                    {snippet.codeBlocks?.[0]?.content ? (
+                    <SyntaxHighlighter
+                        language={(snippet.codeBlocks[0].language || 'javascript').toLowerCase()}
+                        style={atomDark}
+                        customStyle={{
+                        margin: 0,
+                        padding: '0.75rem',
+                        borderRadius: '0.5rem',
+                        fontSize: '0.875rem',
+                        background: '#1e1e1e',
+                        maxHeight: '350px',
+                        minHeight: '225px',
+                        overflowX: 'scroll',
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: '#4b5563 transparent'
+                        }}
+                        showLineNumbers={true}
+                    >
+                        {
+                            snippet.codeBlocks[0].content.split('\n').slice(0, 9).join('\n') + 
+                            (snippet.codeBlocks[0].content.split('\n').length > 9 ? '...' : '')
+                        }
+                    </SyntaxHighlighter>
+                    ) : (
+                    <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+                        No code available
+                    </div>
+                    )}
+                </div>
+
+                <div className='flex gap-x-2 items-center justify-between pt-3'>
+                    <div className='flex gap-x-2 items-center'>
+                    <div className='flex items-center gap-x-2'>
+                    <Button
+                        variant="outline"
+                        onClick={() => handleVote('upvote', snippet._id)}
+                        disabled={isLoading}
+                        className={`
+                            gap-1
+                            ${hasUpvoted ? "border-green-500!" : "border-green-500"}
+                            hover:bg-accent/50  // Subtle hover
+                        `}
+                    >
+                        <ArrowBigUp 
+                            className={hasUpvoted ? "fill-green-500 text-green-500!" : "fill-transparent"} 
+                        />
+                        <span className={hasUpvoted ? "text-green-500" : ""}>
+                            {snippet.upvoteCount}
+                        </span>
                     </Button>
+
+                    <Button
+                        variant="outline"
+                        onClick={() => handleVote('downvote', snippet._id)}
+                        disabled={isLoading}
+                        className={`
+                            gap-1
+                            ${hasDownvoted ? "border-red-500!" : "border-red-500"}
+                            hover:bg-accent/50  // Subtle hover
+                        `}
+                    >
+                        <ArrowBigDown 
+                            className={hasDownvoted ? "fill-red-500 text-red-500!" : "fill-transparent"} 
+                        />
+                    </Button>
+                    </div>
+
+                    <div>
+                        <Button variant={"outline"} onClick={()=>router.push(`/snippet/${snippet._id}#comment`)}> 
+                        <MessageCircle/> 
+                        <p>{snippet.commentNo || 0}</p>
+                        </Button>
+                    </div>
+
+                    <div>
+                        <Fork snippet={snippet} contentType="Snippet" hasForked={hasForked}/>
+                    </div>
                 </div>
 
-                <div>
-                    <Fork snippet={snippet} contentType="Snippet" hasForked={hasForked}/>
+                    <div>
+                    {/* <Button variant={"link"}> <CircleDollarSign/> </Button> */}
+                    <Tip 
+                        walletAddress={snippet?.user?.walletAddress} 
+                        snippetId={snippet._id} 
+                        snippetTitle={snippet.title} 
+                        receiverId={snippet.user?._id}
+                        receiverType={snippet?.user?.role}
+                    />
+                    </div>
                 </div>
-            </div>
-
-                <div>
-                {/* <Button variant={"link"}> <CircleDollarSign/> </Button> */}
-                <Tip 
-                    walletAddress={snippet?.user?.walletAddress} 
-                    snippetId={snippet._id} 
-                    snippetTitle={snippet.title} 
-                    receiverId={snippet.user?._id}
-                    receiverType={snippet?.user?.role}
-                />
-                </div>
-            </div>
             </CardContent>
         </Card>
     )

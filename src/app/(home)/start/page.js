@@ -311,7 +311,7 @@ const snaps = [
       </section>
 
       {/* How It Works */}
- <section className="container px-6 py-18 m-auto mt-12 bg-muted/30">
+      <section className="container px-6 py-18 m-auto mt-12 bg-muted/30">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             How Snipost Levels You Up
@@ -375,7 +375,7 @@ const snaps = [
 
 {/* Snaps Marquee Section */}
 {snippets.length > 0 && 
-  <section className="relative overflow-hidden py-12 bg-background">
+  <section className="relative overflow-x-auto py-12 bg-background" id='noscroll'>
     <div className="max-w-3xl mx-auto text-center my-7 mb-9">
       <h2 className="text-3xl md:text-4xl font-bold">Snips (Snippets)</h2>
     </div>
@@ -398,54 +398,34 @@ const snaps = [
 
 
 {/* Snaps Marquee Section */}
-<section className="relative overflow-hidden py-12 bg-background">
+<section className="relative overflow-x-auto! py-12 bg-background">
   <div className="max-w-3xl mx-auto text-center mb-7">
     <h2 className="text-3xl md:text-4xl font-bold">Snaps (Visual Explainers)</h2>
   </div>
-  <div className="flex w-full">
-      <Marquee speed={100} pauseOnHover={true}>
-        {[...snaps, ...snaps].map((snap, i) => (
-          <Card key={i}  className="mx-3 w-[380px] sm:w-[500px] flex-shrink-0  border border-border bg-muted/10">
-            <CardContent className="p-4 flex flex-col h-full">
-              <Image
-                src={snap.image}
-                alt={snap.title}
-                width={500}
-                height={180}
-                className="rounded-md mb-3 object-cover"
-              />
-              <h3 className="text-base font-semibold mb-1">{snap.title}</h3>
-              <p className="text-sm text-muted-foreground line-clamp-3">
-                {snap.description}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </Marquee>
-        {/* <motion.div className="flex w-[200%] space-x-6 px-6 " 
-      initial={{ x: 0, opacity: 0 }} 
-      transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} 
-      animate={{ x: "-100%", opacity: 1, }} 
-    >
-      {[...snaps, ...snaps].map((snap, i) => (
-          <Card key={i}  className="w-[500px]  flex-shrink-0  border border-border bg-muted/10">
-            <CardContent className="p-4 flex flex-col h-full">
-              <Image
-                src={snap.image}
-                alt={snap.title}
-                width={500}
-                height={180}
-                className="rounded-md mb-3 object-cover"
-              />
-              <h3 className="text-base font-semibold mb-1">{snap.title}</h3>
-              <p className="text-sm text-muted-foreground line-clamp-3">
-                {snap.description}
-              </p>
-            </CardContent>
-          </Card>
-      ))}
-    </motion.div> */}
 
+  {/* Scrollable container */}
+  <div className="w-full overflow-x-auto">
+    <Marquee speed={100} pauseOnHover={true} gradient={false} className="w-fit">
+      {[...snaps, ...snaps].map((snap, i) => (
+        <div key={i} className="mx-3 w-[380px] sm:w-[500px] flex-shrink-0">
+          <Card className="border border-border bg-muted/10">
+            <CardContent className="p-4 flex flex-col h-full">
+              <Image
+                src={snap.image}
+                alt={snap.title}
+                width={500}
+                height={180}
+                className="rounded-md mb-3 object-cover"
+              />
+              <h3 className="text-base font-semibold mb-1">{snap.title}</h3>
+              <p className="text-sm text-muted-foreground line-clamp-3">
+                {snap.description}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      ))}
+    </Marquee>
   </div>
 </section>
 
