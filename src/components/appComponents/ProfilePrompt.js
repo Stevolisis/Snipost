@@ -5,50 +5,53 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { markProfilePromptShown } from '@/lib/redux/slices/notifications';
 import { X, RocketIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/axiosConfig';
 
 export function ProfilePrompt() {
   const dispatch = useAppDispatch();
-  const { userData } = useAppSelector((state) => state.auth);
   const router = useRouter();
-  
-  // Safely destructure with default value
-  const { hasShownProfilePrompt = false } = useAppSelector(
-    (state) => state.notifications ?? {}
-  );
 
+  const { hasShownProfilePrompt = false } = useAppSelector((state) => state.notifications ?? {});
+  const { jwtToken } = useAppSelector((state) => state.auth);
+
+  const [user, setUser] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [achievementOpen, setAchievementOpen] = useState(false);
 
   useEffect(() => {
-    if (!userData) return;
-
-    let timers = [];
-
-    if (!hasShownProfilePrompt) {
-      const needsProfileCompletion = !userData?.about && !userData.socialLinks?.length && !userData.followedTags?.length;
-      
-      if (needsProfileCompletion) {
-        timers.push(
-          setTimeout(() => {
-            setProfileOpen(true);
-            dispatch(markProfilePromptShown());
-          }, 4000)
-        );
-        timers.push(
-          setTimeout(() => setAchievementOpen(true), 2000)
-        );
+    api.get('/me',{
+      headers: {
+        Authorization: `Bearer ${jwtToken}`
       }
+    })
+      .then((res) => setUser(res.data.user))
+      .catch((err) => {
+        console.error('Failed to fetch user:', err);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const needsProfileCompletion = !user.about && (!user.socialLinks || !user.socialLinks.length) && (!user.followedTags || !user.followedTags.length);
+
+    if (!hasShownProfilePrompt && needsProfileCompletion) {
+      const timers = [
+        setTimeout(() => {
+          setProfileOpen(true);
+          dispatch(markProfilePromptShown());
+        }, 4000),
+        setTimeout(() => setAchievementOpen(true), 2000)
+      ];
+
+      return () => timers.forEach(clearTimeout);
     }
+  }, [user, hasShownProfilePrompt, dispatch]);
 
-    return () => timers.forEach(clearTimeout);
-  }, [dispatch, hasShownProfilePrompt, userData]);
-
-  // Early return if no user
-  if (!userData) return null;
+  if (!user) return null;
 
   return (
     <div className="fixed left-4 bottom-4 z-50 w-[350px] space-y-4">
-      {/* Profile Prompt */}
       {profileOpen && (
         <PromptCard 
           icon={<RocketIcon className="h-4 w-4 text-primary" />}
@@ -63,7 +66,6 @@ export function ProfilePrompt() {
         />
       )}
 
-      {/* Achievement Prompt */}
       {achievementOpen && (
         <PromptCard 
           icon={<span className="text-lg">🏅</span>}
@@ -73,7 +75,7 @@ export function ProfilePrompt() {
           onClose={() => setAchievementOpen(false)}
           action={{
             label: "View Achievements",
-            onClick: () => {router.push(`/profile/${userData._id}/achievements`)}
+            onClick: () => router.push(`/profile/${user._id}/achievements`)
           }}
         />
       )}
@@ -81,7 +83,6 @@ export function ProfilePrompt() {
   );
 }
 
-// Extracted prompt component
 const PromptCard = ({
   icon,
   title,

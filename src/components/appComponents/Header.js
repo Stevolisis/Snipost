@@ -26,12 +26,14 @@ const Header = () => {
   const [userInitiatedConnection, setUserInitiatedConnection] = useState(false);
   const [prevVisible, setPrevVisible] = useState(false);
   
+  console.log("connected: ", connected, connecting, publicKey?.toBase58());
   const handleWalletClick = useCallback(async () => {
     try {
       dispatch(connectWalletStart());
       setVisible(true);
     } catch (err) {
       toast.error(`Connection failed: ${err.message}`);
+      console.log("disconnecting due to error: ", err.message);
       dispatch(disconnectWallet());
       await disconnect();
     }
@@ -53,6 +55,7 @@ const Header = () => {
       })
       dispatch(authenticateSuccess(response.data))
     } catch(err) {
+      console.log("disconnecting due to error2: ", err.message);
       dispatch(authFailure(err.message));
       await disconnect();
     }
@@ -60,11 +63,12 @@ const Header = () => {
 
   const connectToSelectedWallet = useCallback(async() => {
     if (!userInitiatedConnection || !wallet) return
-
+    console.log("Connecting to wallet:", wallet.adapter.name);
     try{
       await connect();
     }catch(err){
       dispatch(disconnectWallet());
+      console.log("disconnecting due to error3: ", err.message);
       await disconnect();
     }finally {
       setUserInitiatedConnection(false) // Reset after attempt
@@ -89,13 +93,13 @@ const Header = () => {
 
   // Handle successful connection
   useEffect(() => {
-    if (publicKey) {
+    if (publicKey && userInitiatedConnection) {
       dispatch(connectWalletSuccess({
-          walletAddress: publicKey.toBase58()
+        walletAddress: publicKey.toBase58()
       }))
       signInWithBackend();
     }
-  }, [publicKey]);
+  }, [publicKey, userInitiatedConnection]);
   
   
   const getNotifications = async () => {
@@ -113,7 +117,7 @@ const Header = () => {
     }
   }
 
-
+  // console.log(connected , walletAddress , jwtToken , userData , isConnected)
   useEffect(() => {
     if (jwtToken) {
       getNotifications();
