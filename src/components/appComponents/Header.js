@@ -122,7 +122,7 @@ const Header = () => {
   // console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
   return (
-    <header className="sticky top-0 z-[50] flex items-center justify-between px-6 md:px-9 py-4 bg-background border-b border-border shadow-sm">
+    <header className="sticky top-0 z-[50] flex items-center justify-between px-3 md:px-9 py-4 bg-background border-b border-border shadow-sm">
       <Link href="/start">
         <div className="text-xl font-bold text-white flex gap-x-2 items-center">
           <Image

@@ -112,7 +112,7 @@ const SnipCard = ({snippet, fix}) => {
     
 
     return (
-        <Card onClick={()=> router.push(`/snippet/${snippet._id}`)} key={snippet._id} className={`${fix ? "w-[360px] md:w-[400px] mx-3" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200 cursor-pointer"`}>
+        <Card onClick={()=> router.push(`/snippet/${snippet._id}`)} key={snippet._id} className={`${fix ? "w-[360px] md:w-[400px] mx-3" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200"`}>
             
             <CardHeader>
                 <div className='flex justify-between items-center'>
