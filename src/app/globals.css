@@ -133,6 +133,7 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .rfm-marquee-container{
   overflow-x: auto !important;
   -ms-overflow-style: none;

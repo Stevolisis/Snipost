@@ -31,7 +31,6 @@ export const metadata = {
     title: 'Snipost',
     description: 'Where web3 developers share, learn, build and earn with Snipost',
     url: 'https://snipost.vercel.app',
-    siteName: 'Example Blog',
     images: [
       {
         url: 'https://snipost.vercel.app/og-image.png',

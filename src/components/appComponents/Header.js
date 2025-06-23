@@ -26,7 +26,6 @@ const Header = () => {
   const [userInitiatedConnection, setUserInitiatedConnection] = useState(false);
   const [prevVisible, setPrevVisible] = useState(false);
   
-  console.log("connected: ", connected, connecting, publicKey?.toBase58());
   const handleWalletClick = useCallback(async () => {
     try {
       dispatch(connectWalletStart());

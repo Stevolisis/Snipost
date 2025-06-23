@@ -112,11 +112,11 @@ const SnipCard = ({snippet, fix}) => {
     
 
     return (
-        <Card onClick={()=> router.push(`/snippet/${snippet._id}`)} key={snippet._id} className={`${fix ? "w-[360px] md:w-[400px] mx-3" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200"`}>
+        <Card key={snippet._id} className={`${fix ? "w-[360px] md:w-[400px] mx-3" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200"`}>
             
             <CardHeader>
                 <div className='flex justify-between items-center'>
-                    <div className="flex items-center gap-2">
+                    <Link href={`/profile/${snippet.user?._id}`}  className="flex items-center gap-2">
                         <Image
                             src={snippet.user?.avatar?.url || "/default_avatar.png"}
                             alt={snippet.user?.name || 'User'}
@@ -125,14 +125,14 @@ const SnipCard = ({snippet, fix}) => {
                             className="rounded-full min-h-[25px] aspect-square object-cover"
                         />
                         <div>
-                        <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
+                        <div className="text-sm font-semibold text-foreground hover:underline">
                             <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
                             {snippet.user?.name || 'Unknown User'}
                             </CardTitle>
-                        </Link>
+                        </div>
                         </div>
 
-                    </div>
+                    </Link>
                     
                     <div>
                         <Button 
@@ -150,10 +150,10 @@ const SnipCard = ({snippet, fix}) => {
                     </div>
                 </div>
                 
-                <div className='-mb-6 py-3'>
+                <div className='-mb-6 py-3'  onClick={()=> router.push(`/snippet/${snippet._id}`)}>
                     <Link href={`/snippet/${snippet._id}`} className="text-2xl line-clamp-2 text-foreground 
-                    font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
-                    {snippet.title || 'Untitled Snippet'}
+                        font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
+                        {snippet.title || 'Untitled Snippet'}
                     </Link>
                     
                     {snippet?.isFork && <div className='flex items-center gap-x-2 mt-2'>
@@ -166,17 +166,17 @@ const SnipCard = ({snippet, fix}) => {
             </CardHeader>
 
             <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-3">
+                <p className="text-sm text-muted-foreground line-clamp-3" onClick={()=> router.push(`/snippet/${snippet._id}`)}>
                     {snippet.description || 'No description available'}
                 </p>
 
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-2 flex flex-wrap gap-2" onClick={()=> router.push(`/snippet/${snippet._id}`)}>
                     {(snippet.tags || []).map((tag, i) => (
                     <Button variant="outline" size={"sm"} key={i} className='text-xs text-muted-foreground'>#{tag}</Button>
                     ))}
                 </div>
 
-                <div className='pt-4 cursor-default!'>
+                <div className='pt-4 cursor-default!'  onClick={()=> router.push(`/snippet/${snippet._id}`)}>
                     {snippet.codeBlocks?.[0]?.content ? (
                     <SyntaxHighlighter
                         language={(snippet.codeBlocks[0].language || 'javascript').toLowerCase()}
