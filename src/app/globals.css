@@ -112,6 +112,12 @@
 }
 
 
+
+body {
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
