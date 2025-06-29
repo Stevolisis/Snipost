@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "../globals.css";
 import Header from "@/components/appComponents/Header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -19,8 +19,8 @@ import { ProfilePrompt } from "@/components/appComponents/ProfilePrompt";
 //   subsets: ["latin"],
 // });
 
-const inter = Inter({
-  variable: "--font-inter",
+const poppins = Poppins({
+  variable: "--font-poppins",
   weight: ['100', '200', '400', '500', '600', '700', '800', '900'],
   subsets: ["latin"],
 });
@@ -57,7 +57,7 @@ export const metadata = {
 export default function Section1Layout({ children }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${poppins.variable} antialiased`}>
 
         {/* <WalletContextProvider>
         <WalletProviderClient> */}
@@ -69,7 +69,7 @@ export default function Section1Layout({ children }) {
               <SidebarProvider>
                 <AppSidebar className="mt-18"/>
                 <Toaster />
-                  <main className="font-[var(--font-inter)] w-full">
+                  <main className="font-[var(--font-poppins)] w-full">
                     <SidebarTrigger />
                     {children}
                   </main>
