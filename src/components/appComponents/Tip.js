@@ -139,7 +139,7 @@ const handleTip = async () => {
                 {platformFee / 10**9} SOL fee collected by Snipost
               </p>
               <a 
-                href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
+                href={`https://explorer.solana.com/tx/${signature}?cluster=mainnet`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:underline"
