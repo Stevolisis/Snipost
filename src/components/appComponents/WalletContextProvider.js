@@ -24,7 +24,7 @@ const WalletContextProvider= ({ children }) => {
   const { autoConnect } = useWallet();
 
   // You can also provide a custom RPC endpoint.
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = `https://devnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`;
 
   //wallets
   const wallets = useMemo(
@@ -36,7 +36,7 @@ const WalletContextProvider= ({ children }) => {
   );
 
   return (
-    <ConnectionProvider endpoint={`https://api.devnet.solana.com`}>
+    <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect={autoConnect}>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
