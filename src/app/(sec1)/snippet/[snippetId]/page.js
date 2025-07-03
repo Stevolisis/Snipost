@@ -576,7 +576,13 @@ const Page = ({params}) => {
                   </div>
 
                   <div>
-                    <Tip snippet={snippet} />
+                    <Tip 
+                      walletAddress={snippet.user?.walletAddress}  
+                      snippetId={snippet._id} 
+                      snippetTitle={snippet.title}
+                      receiverId={snippet.user?._id}
+                      receiverType={snippet?.user?.role}
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -619,7 +625,7 @@ const Page = ({params}) => {
               </CardHeader>
 
               <CardContent className="-mt-4">
-                <div className='text-sm md:text-base'>
+                <div className='text-xs md:text-sm'>
                   {snippet.user?.about || 'No description available'}
                 </div>
                 <div className='pt-4'>
