@@ -99,7 +99,6 @@ const SubscriptionPage = () => {
 
       // Get recent blockhash
       const { blockhash } = await connection.getLatestBlockhash();
-      console.log(receiver, amountLamports);
 
       // Create transaction with two transfers
       const transaction = new Transaction({
@@ -213,7 +212,7 @@ const SubscriptionPage = () => {
 
   const connectToSelectedWallet = useCallback(async() => {
     if (!wallet) return
-    console.log("Connecting to wallet:", wallet.adapter.name);
+
     try{
       await connect();
       await fetchUser();

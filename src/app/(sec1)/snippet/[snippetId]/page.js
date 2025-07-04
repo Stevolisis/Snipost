@@ -301,7 +301,6 @@ const Page = ({params}) => {
       const recordView = async () => {
         try {
           const response = await api.put(`/view-snippet/${snippetId}`, { visitorId: visitorId});
-          console.log("View recorded:", response.data);
         } catch (err) {
           console.error("Error recording view:", err);
         }
