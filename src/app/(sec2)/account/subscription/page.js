@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Check, Gift, Wallet, Star, Copy, Loader, LogOut } from 'lucide-react';
+import { Check, Gift, Wallet, Copy, Loader, LogOut } from 'lucide-react';
 import { connectWalletStart, disconnectWallet, updateUserData } from '@/lib/redux/slices/auth';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import api from '@/utils/axiosConfig';
@@ -240,10 +240,9 @@ const SubscriptionPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4">Fast-track your growth</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4">Unlock More with Snipost</h1>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
-            Work smarter, learn faster, and stay ahead with AI tools, custom feeds, and pro features. 
-            Because copy-pasting code isn't a long-term strategy.
+            Go beyond the basics. Upgrade to access exclusive templates, extended snippet limits, and premium features designed to help you stand out, grow faster, and earn more.
           </p>
         </div>
 
@@ -366,14 +365,6 @@ const SubscriptionPage = () => {
               })}
             </div>
 
-            {/* Rating */}
-            <div className="flex items-center gap-2 justify-center">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-              ))}
-              <span className="text-sm font-medium ml-2">4.8/5</span>
-              <span className="text-xs md:text-sm text-muted-foreground">based on 2,398+ Chrome Store reviews</span>
-            </div>
           </div>
 
           {/* Right Side - Payment */}
