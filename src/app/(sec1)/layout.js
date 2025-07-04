@@ -6,7 +6,6 @@ import { AppSidebar } from "@/components/appComponents/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from './../../components/appComponents/WalletContextProvider';
-import { Wallet } from "@/components/appComponents/WalletProviderClient";
 import { ProfilePrompt } from "@/components/appComponents/ProfilePrompt";
 
 // const geistSans = Geist({
@@ -59,10 +58,7 @@ export default function Section1Layout({ children }) {
     <html lang="en" className="dark">
       <body className={`${poppins.variable} antialiased`}>
 
-        {/* <WalletContextProvider>
-        <WalletProviderClient> */}
-
-        <Wallet>
+        <WalletContextProvider>
             <ReduxStateProvider>
               <ProfilePrompt />
               <Header/>
@@ -76,12 +72,8 @@ export default function Section1Layout({ children }) {
 
               </SidebarProvider>          
             </ReduxStateProvider>          
-        </Wallet>
+        </WalletContextProvider>
 
-
-
-        {/* </WalletProviderClient>  
-        </WalletContextProvider> */}
       </body>
     </html>
   );

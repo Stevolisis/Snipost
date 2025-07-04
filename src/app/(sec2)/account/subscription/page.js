@@ -113,7 +113,6 @@ const SubscriptionPage = () => {
           lamports: amountLamports,
         })
       );
-      console.log(transaction);
       
       // Sign and send transaction
       const signature = await sendTransaction(transaction, connection);
@@ -133,7 +132,10 @@ const SubscriptionPage = () => {
             }
 
             // Record transaction And Subscribe (update this to include platform fee)            
-            await api.post('/subscribe-to-plan', { plan: selectedPlan }, {
+            await api.post('/subscribe-to-plan', { 
+              plan: selectedPlan,
+              billingCycle: selectedPlan !== "FREE" ? billingCycle : undefined
+            }, {
               headers: { Authorization: `Bearer ${jwtToken}` }
             });
 

@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
-import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js"
+import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from "@solana/web3.js"
 import { useState } from "react"
 import { useAppSelector } from "@/lib/redux/hooks"
 import api from "@/utils/axiosConfig"
@@ -58,7 +58,6 @@ export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiv
       throw error
     }
   }
-
   const handleTip = async () => {
     if (!connected || !publicKey) {
       toast.error("Please connect your wallet first");
@@ -70,41 +69,47 @@ export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiv
       return;
     }
 
-    if (amount < 0.001) {
-      toast.error("Minimum tip amount is 0.001 SOL");
+    if (amount < 0.002) {
+      toast.error("Minimum tip amount is 0.002 SOL");
       return;
     }
 
     try {
-
       setIsLoading(true);
+
       const recipientAddress = new PublicKey(walletAddress);
       const platformAddress = new PublicKey(process.env.NEXT_PUBLIC_SNIPOST_WALLET_ADDRESS);
-      
-      const totalLamports = amount * 10**9;
-      const platformFee = Math.floor(totalLamports * 0.12); // 12%
+
+      const totalLamports = amount * 1e9;
+      const platformFee = Math.floor(totalLamports * 0.12);
       const recipientAmount = totalLamports - platformFee;
 
-      if(publicKey.toString() == recipientAddress.toString()) {
+      if (publicKey.toString() === recipientAddress.toString()) {
         return toast.error("You are not allowed to tip yourself");
       }
-      // Get recent blockhash
-      const { blockhash } = await connection.getLatestBlockhash();
 
+      // 🔍 Check user's balance before proceeding
+      // const userBalance = await connection.getBalance(publicKey);
+      // const estimatedNetworkFee = 5000; // conservative estimate
+      // const totalExpectedCost = totalLamports + estimatedNetworkFee;
 
-      
-      // Create transaction with two transfers
+      // if (userBalance < totalExpectedCost) {
+      //   toast.error("Insufficient balance to complete this tip (including network fee)");
+      //   return;
+      // }
+
+      // ⛓️ Build transaction
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+
       const transaction = new Transaction({
         feePayer: publicKey,
-        recentBlockhash: blockhash
+        recentBlockhash: blockhash,
       }).add(
-        // Transfer to recipient (88%)
         SystemProgram.transfer({
           fromPubkey: publicKey,
           toPubkey: recipientAddress,
           lamports: recipientAmount,
         }),
-        // Transfer to platform (12%)
         SystemProgram.transfer({
           fromPubkey: publicKey,
           toPubkey: platformAddress,
@@ -112,33 +117,35 @@ export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiv
         })
       );
 
-      // Sign and send transaction
+      // ✍️ Sign & send transaction
       const signature = await sendTransaction(transaction, connection);
-      
+
       toast.promise(
         (async () => {
           try {
-            // Wait for confirmation
-            const confirmation = await connection.confirmTransaction({
-              signature,
-              blockhash,
-              lastValidBlockHeight: (await connection.getBlockHeight()) + 150
-            }, "confirmed");
+            const confirmation = await connection.confirmTransaction(
+              {
+                signature,
+                blockhash,
+                lastValidBlockHeight,
+              },
+              "confirmed"
+            );
 
             if (confirmation.value.err) {
               throw new Error("Transaction failed");
             }
 
-            // Record transaction (update this to include platform fee)
-            await recordTransaction(signature, amount, platformFee / 10**9);
-            
+            // 📩 Record tip
+            await recordTransaction(signature, amount, platformFee / 1e9);
+
             return (
               <div className="flex flex-col gap-2">
                 <p>Tip sent successfully!</p>
                 <p className="text-sm text-gray-500">
-                  {platformFee / 10**9} SOL fee collected by Snipost
+                  {platformFee / 1e9} SOL fee collected by Snipost
                 </p>
-                <a 
+                <a
                   href={`https://explorer.solana.com/tx/${signature}?cluster=mainnet`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -148,20 +155,21 @@ export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiv
                 </a>
               </div>
             );
-          } catch (error) {
-            console.error("Confirmation error:", error);
+          } catch (err) {
+            console.error("Confirmation error:", err);
             throw new Error("Transaction confirmation failed");
           }
         })(),
         {
           loading: "Processing transaction...",
           success: (data) => data,
-          error: (err) => err?.response?.data?.message || "Failed to complete transaction"
+          error: (err) => err?.message || "Failed to complete transaction",
+          duration: 5000,
         }
       );
     } catch (error) {
       console.error("Tip error:", error);
-      toast.error(error?.response?.data?.message || "An error occurred while sending tip");
+      toast.error(error?.message || "An error occurred while sending tip");
     } finally {
       setIsLoading(false);
       setIsOpen(false);
