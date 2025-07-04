@@ -53,6 +53,6 @@ export const SubscriptionPlans = {
         exportAllArtboardAsPng: true,
         exportAllArtboardAsSvg: true,
         exportAllArtboardAsPdf: true,
-        canPublish: true,
+        canPublish: false,
     },
 };
