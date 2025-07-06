@@ -88,16 +88,6 @@ export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiv
         return toast.error("You are not allowed to tip yourself");
       }
 
-      // 🔍 Check user's balance before proceeding
-      // const userBalance = await connection.getBalance(publicKey);
-      // const estimatedNetworkFee = 5000; // conservative estimate
-      // const totalExpectedCost = totalLamports + estimatedNetworkFee;
-
-      // if (userBalance < totalExpectedCost) {
-      //   toast.error("Insufficient balance to complete this tip (including network fee)");
-      //   return;
-      // }
-
       // ⛓️ Build transaction
       const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 

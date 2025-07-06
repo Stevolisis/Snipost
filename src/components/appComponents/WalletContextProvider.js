@@ -13,8 +13,6 @@ import { useMemo } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 const WalletContextProvider = ({ children }) => {
-  const { autoConnect } = useWallet();
-
   const HELIUS_RPC = `https://mainnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`;
   const endpoint = useMemo(() => HELIUS_RPC, []);
 
@@ -25,7 +23,7 @@ const WalletContextProvider = ({ children }) => {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect={autoConnect}>
+      <WalletProvider wallets={wallets} autoConnect={true}>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
