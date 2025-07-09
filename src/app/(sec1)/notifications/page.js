@@ -213,10 +213,10 @@ export default function NotificationPage() {
                         </div>
                     </div>
                     {/* Delete button */}
-                    {n?.recipient?.entity._id === userData._id && <Button
+                    {n?.recipient?.entity?._id === userData?._id && <Button
                         size="icon"
                         variant="ghost"
-                        onClick={() => deleteNotification(n._id)}
+                        onClick={() => deleteNotification(n?._id)}
                         className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-100 transition-colors"
                     >
                         <Trash2 className="h-4 w-4" />
