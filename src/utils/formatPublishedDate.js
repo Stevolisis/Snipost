@@ -5,7 +5,7 @@ import {
   formatDistanceToNow,
   isValid,
 } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 
 export function formatPublishedDate(createdAt) {
   const utcDate = new Date(createdAt);
@@ -14,7 +14,7 @@ export function formatPublishedDate(createdAt) {
 
   // Convert to user's local time zone
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const localDate = utcToZonedTime(utcDate, timeZone);
+  const localDate = toZonedTime(utcDate, timeZone);
 
   // If not this year → "July 12, 2024"
   if (!isThisYear(localDate)) {
