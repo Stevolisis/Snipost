@@ -145,3 +145,19 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+#custom-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+#custom-scroll::-webkit-scrollbar-track {
+  background: rgba(153, 138, 138, 0.2);
+  border-radius: 10px;
+}
+#custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(22, 22, 22, 0.452);
+  border-radius: 10px;
+}
+#custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #E5FF4A;
+}

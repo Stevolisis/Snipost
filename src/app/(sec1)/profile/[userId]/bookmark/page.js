@@ -62,8 +62,9 @@ const page = () => {
             userId: userData._id 
         }));
 
+        const loadId = toast.promise("processing bookmark...");
+
         try {
-            // 2. API call
             let response;
             if(hasBookmark){
                 response = await api.put("/unbookmark", { entityId, entityType },{
@@ -78,7 +79,7 @@ const page = () => {
                     }
                 });
             }
-            toast.success(response.data.message);
+            toast.success(response.data.message, {id: loadId});
 
             // 3. Optional: Final sync with backend data
             dispatch(bookmarkSnippetApiSuccess(response.data.snippet));
@@ -86,7 +87,7 @@ const page = () => {
             
         } catch (err) {
             console.log(err)
-            toast.error("Bookmark failed");
+            toast.error("Bookmark failed", {id: loadId});
             // Note: Automatic rollback isn't needed since we'll refetch snippets later
         }
     };
