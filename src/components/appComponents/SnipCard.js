@@ -115,7 +115,7 @@ const SnipCard = ({snippet, fix}) => {
     async function handleCopy(content) {
         try {
             await navigator.clipboard.writeText(content);
-            toast.info("Copied to clipboard");
+            toast.success("Copied to clipboard");
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
 
