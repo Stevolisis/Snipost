@@ -39,7 +39,8 @@ const Header = () => {
   }, [setVisible, dispatch, disconnect])
 
   const signInWithBackend = async () => {
-    dispatch(authenticateStart())
+    dispatch(authenticateStart());
+    const loaderId = toast.loading("Signing in...");
     try{
       const timestamp = Date.now()
       const message = `signin-user:${timestamp}`
@@ -52,9 +53,11 @@ const Header = () => {
         signature: signatureBase58,
         message
       })
-      dispatch(authenticateSuccess(response.data))
+      dispatch(authenticateSuccess(response.data));
+      toast.success("Signed in successfully", { id: loaderId });
     } catch(err) {
       console.log("disconnecting due to error2: ", err.message);
+      toast.error(`Sign in failed: ${err?.response?.data?.message||err.message}`, { id: loaderId });
       dispatch(authFailure(err.message));
       await disconnect();
     }

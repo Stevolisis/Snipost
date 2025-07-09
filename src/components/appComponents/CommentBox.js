@@ -299,7 +299,6 @@ const CommentBox = () => {
                         }
 
                         // Handle 401 specifically
-                        console.log("ttttttttt: ", err);
                         if (err.response?.status === 401) {
                             dispatch(disconnectWallet()); // Clear auth state
                             // disconnect(); // Wallet disconnect logic
@@ -333,7 +332,13 @@ const CommentBox = () => {
                         </Button>
 
 
-                        <Popover open={showMentionsDropdown} onOpenChange={setShowMentionsDropdown} key={popoverKey}>
+                        <Popover open={showMentionsDropdown}   onOpenChange={(open) => {
+                            setShowMentionsDropdown(open);
+                            if (!open) {
+                            // Reset the popover key when closing to ensure fresh state next time
+                            setPopoverKey(prev => prev + 1);
+                            }
+                        }} key={popoverKey}>
                             <PopoverTrigger asChild>
                                 <Button variant='outline' onClick={handleMentionClick}>
                                     <AtSign className="h-4 w-4" />
@@ -344,8 +349,9 @@ const CommentBox = () => {
                                 align="start" 
                                 side="bottom"
                                 hidden={!showMentionsDropdown}
+                                forceMount={showMentionsDropdown} 
                             >
-                                <Command>
+                                <Command shouldFilter={false}>
                                     <CommandInput 
                                         placeholder="Search users..." 
                                         value={mentionQuery}

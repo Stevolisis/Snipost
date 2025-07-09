@@ -60,7 +60,6 @@ const Page = ({params}) => {
       rootMargin: '-40% 0px -40% 0px'
     }
   });
-  console.log("Observ: ", isVisible, observeRef)
 
   // Check if current user is already following the target user
   const isFollowing = userData?.following?.some(

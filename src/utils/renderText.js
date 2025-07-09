@@ -14,10 +14,10 @@ const SyntaxHighlighter = dynamic(
   }
 );
 
-export const renderText = (text, mentions) => {
+export const renderText = (text, mentions = []) => {
   if (!text) return null;
 
-  // Split by code blocks first
+  // Split by code blocks, links, and mentions
   const parts = text.split(/(`[^`]+`|\*[^*]+\*|%[^%]+%)/g);
   
   return (
@@ -63,15 +63,20 @@ export const renderText = (text, mentions) => {
         
         // Handle mentions (wrapped in %)
         if (part.startsWith('%') && part.endsWith('%')) {
-          const mentionContent = part.slice(1, -1);
+          const username = part.slice(1, -1);
           
-          // First try to find in users array
-          let mentionedUser = mentions.find(u => u.entity.userName === mentionContent.split("@")[1]);
+          // Find the mentioned user in the mentions array
+          const mentionedUser = mentions.find(m => {
+            // Handle both direct user objects and mention references
+            if (m.username) return m.username === username;
+            if (m.entity?.userName) return m.entity.userName === username;
+            return false;
+          });
 
-          const userId = mentionedUser?.entity?._id || mentionedUser?.entity;
-          const displayName = mentionedUser?.username || mentionContent;
+          const userId = mentionedUser?.entity?._id || mentionedUser?._id;
+          const displayName = mentionedUser?.username || mentionedUser?.entity?.userName || username;
           
-          return (mentionedUser &&
+          return userId ? (
             <Link 
               key={index}
               href={`/profile/${userId}`}
@@ -79,6 +84,8 @@ export const renderText = (text, mentions) => {
             >
               @{displayName}
             </Link>
+          ) : (
+            <span key={index}>@{username}</span>
           );
         }
         

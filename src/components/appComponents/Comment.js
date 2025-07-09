@@ -27,6 +27,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { formatPublishedDate } from '@/utils/formatPublishedDate'
 
 const Comment = ({comment}) => {
   const dispatch = useAppDispatch();
@@ -40,7 +41,6 @@ const Comment = ({comment}) => {
     follow => follow.entity === targetUser?._id
   );
   const isCommentOwner = userData?._id === targetUser?._id;
-  const { snippet, isLoading } = useAppSelector((state) => state.snippets);
 
   useEffect(() => {
     const handleResize = () => {
@@ -227,7 +227,7 @@ const Comment = ({comment}) => {
                 </div>
                 <div className="grid -mt-0.5 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{comment?.author?.entity?.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">@{comment?.author?.entity?.userName}</span>
+                  <span className="truncate text-xs text-muted-foreground">@{comment?.author?.entity?.userName} posted - {comment && formatPublishedDate(comment?.createdAt)}</span>
                 </div>
               </Link>
 

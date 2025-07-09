@@ -26,7 +26,7 @@ export function formatPublishedDate(createdAt) {
   // If today → "July 9. 3 min ago"
   if (isToday(localDate)) {
     const relative = formatDistanceToNow(localDate, { addSuffix: true });
-    return `${base}. ${relative}`;
+    return `${base} / ${relative}`;
   }
 
   // This year but not today → "July 7"
