@@ -22,6 +22,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import api from '@/utils/axiosConfig';
 import { toast } from 'sonner';
 import { Fork } from './Fork';
+import { formatPublishedDate } from '@/utils/formatPublishedDate';
 
 
 
@@ -127,8 +128,11 @@ const SnipCard = ({snippet, fix}) => {
                         <div>
                         <div className="text-sm font-semibold text-foreground hover:underline">
                             <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
-                            {snippet.user?.name || 'Unknown User'}
+                                {snippet.user?.name || 'Unknown User'}
                             </CardTitle>
+                            <p className="text-[10px] text-foreground">
+                               {formatPublishedDate(snippet.createdAt)}
+                            </p>
                         </div>
                         </div>
 
