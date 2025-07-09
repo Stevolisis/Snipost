@@ -181,28 +181,17 @@ export default function ProfilePage({ params }) {
   }
 
   const handleDeleteSnippet = async (snippetId) => {
+    const loadId = toast.loading('Deleting snippet...');
+    
     try {
-      await toast.promise(
-        (async() => {  
-          const response = api.delete(`/delete-snippet/${snippetId}`, {
+          const response = await api.delete(`/delete-snippet/${snippetId}`, {
             headers: { Authorization: `Bearer ${jwtToken}` }
           });
-          return response.data;
-        })(),
-        {
-          loading: 'Deleting snippet...',
-          success: async(data) => {
-            await fetchSnippets();
-            return data?.message || 'Snippet deleted successfully!'
-          },
-          error: (err) => {
-            console.log(err);
-            return err.response?.data?.message || 'Failed to delete snippet'
-          }
-        }
-      )
+          await fetchSnippets();
+          toast.success(data?.message || 'Snippet deleted successfully!', {id: loadId}); 
+
     } catch (err) {
-      console.error('Delete error:', err)
+      toast.error(err.response?.data?.message || 'Failed to delete snippet', {id: loadId})
     }
   }
 

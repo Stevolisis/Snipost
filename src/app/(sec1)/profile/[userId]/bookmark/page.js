@@ -62,7 +62,7 @@ const page = () => {
             userId: userData._id 
         }));
 
-        const loadId = toast.promise("processing bookmark...");
+        const loadId = toast.loading("processing bookmark...");
 
         try {
             let response;
