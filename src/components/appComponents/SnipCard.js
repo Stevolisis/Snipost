@@ -131,7 +131,7 @@ const SnipCard = ({snippet, fix}) => {
                                 {snippet.user?.name || 'Unknown User'}
                             </CardTitle>
                             <p className="text-[10px] text-gray-400">
-                               posted - {formatPublishedDate(snippet.createdAt)}
+                               posted - {snippet && formatPublishedDate(snippet?.createdAt)}
                             </p>
                         </div>
                         </div>
