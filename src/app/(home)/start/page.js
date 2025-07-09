@@ -455,7 +455,7 @@ const snaps = [
                     <Star key={i} className="inline-block w-5 h-5 text-primary fill-primary" />
                   ))}
                 </div>
-                <p className="mb-6 italic text-lg">"{testimonial.quote}"</p>
+                <p className="mb-6 italic text-base sm:text-lg">"{testimonial.quote}"</p>
                 <div className="flex items-center">
                   <div className="rounded-full overflow-hidden mr-4">
                     <Image 
@@ -467,8 +467,8 @@ const snaps = [
                     />
                   </div>
                   <div>
-                    <p className="font-medium">{testimonial.author}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    <p className="font-medium text-sm sm:text-base">{testimonial.author}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{testimonial.role}</p>
                   </div>
                 </div>
               </CardContent>
@@ -553,7 +553,7 @@ const snaps = [
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, index) => (
               <AccordionItem key={`faq-${index}`} value={`item-${index}`}>
-                <AccordionTrigger className="text-left font-medium text-lg py-4">
+                <AccordionTrigger className="text-left font-medium text-base sm:text-lg py-4">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground pt-1 pb-4">

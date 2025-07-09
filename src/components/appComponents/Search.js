@@ -90,12 +90,12 @@ const SearchComponent = () => {
               <Input
                 ref={searchRef}
                 placeholder="Search snippets..."
-                className="pl-10"
+                className="pl-7 sm:pl-10 text-xs sm:text-sm"
                 value={query}
                 onChange={handleSearchChange}
               />
-              <span className="absolute left-3 top-2.5 text-gray-400">
-                <Search className="h-4 w-4" />
+              <span className="absolute left-3 top-3 sm:top-2.5 text-gray-400">
+                <Search className="sm:h-4 sm:w-4 h-3 w-3" />
               </span>
             </div>
           </PopoverTrigger>

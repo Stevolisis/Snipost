@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import Header from "@/components/appComponents/Header";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AccountSidebar } from "@/components/appComponents/AccountSidebar";
@@ -7,8 +7,9 @@ import "../globals.css";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from "@/components/appComponents/WalletContextProvider";
 
-const inter = Inter({
-  variable: "--font-inter",
+
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
 });
 
@@ -46,14 +47,14 @@ export const metadata = {
 export default function Section2Layout({ children }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${geist.variable} antialiased`}>
         <WalletContextProvider>
           <ReduxStateProvider>
             <Header/>
             <SidebarProvider>
               <AccountSidebar className="mt-18"/>
               <Toaster />
-                <main className="font-[var(--font-inter)] w-full">
+                <main className="font-[var(--font-geist)] w-full">
                   <SidebarTrigger />
                   {children}
                 </main>

@@ -127,14 +127,15 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-3 md:px-9 py-4 bg-background border-b border-border shadow-sm">
       <Link href="/start">
-        <div className="text-xl font-bold text-white flex gap-x-2 items-center">
+        <div className="text-xl font-bold text-white flex gap-x-1 items-center">
           <Image
             src="/logo.svg"
             alt="Snipost Logo"
             width={30}
             height={30}
+            className='sm:h-[30px]! sm:w-[30px]! h-[23px] w-[23px]'
           />
-          <h2 className='text-2xl text-primary'>Snipost</h2>
+          <h2 className='text-xl sm:text-2xl text-primary'>Snipost</h2>
         </div>
       </Link>
 
@@ -142,13 +143,13 @@ const Header = () => {
       {/* <WalletMultiButtonDynamic> */}
       {(connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
-          <Button variant="default" className="gap-2" onClick={() => handleWalletClick()}>
+          <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
             {walletAddress.toString().slice(0, 4)}...{walletAddress.toString().slice(-4)}
           </Button>
         </ProfileDropDown>
         :
-        <Button variant="default" className="gap-2" onClick={() => handleWalletClick()}>
+        <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
           <Wallet className="h-4 w-4" />
           {connecting ? "Connecting..." : "Connect Wallet"}
         </Button>

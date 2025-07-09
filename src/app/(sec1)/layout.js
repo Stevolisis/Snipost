@@ -1,4 +1,4 @@
-import { Poppins } from "next/font/google";
+import { Geist } from "next/font/google";
 import "../globals.css";
 import Header from "@/components/appComponents/Header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -18,11 +18,11 @@ import { ProfilePrompt } from "@/components/appComponents/ProfilePrompt";
 //   subsets: ["latin"],
 // });
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  weight: ['100', '200', '400', '500', '600', '700', '800', '900'],
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
 });
+
 
 export const metadata = {
   title: 'Snipost',
@@ -56,7 +56,7 @@ export const metadata = {
 export default function Section1Layout({ children }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${geist.variable} antialiased`}>
 
         <WalletContextProvider>
             <ReduxStateProvider>
@@ -65,7 +65,7 @@ export default function Section1Layout({ children }) {
               <SidebarProvider>
                 <AppSidebar className="mt-18"/>
                 <Toaster />
-                  <main className="font-[var(--font-poppins)] w-full">
+                  <main className="font-[var(--font-geist)] w-full">
                     <SidebarTrigger />
                     {children}
                   </main>
