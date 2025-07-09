@@ -127,7 +127,7 @@ const SnipCard = ({snippet, fix}) => {
                         />
                         <div>
                         <div className="text-sm font-semibold text-foreground hover:underline">
-                            <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
+                            <CardTitle className="text-sm text-gray-300 line-clamp-2 hover:underline">
                                 {snippet.user?.name || 'Unknown User'}
                             </CardTitle>
                             <p className="text-[10px] text-gray-400">
