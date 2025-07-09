@@ -191,8 +191,8 @@ export default function ProfilePage({ params }) {
         })(),
         {
           loading: 'Deleting snippet...',
-          success: (data) => {
-            fetchSnippets()
+          success: async(data) => {
+            await fetchSnippets();
             return data?.message || 'Snippet deleted successfully!'
           },
           error: (err) => {
