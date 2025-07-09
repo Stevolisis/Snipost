@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { ArrowBigDown, ArrowBigUp, Bookmark, FileText, GitFork, MessageCircle, UserPen } from 'lucide-react';
+import { ArrowBigDown, ArrowBigUp, Bookmark, FileText, GitFork, LinkIcon, MessageCircle, UserPen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
@@ -35,6 +35,7 @@ const SnipCard = ({snippet, fix}) => {
     const hasDownvoted = snippet.downvotes?.some(v => v.entity === userData?._id);
     const hasBookmark = snippet.bookmarkedBy?.some(v => v.entity === userData?._id);
     const hasForked = snippet?.forks?.some(v => v.forkedBy.entity === userData?._id);
+    const [copied, setCopied] = useState(false);
 
 
     const handleVote = async (type, id) => {
@@ -110,8 +111,19 @@ const SnipCard = ({snippet, fix}) => {
             // Note: Automatic rollback isn't needed since we'll refetch snippets later
         }
     };
-    
+        
+    async function handleCopy(content) {
+        try {
+            await navigator.clipboard.writeText(content);
+            toast.info("Copied to clipboard");
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
 
+        } catch (err) {
+            toast.error("Failed to copy to clipboard");
+        }
+    }
+    
     return (
         <Card key={snippet._id} className={`${fix ? "w-[360px] md:w-[400px] mx-3" : 'w-full'} hover:shadow-md hover:border-gray-600 transition-colors duration-200"`}>
             
@@ -138,7 +150,20 @@ const SnipCard = ({snippet, fix}) => {
 
                     </Link>
                     
-                    <div>
+                    <div className='flex items-center gap-x-2'>
+                        <Button 
+                            variant={"outline"}
+                            onClick={() => handleCopy(`https://snipost.vercel.app/snippet/${snippet?._id}`)}
+                            className={`gap-1
+                                ${copied ? "border-white!" : "border-white"}
+                                hover:bg-accent/50  // Subtle hover
+                            `}
+                        > 
+                        <LinkIcon
+                            className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
+                        /> 
+                        </Button>
+
                         <Button 
                             variant={"outline"}
                             onClick={() => handleBookmark(snippet._id, "Snippet")}
