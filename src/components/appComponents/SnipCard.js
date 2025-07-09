@@ -160,7 +160,7 @@ const SnipCard = ({snippet, fix}) => {
                             `}
                         > 
                         <LinkIcon
-                            className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
+                            className={` text-white!`} 
                         /> 
                         </Button>
 
