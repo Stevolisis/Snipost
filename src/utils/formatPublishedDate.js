@@ -7,7 +7,7 @@ import {
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 
-export function formatPublishedDate(createdAt: string | Date): string {
+export function formatPublishedDate(createdAt) {
   const utcDate = new Date(createdAt);
 
   if (!isValid(utcDate)) return 'Invalid date';
