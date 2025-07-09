@@ -202,20 +202,13 @@ export default function EditSnippetPage() {
   }, [snippetId, jwtToken, router])
 
   const handleUpdate = async () => {
+    const loaderId = toast.loading('Updating snippet...');
     try {
       formData.folder = userData.folders[0]._id;
-      await toast.promise(
-        await api.patch(`/edit-snippet/${snippetId}`, formData, {
-          headers: { Authorization: `Bearer ${jwtToken}` }
-        }),
-        {
-          loading: 'Updating snippet...',
-          success: () => {
-            return 'Snippet updated successfully!'
-          },
-          error: (err) => err.response?.data?.message || 'Failed to update snippet'
-        }
-      )
+      await api.patch(`/edit-snippet/${snippetId}`, formData, {
+        headers: { Authorization: `Bearer ${jwtToken}` }
+      });
+      toast.success('Snippet updated successfully!', { id: loaderId });
     } catch (err) {
         console.log(err)
         if (err.response?.data?.message?.includes('LimitExceeded')) {
@@ -223,7 +216,7 @@ export default function EditSnippetPage() {
           setShowLimitModal(true);
           return;
         }
-      toast.error(`Failed to update snippet: ${err?.response?.data?.message || err.message}}`);
+      toast.error(`Failed to update snippet: ${err?.response?.data?.message || err.message}}`, { id: loaderId });
     }
   }
 

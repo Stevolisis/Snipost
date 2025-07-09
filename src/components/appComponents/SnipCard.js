@@ -130,8 +130,8 @@ const SnipCard = ({snippet, fix}) => {
                             <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
                                 {snippet.user?.name || 'Unknown User'}
                             </CardTitle>
-                            <p className="text-[10px] text-foreground">
-                               {formatPublishedDate(snippet.createdAt)}
+                            <p className="text-[10px] text-gray-400">
+                               posted - {formatPublishedDate(snippet.createdAt)}
                             </p>
                         </div>
                         </div>

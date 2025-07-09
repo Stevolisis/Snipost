@@ -188,9 +188,10 @@ export default function ProfilePage({ params }) {
             headers: { Authorization: `Bearer ${jwtToken}` }
           });
           await fetchSnippets();
-          toast.success(data?.message || 'Snippet deleted successfully!', {id: loadId}); 
+          toast.success(response.data?.message || 'Snippet deleted successfully!', {id: loadId}); 
 
     } catch (err) {
+      console.log(err);
       toast.error(err.response?.data?.message || 'Failed to delete snippet', {id: loadId})
     }
   }
