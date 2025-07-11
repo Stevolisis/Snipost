@@ -163,7 +163,7 @@ export default function AchievementPage({params}) {
             Unlock achievements by being active in the Snipost community
           </p>
           
-          <div className="flex justify-center gap-8 mb-8">
+          <div className="flex justify-center flex-wrap sm:flex-nowrap gap-8 mb-8">
             <div className="text-center">
               <div className="text-2xl font-bold text-foreground">{earnedCount}</div>
               <div className="text-sm text-muted-foreground">Eligible</div>
