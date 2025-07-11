@@ -22,7 +22,7 @@ const page = () => {
     const fetchTrendingSnippets = async () => {
       try {
         dispatch(loadSnippetsStart());
-        const response = await api.get('/get-most-viewed-snippets?timeRange=month&limit=50',{
+        const response = await api.get('/get-most-viewed-snippets?timeRange=all&limit=50',{
             headers:{
                 Authorization: `Bearer ${jwtToken}`
             }
