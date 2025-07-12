@@ -201,13 +201,14 @@ const snaps = [
         <div className="absolute bottom-10 left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
         
         <div className="container relative z-10 mx-auto px-6 py-24 md:py-36 flex flex-col items-center">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-block mb-6 px-6 bg-primary/10 rounded-full">
-              
-              <span className="text-sm font-medium text-primary flex items-center">
-                <Dot className="text-primary w-9 h-9 -mr-2" />
-                <p>The SocialFi Platform for Solana Developers</p>
-              </span>
+          <div className=" text-center flex sm:block justify-center flex-col items-center">
+            <div className="flex justify-center items-center">
+              <div className=" flex justify-center items-center  w-fit mb-6 px-3 sm:px-6 py-2 bg-primary/10 rounded-full">
+                <div className="text-xs sm:text-sm font-medium text-primary flex items-center">
+                  <Dot className="w-9 h-9 -ml-2.5 -mr-1.5 sm:mr-0 "/> 
+                  <p>The SocialFi Platform for Solana Developers</p>
+                </div>
+              </div>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
               Build. Share. <span className="text-primary">Win</span>.
@@ -215,7 +216,7 @@ const snaps = [
             <p className="text-base md:text-xl text-muted-foreground mb-10 max-w-4xl mx-auto">
               I’m a Solana dev like you, fed up with scattered resources and Discord chaos. Snipost’s your hub to find trusted code snippets, document your work, and earn SOL in the Web3 community.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
               <Button size="lg" className="gap-2 text-sm md:text-base md:h-11" asChild>
                 <Link href="/feed/snippets">
                   <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
