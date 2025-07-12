@@ -209,7 +209,7 @@ const snaps = [
               Build. Share. <span className="text-primary">Win</span>.
             </h1>
             <p className="text-base md:text-xl text-muted-foreground mb-10 max-w-4xl mx-auto">
-              I’m a Solana dev like you, fed up with scattered resources and Discord chaos. Snipost’s your hub to find trusted code snippets, document your work, and earn SOL in the Web3 community.
+              I’m a Solana dev like you, fed up with scattered dev resources and socials chaos. Snipost’s your hub to find trusted code snippets, document your work, and earn SOL in the Web3 community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="gap-2 text-sm md:text-base md:h-11" asChild>
@@ -255,29 +255,29 @@ const snaps = [
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <Card className="bg-background/80 border-destructive/20">
+          <Card className="bg-background/80 border-red-600">
             <CardHeader>
               <CardTitle>Without Snipost</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 text-muted-foreground">
-                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> Scattered Solana resources - outdated blogs, broken Discord snippets.</li>
-                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> No clear use cases for some solana projects - wasting time guessing.</li>
-                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> Your killer feature? Lost because you didn't document it properly.</li>
-                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-500" /> Hesitant to share code, scared of harsh feedback or no response.</li>
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-600" /> Scattered Solana resources - outdated blogs, broken Discord snippets.</li>
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-600" /> No clear use cases for some solana projects - wasting time guessing.</li>
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-600" /> Your killer feature? Lost because you didn't document it properly.</li>
+                <li className="flex items-start"><ArrowRight className="w-5 h-5 mr-2 text-red-600" /> Hesitant to share code, scared of harsh feedback or no response.</li>
               </ul>
             </CardContent>
           </Card>
-          <Card className="bg-background/80 border-green-500/20">
+          <Card className="bg-background/80 border-green-600">
             <CardHeader>
               <CardTitle>With Snipost</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 text-muted-foreground">
-                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Curated, upvoted Solana snippets - Web2 devs learn fast, experienced devs find what works.</li>
-                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Clear integration guides for hackathons - nail @Solana projects.</li>
-                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Snip editor to document your code & Snap editor for visual explainers - never forget a win.</li>
-                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-500" /> Safe space to share code, get constructive feedback, and shine on the leaderboard.</li>
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-600" /> Curated, upvoted Solana snippets - Web2 devs learn fast, experienced devs find what works.</li>
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-600" /> Clear integration guides for hackathons - nail @Solana projects.</li>
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-600" /> Snip editor to document your code & Snap editor for visual explainers - never forget a win.</li>
+                <li className="flex items-start"><Check className="w-5 h-5 mr-2 text-green-600" /> Safe space to share code, get constructive feedback, and shine on the leaderboard.</li>
               </ul>
             </CardContent>
           </Card>
