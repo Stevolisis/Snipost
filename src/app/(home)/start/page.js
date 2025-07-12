@@ -205,7 +205,7 @@ const snaps = [
             <div className="flex justify-center items-center">
               <div className=" flex justify-center items-center  w-fit mb-6 px-3 sm:px-6 py-2 bg-primary/10 rounded-full">
                 <div className="text-xs sm:text-sm font-medium text-primary flex items-center">
-                  <Dot className="w-9 h-9 -ml-2.5 -mr-1.5 sm:mr-0 "/> 
+                  <Dot className="w-9 h-9 -ml-2.5 sm:ml-0 -mr-1.5 sm:mr-0 "/> 
                   <p>The SocialFi Platform for Solana Developers</p>
                 </div>
               </div>
