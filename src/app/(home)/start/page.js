@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from "@/lib/redux/slices/snippets"
 import api from "@/utils/axiosConfig"
-import { Code2, PenTool, Trophy, Zap, Users, BarChart2, Gift, ArrowRight, Check, Star, Database, Shield, Sparkles, User, Folder } from "lucide-react"
+import { Code2, PenTool, Trophy, Zap, Users, BarChart2, Gift, ArrowRight, Check, Star, Database, Shield, Sparkles, User, Folder, Dot } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -202,8 +202,12 @@ const snaps = [
         
         <div className="container relative z-10 mx-auto px-6 py-24 md:py-36 flex flex-col items-center">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-block mb-6 px-6 py-2 bg-primary/10 rounded-full">
-              <span className="text-sm font-medium text-primary">The SocialFi Platform for Solana Developers</span>
+            <div className="inline-block mb-6 px-6 bg-primary/10 rounded-full">
+              
+              <span className="text-sm font-medium text-primary flex items-center">
+                <Dot className="text-primary w-9 h-9 -mr-2" />
+                <p>The SocialFi Platform for Solana Developers</p>
+              </span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
               Build. Share. <span className="text-primary">Win</span>.
@@ -377,11 +381,11 @@ const snaps = [
 {snippets.length > 0 && 
 <>
 
-    <div className="max-w-3xl mx-auto text-center my-7 mb-9">
+    <div className="max-w-3xl mx-auto text-center mt-12 mb-7">
       <h2 className="text-3xl md:text-4xl font-bold">Snips (Snippets)</h2>
     </div>
     
-  <section className="relative overflow-x-auto py-12 bg-background" id='custom-scroll'>
+  <section className="relative overflow-x-auto pb-12 bg-background" id='custom-scroll'>
 
     <div className="relative w-full">
       <div className="flex space-x-6 px-6">
