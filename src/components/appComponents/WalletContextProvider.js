@@ -6,7 +6,7 @@ import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adap
 import { useMemo } from "react";
 
 const WalletContextProvider = ({ children }) => {
-  const HELIUS_RPC = `https://devnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`;
+  const HELIUS_RPC = `https://mainnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`;
   const endpoint = useMemo(() => HELIUS_RPC, []);
 
   const wallets = useMemo(() => [
