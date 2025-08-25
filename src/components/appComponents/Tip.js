@@ -58,6 +58,7 @@ export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiv
       throw error
     }
   }
+  
   const handleTip = async () => {
     if (!connected || !publicKey) {
       toast.error("Please connect your wallet first");

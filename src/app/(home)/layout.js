@@ -29,7 +29,7 @@ export const metadata = {
     siteName: "Snipost"
   },
   twitter: {
-    card: 'snipost',
+    card: 'summary_large_image',
     title: 'Snipost',
     description: 'Where web3 developers share, learn, build and earn with Snipost',
     images: ['https://snipost.vercel.app/og-image.png',],

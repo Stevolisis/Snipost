@@ -12,12 +12,36 @@ import SnipCard from '@/components/appComponents/SnipCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import QuickNavigation from '@/components/appComponents/QuickNavigation';
 import { Card, CardContent } from '@/components/ui/card';
+import { disconnectWallet } from '@/lib/redux/slices/auth';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const page = () => {
   const dispatch = useAppDispatch();
   const { snippets = [], isLoading, error } = useAppSelector((state) => state.snippets);
   const { userData, jwtToken } = useAppSelector((state) => state.auth);
+  const { disconnect } = useWallet()
 
+  const fetchTrends = async () =>{
+    try{
+
+      dispatch(loadSnippetsStart());
+      const response = await api.get('/get-trending-snippets?timeRange=all&limit=10');
+      const snippets = response.data.snippets || [];
+      dispatch(loadSnippetsSuccess(snippets));
+
+    } catch (err) {
+        if (err.response?.status === 401) {
+          // Handle unauthorized error
+          dispatch(disconnectWallet());
+          disconnect();
+          toast("Uh oh! Something went wrong.", {
+            description: "Connect your wallet"
+          });
+          return
+        }
+        dispatch(snippetsFailure(err.message || 'Failed to load snippets'));
+      }
+  }
   useEffect(() => {
     const fetchTrendingSnippets = async () => {
       try {
@@ -37,6 +61,8 @@ const page = () => {
           toast("Uh oh! Something went wrong.", {
             description: "Connect your wallet"
           });
+          await fetchTrends();
+
           return
         }
         dispatch(snippetsFailure(err.message || 'Failed to load snippets'));
