@@ -30,6 +30,7 @@ export default function LandingPage() {
     };
 
     fetchTrendingSnippets();
+    
   }, []);
 
 const snaps = [
