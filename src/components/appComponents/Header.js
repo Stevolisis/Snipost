@@ -179,7 +179,7 @@ const Header = () => {
 
       <SearchComponent />
       {/* <WalletMultiButtonDynamic> */}
-      {/* {(connected && walletAddress && jwtToken && userData && isConnected) ? 
+      {(connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
@@ -191,9 +191,9 @@ const Header = () => {
           <Wallet className="h-4 w-4" />
           {connecting ? "Connecting..." : "Connect Wallet"}
         </Button>
-      }   */}
+      }  
       {/* </WalletMultiButtonDynamic> */}
-      <Button
+      {/* <Button
         variant="default"
         className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md"
         onClick={profile === "Sign in with Google" ? login : logout}
@@ -203,7 +203,7 @@ const Header = () => {
           <LogOut className="h-4 w-4" />
         }
         {profile}
-      </Button>
+      </Button> */}
 
     </header>
   )
