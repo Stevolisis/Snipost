@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from "@/components/appComponents/WalletContextProvider";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 
 const geist = Geist({
@@ -48,20 +49,23 @@ export default function Section2Layout({ children }) {
   return (
     <html lang="en" className="dark">
       <body className={`${geist.variable} antialiased`}>
-        <WalletContextProvider>
-          <ReduxStateProvider>
-            <Header/>
-            <SidebarProvider>
-              <AccountSidebar className="mt-18"/>
-              <Toaster />
-                <main className="font-[var(--font-geist)] w-full">
-                  <SidebarTrigger />
-                  {children}
-                </main>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+          <WalletContextProvider>
+            <ReduxStateProvider>
+              <Header/>
+              <SidebarProvider>
+                <AccountSidebar className="mt-18"/>
+                <Toaster />
+                  <main className="font-[var(--font-geist)] w-full">
+                    <SidebarTrigger />
+                    {children}
+                  </main>
 
-            </SidebarProvider>          
-          </ReduxStateProvider>          
-        </WalletContextProvider>
+              </SidebarProvider>          
+            </ReduxStateProvider>          
+          </WalletContextProvider>          
+        </GoogleOAuthProvider>
+
 
 
       </body>

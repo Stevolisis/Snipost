@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from './../../components/appComponents/WalletContextProvider';
 import { ProfilePrompt } from "@/components/appComponents/ProfilePrompt";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -58,7 +59,8 @@ export default function Section1Layout({ children }) {
     <html lang="en" className="dark">
       <body className={`${geist.variable} antialiased`}>
 
-        <WalletContextProvider>
+<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+         <WalletContextProvider>
             <ReduxStateProvider>
               <ProfilePrompt />
               <Header/>
@@ -72,7 +74,9 @@ export default function Section1Layout({ children }) {
 
               </SidebarProvider>          
             </ReduxStateProvider>          
-        </WalletContextProvider>
+        </WalletContextProvider> 
+</GoogleOAuthProvider>
+
 
       </body>
     </html>

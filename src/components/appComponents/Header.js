@@ -16,6 +16,7 @@ import SearchComponent from './Search'
 import { loadNotificationsFailure, loadNotificationsStart, loadNotificationsSuccess } from '@/lib/redux/slices/notifications'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { toast } from 'sonner';
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google'
 
 
 const Header = () => {
@@ -127,6 +128,32 @@ const Header = () => {
   }, []);
   // console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
+
+  
+  const handleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    console.log("Google ID Token:", idToken);
+    // Send this to your backend
+    const res = await fetch("/api/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken }),
+    });
+
+    const data = await res.json();
+    console.log("rEUTNED dATA:", data?.token?.payload);
+  };
+
+  const handleError = () => {
+    console.log("Google Login Failed");
+  };
+
+  const login = useGoogleLogin({
+    onSuccess:handleSuccess,
+    onError:handleError,
+    useOneTap: true,
+  });
+
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-3 md:px-9 py-4 bg-background border-b border-border shadow-sm">
       <Link href="/start">
@@ -144,7 +171,7 @@ const Header = () => {
 
       <SearchComponent />
       {/* <WalletMultiButtonDynamic> */}
-      {(connected && walletAddress && jwtToken && userData && isConnected) ? 
+      {/* {(connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
@@ -156,8 +183,14 @@ const Header = () => {
           <Wallet className="h-4 w-4" />
           {connecting ? "Connecting..." : "Connect Wallet"}
         </Button>
-      }  
+      }   */}
       {/* </WalletMultiButtonDynamic> */}
+          <GoogleLogin
+            onSuccess={handleSuccess}
+            onError={handleError}
+            // 👇 Custom button
+            useOneTap
+          />
 
     </header>
   )
