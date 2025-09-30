@@ -6,14 +6,15 @@ export async function POST(req) {
     try {
         const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
         const data = await req.json();
-        const idToken = data.idToken;
+        const access_token = data.access_token;
 
-        const ticket = await client.verifyIdToken({
-            idToken,
-            audience: process.env.GOOGLE_CLIENT_ID,
+        const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: { Authorization: `Bearer ${access_token}` },
         });
-        // console.log(ticket);
-        return NextResponse.json({ token: ticket}, { status: 200 });
+        console.log("userInfoRes", userInfoRes);
+
+        const profile = await userInfoRes.json();
+        return NextResponse.json({ success: true, profile });
     } catch (error) {
         console.error("Error verifying Google ID token:", error);
         return NextResponse.json(

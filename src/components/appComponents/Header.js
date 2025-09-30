@@ -2,7 +2,7 @@
 "use client"
 import React, { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Wallet } from 'lucide-react'
+import { LogIn, Wallet } from 'lucide-react'
 import Image from 'next/image'
 import { ProfileDropDown } from './ProfileDropDown'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -130,18 +130,18 @@ const Header = () => {
 
 
   
-  const handleSuccess = async (credentialResponse) => {
-    const idToken = credentialResponse.credential;
-    console.log("Google ID Token:", idToken);
-    // Send this to your backend
+  const handleSuccess = async (tokenResponse) => {
+    console.log("Google OAuth Token:", tokenResponse);
+
+    // You can exchange this token on backend for user info / JWT
     const res = await fetch("/api/google", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idToken }),
+      body: JSON.stringify({ access_token: tokenResponse.access_token }),
     });
 
     const data = await res.json();
-    console.log("rEUTNED dATA:", data?.token?.payload);
+    console.log("Returned Data:", data);
   };
 
   const handleError = () => {
@@ -149,9 +149,9 @@ const Header = () => {
   };
 
   const login = useGoogleLogin({
-    onSuccess:handleSuccess,
-    onError:handleError,
-    useOneTap: true,
+    onSuccess: handleSuccess,
+    onError: handleError,
+    useOneTap: true, // 👉 One Tap enabled
   });
 
   return (
@@ -185,12 +185,14 @@ const Header = () => {
         </Button>
       }   */}
       {/* </WalletMultiButtonDynamic> */}
-          <GoogleLogin
-            onSuccess={handleSuccess}
-            onError={handleError}
-            // 👇 Custom button
-            useOneTap
-          />
+      <Button
+        variant="default"
+        className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+        onClick={() => login()}
+      >
+        <LogIn className="h-4 w-4" />
+        Sign in with Google
+      </Button>
 
     </header>
   )
