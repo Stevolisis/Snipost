@@ -11,7 +11,6 @@ export async function POST(req) {
         const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
             headers: { Authorization: `Bearer ${access_token}` },
         });
-        console.log("userInfoRes", userInfoRes);
 
         const profile = await userInfoRes.json();
         return NextResponse.json({ success: true, profile });

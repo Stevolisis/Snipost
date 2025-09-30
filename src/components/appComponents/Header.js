@@ -2,7 +2,7 @@
 "use client"
 import React, { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { LogIn, Wallet } from 'lucide-react'
+import { LogIn, Wallet, LogOut } from 'lucide-react'
 import Image from 'next/image'
 import { ProfileDropDown } from './ProfileDropDown'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -16,7 +16,7 @@ import SearchComponent from './Search'
 import { loadNotificationsFailure, loadNotificationsStart, loadNotificationsSuccess } from '@/lib/redux/slices/notifications'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { toast } from 'sonner';
-import { GoogleLogin, useGoogleLogin } from '@react-oauth/google'
+import { GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google'
 
 
 const Header = () => {
@@ -26,6 +26,7 @@ const Header = () => {
   const { setVisible, visible } = useWalletModal();
   const [userInitiatedConnection, setUserInitiatedConnection] = useState(false);
   const [prevVisible, setPrevVisible] = useState(false);
+  const [profile, setprofile] = useState("Sign in with Google");
   
   const handleWalletClick = useCallback(async () => {
     try {
@@ -141,6 +142,7 @@ const Header = () => {
     });
 
     const data = await res.json();
+    setprofile(data?.profile?.name || "Sign in with Google")
     console.log("Returned Data:", data);
   };
 
@@ -153,6 +155,12 @@ const Header = () => {
     onError: handleError,
     useOneTap: true, // 👉 One Tap enabled
   });
+
+  const logout = () => {
+    googleLogout();
+    setprofile("Sign in with Google")
+    console.log("Logged out");
+  }
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-3 md:px-9 py-4 bg-background border-b border-border shadow-sm">
@@ -188,10 +196,13 @@ const Header = () => {
       <Button
         variant="default"
         className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md"
-        onClick={() => login()}
+        onClick={profile === "Sign in with Google" ? login : logout}
       >
-        <LogIn className="h-4 w-4" />
-        Sign in with Google
+        { profile === "Sign in with Google" ? 
+          <LogIn className="h-4 w-4" /> : 
+          <LogOut className="h-4 w-4" />
+        }
+        {profile}
       </Button>
 
     </header>
