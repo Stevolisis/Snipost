@@ -58,7 +58,7 @@ export default function Layout({ children }) {
             <link rel="apple-touch-icon" href="https://snipost.vercel.app/og-image.png" />
 
             {/* canonical */}
-            <link rel="canonical" href={BASE_URL} />
+            <link rel="canonical" href="https://snipost.vercel.app" />
 
             {/* Open Graph (complete set) */}
             <meta property="og:title" content="Snipost" />
@@ -67,7 +67,7 @@ export default function Layout({ children }) {
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
             <meta property="og:image:alt" content="Snipost - Web3 Developer Community" />
-            <meta property="og:url" content={BASE_URL} />
+            <meta property="og:url" content="https://snipost.vercel.app" />
             <meta property="og:type" content="website" />
             <meta property="og:site_name" content="Snipost" />
 
@@ -88,7 +88,7 @@ export default function Layout({ children }) {
                 __html: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "WebSite",
-                url: BASE_URL,
+                url:"https://snipost.vercel.app"
                 name: "Snipost",
                 description: "Where web3 developers share, learn, build and earn with Snipost",
                 }),
