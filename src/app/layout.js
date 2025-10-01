@@ -10,16 +10,16 @@ const geist = Geist({
 });
 
 export const metadata = {
-  title: 'Snipost',
+  title: 'Snipost: Building in Public',
   description: 'Where web3 developers share, learn, build and earn with Snipost',
   openGraph: {
     title: 'Snipost',
     description: 'Where web3 developers share, learn, build and earn with Snipost',
     url: 'https://snipost.vercel.app',
-    siteName: 'Example Blog',
+    siteName: 'Snipost Blog',
     images: [
       {
-        url: 'https://snipost.vercel.app/og-image.png',
+        url: 'https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png',
         width: 600,
         height: 600,
         alt: 'Snipost - Web3 Developer Community',
@@ -31,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Snipost',
     description: 'Where web3 developers share, learn, build and earn with Snipost',
-    images: ['https://snipost.vercel.app/og-image.png',],
+    images: ['https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png',],
   },
   other: {
     'theme-color': '#E5FF4A',
