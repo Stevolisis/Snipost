@@ -11,10 +11,10 @@ const geist = Geist({
 
 // export const metadata = {
 //   title: 'Snipost: Building in Public',
-//   description: 'Where web3 developers share, learn, build and earn with Snipost',
+//   description: 'Build and share in public, earn onchain reputation, find real world solutions',
 //   openGraph: {
 //     title: 'Snipost',
-//     description: 'Where web3 developers share, learn, build and earn with Snipost',
+//     description: 'Build and share in public, earn onchain reputation, find real world solutions',
 //     url: 'https://snipost.vercel.app',
 //     siteName: 'Snipost Blog',
 //     images: [
@@ -30,7 +30,7 @@ const geist = Geist({
 //   twitter: {
 //     card: 'summary_large_image',
 //     title: 'Snipost',
-//     description: 'Where web3 developers share, learn, build and earn with Snipost',
+//     description: 'Build and share in public, earn onchain reputation, find real world solutions',
 //     images: ['https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png',],
 //   },
 //   other: {
@@ -51,7 +51,7 @@ export default function Layout({ children }) {
 
             {/* page title + description */}
             <title>Snipost — Web3 dev community</title>
-            <meta name="description" content="Where web3 developers share, learn, build and earn with Snipost" />
+            <meta name="description" content="Build and share in public, earn onchain reputation, find real world solutions" />
 
             {/* icons */}
             <link rel="icon" type="image/png" href="https://snipost.vercel.app/og-image.png" />
@@ -61,20 +61,20 @@ export default function Layout({ children }) {
             <link rel="canonical" href="https://snipost.vercel.app" />
 
             {/* Open Graph (complete set) */}
-            <meta property="og:title" content="Snipost" />
-            <meta property="og:description" content="Where web3 developers share, learn, build and earn with Snipost" />
+            <meta property="og:title" content="Snipost | Find and Share real world solutions using Code Snippets" />
+            <meta property="og:description" content="Build and share in public, earn onchain reputation, find real world solutions" />
             <meta property="og:image" content="https://snipost.vercel.app/og-image.png" />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
             <meta property="og:image:alt" content="Snipost - Web3 Developer Community" />
             <meta property="og:url" content="https://snipost.vercel.app" />
             <meta property="og:type" content="website" />
-            <meta property="og:site_name" content="Snipost" />
+            <meta property="og:site_name" content="Snipost | Find and Share real world solutions using Code Snippets" />
 
             {/* Twitter card */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content="Snipost" />
-            <meta name="twitter:description" content="Where web3 developers share, learn, build and earn with Snipost" />
+            <meta name="twitter:title" content="Snipost | Find and Share real world solutions using Code Snippets" />
+            <meta name="twitter:description" content="Build and share in public, earn onchain reputation, find real world solutions" />
             <meta name="twitter:image" content="https://snipost.vercel.app/og-image.png" />
 
             {/* theme */}
@@ -90,7 +90,7 @@ export default function Layout({ children }) {
                 "@type": "WebSite",
                 url:"https://snipost.vercel.app"
                 name: "Snipost",
-                description: "Where web3 developers share, learn, build and earn with Snipost",
+                description: "Build and share in public, earn onchain reputation, find real world solutions",
                 }),
             }}
             /> */}
