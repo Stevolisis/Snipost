@@ -12,6 +12,16 @@ import dynamic from 'next/dynamic';
 import CommentBox from '@/components/appComponents/CommentBox';
 import Comment from '@/components/appComponents/Comment';
 import api from '@/utils/axiosConfig';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import { disconnectWallet, setVisitorId, updateUserData } from '@/lib/redux/slices/auth';
+import { Tip } from '@/components/appComponents/Tip';
+import { bookmarkSnippetApiSuccess, bookmarkSnippetSuccess, downvoteSnippetApiSuccess, downvoteSnippetSuccess, loadSnippetStart, loadSnippetSuccess, snippetsFailure, upvoteSnippetApiSuccess, upvoteSnippetSuccess } from '@/lib/redux/slices/snippets';
+import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Fork } from '@/components/appComponents/Fork';
+import { useRouter } from 'next/navigation';
+import { useIntersectionObserver } from 'react-haiku';
 
 const SyntaxHighlighter = dynamic(
   () => import('react-syntax-highlighter').then((mod) => {
@@ -26,16 +36,7 @@ const SyntaxHighlighter = dynamic(
     )
   }
 );
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { disconnectWallet, setVisitorId, updateUserData } from '@/lib/redux/slices/auth';
-import { Tip } from '@/components/appComponents/Tip';
-import { bookmarkSnippetApiSuccess, bookmarkSnippetSuccess, downvoteSnippetApiSuccess, downvoteSnippetSuccess, loadSnippetStart, loadSnippetSuccess, snippetsFailure, upvoteSnippetApiSuccess, upvoteSnippetSuccess } from '@/lib/redux/slices/snippets';
-import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Fork } from '@/components/appComponents/Fork';
-import { useRouter } from 'next/navigation';
-import { useIntersectionObserver } from 'react-haiku';
+
 
 
 const Page = ({params}) => {
