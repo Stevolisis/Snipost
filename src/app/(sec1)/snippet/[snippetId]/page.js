@@ -353,22 +353,22 @@ const Page = ({params}) => {
 
   return (
     <>
-          <Head>
-            <title>Snipost - The SocialFi Platform for Solana Developers</title>
-            <meta name="description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="icon" href="/favicon.ico" />
-            <meta property="og:title" content="Snipost - The SocialFi Platform for Solana Developers" />
-            <meta property="og:description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
-            <meta property="og:image" content="https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png" />
-            <meta property="og:url" content="https://snipost.vercel.app" />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content="Snipost - The SocialFi Platform for Solana Developers" />
-            <meta name="twitter:description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
-            <meta name="twitter:image" content="https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png" />
-            <meta name="theme-color" content="#E5FF4A" />
-            <meta name="msapplication-TileColor" content="#E5FF4A" />
-          </Head>
+      <Head>
+        <title>Snipost - The SocialFi Platform for Solana Developers</title>
+        <meta name="description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="Snipost - The SocialFi Platform for Solana Developers" />
+        <meta property="og:description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
+        <meta property="og:image" content="https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png" />
+        <meta property="og:url" content="https://snipost.vercel.app" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Snipost - The SocialFi Platform for Solana Developers" />
+        <meta name="twitter:description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
+        <meta name="twitter:image" content="https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png" />
+        <meta name="theme-color" content="#E5FF4A" />
+        <meta name="msapplication-TileColor" content="#E5FF4A" />
+      </Head>
       {
         snippet && 
         <div className='px-5 flex flex-col md:flex-row gap-5'>

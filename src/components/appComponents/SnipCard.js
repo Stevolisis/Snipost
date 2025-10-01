@@ -174,7 +174,7 @@ const SnipCard = ({snippet, fix}) => {
                         > 
                         <Bookmark
                             className={hasBookmark ? "fill-white text-white!" : "fill-transparent"} 
-                        /> 
+                        />
                         </Button>
                     </div>
                 </div>
