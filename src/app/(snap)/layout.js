@@ -7,21 +7,6 @@ import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from './../../components/appComponents/WalletContextProvider';
 import { ProfilePrompt } from "@/components/appComponents/ProfilePrompt";
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
 export const metadata = {
   title: 'Snipost',
   description: 'Where web3 developers share, learn, build and earn with Snipost',
@@ -54,21 +39,13 @@ export const metadata = {
 
 export default function Section1Layout({ children }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} antialiased`}>
+    <>
+      <ProfilePrompt />
+      <Toaster />
+        <main className="font-[var(--font-inter)] w-full">
+          {children}
+        </main>
+    </>
 
-        <WalletContextProvider>
-            <ReduxStateProvider>
-              <ProfilePrompt />
-              {/* <Header/> */}
-                <Toaster />
-                  <main className="font-[var(--font-inter)] w-full">
-                    {children}
-                  </main>
-            </ReduxStateProvider>          
-        </WalletContextProvider>
-
-      </body>
-    </html>
   );
 }

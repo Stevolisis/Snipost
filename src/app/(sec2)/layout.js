@@ -46,29 +46,17 @@ export const metadata = {
 
 
 export default function Section2Layout({ children }) {
-  return (
-    <html lang="en" className="dark">
-      <body className={`${geist.variable} antialiased`}>
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-          <WalletContextProvider>
-            <ReduxStateProvider>
-              <Header/>
-              <SidebarProvider>
-                <AccountSidebar className="mt-18"/>
-                <Toaster />
-                  <main className="font-[var(--font-geist)] w-full">
-                    <SidebarTrigger />
-                    {children}
-                  </main>
+  return (         
+    <>
+      <Header/>
+      <SidebarProvider>
+        <AccountSidebar className="mt-18"/>
+          <main className="font-[var(--font-geist)] w-full">
+            <SidebarTrigger />
+            {children}
+          </main>
 
-              </SidebarProvider>          
-            </ReduxStateProvider>          
-          </WalletContextProvider>          
-        </GoogleOAuthProvider>
-
-
-
-      </body>
-    </html>
+      </SidebarProvider> 
+    </>
   );
 }
