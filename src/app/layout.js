@@ -22,7 +22,7 @@ const geist = Geist({
 //         url: 'https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png',
 //         width: 600,
 //         height: 600,
-//         alt: 'Snipost - Web3 Developer Community',
+//         alt: 'Snipost - Web4 Developer Community',
 //       },
 //     ],
 //     siteName: "Snipost"
@@ -50,7 +50,7 @@ export default function Layout({ children }) {
             <meta name="robots" content="index,follow" />
 
             {/* page title + description */}
-            <title>Snipost — Web3 dev community</title>
+            <title>Snipost | Find and Share real world solutions using Code Snippets</title>
             <meta name="description" content="Build and share in public, earn onchain reputation, find real world solutions" />
 
             {/* icons */}
@@ -66,7 +66,7 @@ export default function Layout({ children }) {
             <meta property="og:image" content="https://snipost.vercel.app/og-image.png" />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
-            <meta property="og:image:alt" content="Snipost - Web3 Developer Community" />
+            <meta property="og:image:alt" content="Snipost | Find and Share real world solutions using Code Snippets" />
             <meta property="og:url" content="https://snipost.vercel.app" />
             <meta property="og:type" content="website" />
             <meta property="og:site_name" content="Snipost | Find and Share real world solutions using Code Snippets" />

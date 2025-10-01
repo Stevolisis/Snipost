@@ -193,7 +193,7 @@ const snaps = [
 
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>Snipost - The SocialFi Platform for Solana Developers</title>
         <meta name="description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -208,7 +208,7 @@ const snaps = [
         <meta name="twitter:image" content="https://snipost.vercel.app/og-image.png" />
         <meta name="theme-color" content="#E5FF4A" />
         <meta name="msapplication-TileColor" content="#E5FF4A" />
-      </Head>
+      </Head> */}
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative overflow-hidden">
