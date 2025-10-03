@@ -1,6 +1,6 @@
 // src/components/layout/Header.jsx
 "use client"
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { LogIn, Wallet, LogOut } from 'lucide-react'
 import Image from 'next/image'
@@ -17,6 +17,7 @@ import { loadNotificationsFailure, loadNotificationsStart, loadNotificationsSucc
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { toast } from 'sonner';
 import { GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google'
+import { useSearchParams } from 'next/navigation'
 
 
 const Header = () => {
@@ -27,7 +28,10 @@ const Header = () => {
   const [userInitiatedConnection, setUserInitiatedConnection] = useState(false);
   const [prevVisible, setPrevVisible] = useState(false);
   const [profile, setprofile] = useState("Sign in with Google");
-  
+  const [profile2, setprofile2] = useState("Sign in with Github");
+  const searchParams = useSearchParams();
+  const code = searchParams.get("code"); 
+
   const handleWalletClick = useCallback(async () => {
     try {
       dispatch(connectWalletStart());
@@ -129,37 +133,90 @@ const Header = () => {
   }, []);
   // console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
+const called = useRef(false);
+  useEffect(() => {
+  if (code && !called.current) {
+    called.current = true;
+
+      // Exchange code for token  
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`/api/github?code=${code}`);
+          const data = await response.json();
+          console.log("GitHub OAuth Data:", data);
+        } catch (error) {
+          console.error("Error fetching GitHub profile:", error);
+        }
+      };
+      fetchData();
+    } else {
+      console.log(code+" - no code");
+      setprofile2("Sign in with Github")
+    }
+  }, [code]);
 
   
-  const handleSuccess = async (tokenResponse) => {
-    console.log("Google OAuth Token:", tokenResponse);
 
-    // You can exchange this token on backend for user info / JWT
-    const res = await fetch("/api/google", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ access_token: tokenResponse.access_token }),
+  // Google OAuth (commented out for now)
+  // const handleSuccess = async (tokenResponse) => {
+  //   console.log("Google OAuth Token:", tokenResponse);
+
+  //   // You can exchange this token on backend for user info / JWT
+  //   const res = await fetch("/api/google", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ access_token: tokenResponse.access_token }),
+  //   });
+
+  //   const data = await res.json();
+  //   setprofile(data?.profile?.name || "Sign in with Google")
+  //   console.log("Returned Data:", data);
+  // };
+
+  // const handleError = () => {
+  //   console.log("Google Login Failed");
+  // };
+
+  // const login = useGoogleLogin({
+  //   onSuccess: handleSuccess,
+  //   onError: handleError,
+  //   useOneTap: true, // 👉 One Tap enabled
+  // });
+
+  // const logout = () => {
+  //   googleLogout();
+  //   setprofile("Sign in with Google")
+  //   console.log("Logged out");
+  // }
+
+
+
+  //Github Auth
+  const loginWithGitHub = () => {
+    const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+    const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
+    const scope = [
+      "read:user",       // Read user profile info (followers, company, bio, etc.)
+      "user:email",      // Access public + private emails
+      "repo",            // Full control of public + private repos (needed for private repo counts)
+      // "gist",            // List/create/edit/delete gists
+      // "workflow",        // Access/manage GitHub Actions workflows
+      // "read:org",        // Read org memberships
+      // "admin:org",       // Full org management (dangerous, usually not needed)
+      // "admin:repo_hook", // Manage repo webhooks
+      // "notifications",   // Read user’s notifications
+      // "read:discussion", // Access discussions
+      // "project",         // Manage projects
+    ].join(" ");
+
+    const githubAuthUrl =`https://github.com/login/oauth/authorize?` +
+    new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      scope,
     });
 
-    const data = await res.json();
-    setprofile(data?.profile?.name || "Sign in with Google")
-    console.log("Returned Data:", data);
-  };
-
-  const handleError = () => {
-    console.log("Google Login Failed");
-  };
-
-  const login = useGoogleLogin({
-    onSuccess: handleSuccess,
-    onError: handleError,
-    useOneTap: true, // 👉 One Tap enabled
-  });
-
-  const logout = () => {
-    googleLogout();
-    setprofile("Sign in with Google")
-    console.log("Logged out");
+    window.location.href = githubAuthUrl;
   }
 
   return (
@@ -179,7 +236,7 @@ const Header = () => {
 
       <SearchComponent />
       {/* <WalletMultiButtonDynamic> */}
-      {(connected && walletAddress && jwtToken && userData && isConnected) ? 
+      {/* {(connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
@@ -191,7 +248,7 @@ const Header = () => {
           <Wallet className="h-4 w-4" />
           {connecting ? "Connecting..." : "Connect Wallet"}
         </Button>
-      }  
+      }   */}
       {/* </WalletMultiButtonDynamic> */}
       {/* <Button
         variant="default"
@@ -204,6 +261,18 @@ const Header = () => {
         }
         {profile}
       </Button> */}
+
+      <Button
+        variant="default"
+        className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-black-600 hover:bg-black-700 text-white shadow-md"
+        onClick={profile === "Sign in with Google" ? loginWithGitHub : ()=>alert("Logout")}
+      >
+        { profile === "Sign in with Google" ? 
+          <LogIn className="h-4 w-4" /> : 
+          <LogOut className="h-4 w-4" />
+        }
+        {profile}
+      </Button>
 
     </header>
   )

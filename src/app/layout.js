@@ -54,8 +54,8 @@ export default function Layout({ children }) {
             <meta name="description" content="Build and share in public, earn onchain reputation, find real world solutions" />
 
             {/* icons */}
-            <link rel="icon" type="image/png" href="https://snipost.vercel.app/og-image.png" />
-            <link rel="apple-touch-icon" href="https://snipost.vercel.app/og-image.png" />
+            <link rel="icon" type="image/png" href="https://snipost.vercel.app/logo.png" />
+            <link rel="apple-touch-icon" href="https://snipost.vercel.app/logo.png" />
 
             {/* canonical */}
             <link rel="canonical" href="https://snipost.vercel.app" />
@@ -81,19 +81,6 @@ export default function Layout({ children }) {
             <meta name="theme-color" content="#E5FF4A" />
             <meta name="msapplication-TileColor" content="#E5FF4A" />
 
-            {/* Structured data for rich previews */}
-            {/* <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-                __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                url:"https://snipost.vercel.app"
-                name: "Snipost",
-                description: "Build and share in public, earn onchain reputation, find real world solutions",
-                }),
-            }}
-            /> */}
         </head>
       <body className={`${geist.variable} antialiased`}>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
