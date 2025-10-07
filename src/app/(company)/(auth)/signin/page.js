@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { GalleryVerticalEnd } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Signin({ ...props }) {
   return (
@@ -65,7 +66,7 @@ export default function Signin({ ...props }) {
                   <Field>
                     <Button type="submit">Sign In</Button>
                     <FieldDescription className="text-center">
-                      Don't have an account? <a href="#">Sign up</a>
+                      Don't have an account? <Link href="/signup">Sign up</Link>
                     </FieldDescription>
                   </Field>
                 </FieldGroup>
@@ -73,8 +74,8 @@ export default function Signin({ ...props }) {
             </CardContent>
           </Card>
           <FieldDescription className="px-6 text-center">
-            By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-            and <a href="#">Privacy Policy</a>.
+            By clicking continue, you agree to our <Link href="#">Terms of Service</Link>{" "}
+            and <Link href="#">Privacy Policy</Link>.
           </FieldDescription>
         </div>
 
