@@ -107,9 +107,9 @@ export default function SignupForm({ ...props }) {
         email: form.email,
         password: form.password,
       });
-      console.log(res);
-      toast.success(res.data?.data?.message || "Account created successfully!");
-      router.push("/otp");
+      console.log(res.data?.company);
+      toast.success(res.data?.message || "Account created successfully!");
+      router.push(`/otp/${res.data?.company?.id}`);
 
     } catch (error) {
       console.error("Signup error:", error);
@@ -132,7 +132,7 @@ export default function SignupForm({ ...props }) {
           Snipost DevOrg.
         </a>
 
-        <div className="flex flex-col gap-6" {...props}>
+        <div className="flex flex-col gap-6">
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Create your account</CardTitle>
