@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -26,8 +26,12 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Trash2, Plus, Upload } from "lucide-react";
+import api from "@/utils/axiosConfig";
+import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
 export default function CompanyProfileForm() {
+  const { id } = useParams();
   const [founders, setFounders] = useState([{ email: "" }]);
   const [socialLinks, setSocialLinks] = useState([
     { platform: "twitter", url: "" },
@@ -38,26 +42,34 @@ export default function CompanyProfileForm() {
     name: "",
     username: "",
     email: "",
-    website: "",
-    size: "",
+    company_website: "",
+    company_size: "",
     about: "",
     location: "",
   });
   const [loading, setLoading] = useState(false);
 
+
+  useEffect(() => {
+    if (formData.name.trim()) {
+      const generated = formData.name
+        .toLowerCase()
+        .replace(/\s+/g, "_") // 🔹 replace spaces with underscores
+        .replace(/[^a-z0-9_]/g, ""); // allow underscore, remove other special chars
+      setFormData((prev) => ({ ...prev, username: generated }));
+    }
+  }, [formData.name]);
+
   const handleAddFounder = () => setFounders([...founders, { email: "" }]);
-  const handleRemoveFounder = (index) =>
-    setFounders(founders.filter((_, i) => i !== index));
+  const handleRemoveFounder = (index) => setFounders(founders.filter((_, i) => i !== index));
   const handleFounderChange = (index, value) => {
     const updated = [...founders];
     updated[index].email = value;
     setFounders(updated);
   };
 
-  const handleAddSocial = () =>
-    setSocialLinks([...socialLinks, { platform: "twitter", url: "" }]);
-  const handleRemoveSocial = (index) =>
-    setSocialLinks(socialLinks.filter((_, i) => i !== index));
+  const handleAddSocial = () => setSocialLinks([...socialLinks, { platform: "twitter", url: "" }]);
+  const handleRemoveSocial = (index) => setSocialLinks(socialLinks.filter((_, i) => i !== index));
   const handleSocialChange = (index, key, value) => {
     const updated = [...socialLinks];
     updated[index][key] = value;
@@ -93,19 +105,12 @@ export default function CompanyProfileForm() {
       setLoading(true);
       const payload = new FormData();
 
-      payload.append("name", formData.name);
-      payload.append("username", formData.username);
-      payload.append("email", formData.email);
-      payload.append("website", formData.website);
-      payload.append("size", formData.size);
-      payload.append("about", formData.about);
-      payload.append("location", formData.location);
+      Object.entries(formData).forEach(([key, value]) =>
+          payload.append(key, value)
+      );
 
-      founders.forEach((f, i) => payload.append(`founders[${i}]`, f.email));
-      socialLinks.forEach((s, i) => {
-        payload.append(`socialLinks[${i}][platform]`, s.platform);
-        payload.append(`socialLinks[${i}][url]`, s.url);
-      });
+      payload.append("founders", JSON.stringify(founders));
+      payload.append("socialLinks", JSON.stringify(socialLinks));
 
       if (logoFile) payload.append("logo", logoFile);
       console.log(formData);
@@ -113,24 +118,81 @@ export default function CompanyProfileForm() {
       console.log(socialLinks);
       console.log(payload);
 
-      const res = await fetch("/verify-company-email", {
-        method: "POST",
-        body: payload,
+      const {data} = await api.post(`/complete-company-profile/${id}`, payload, {
+          headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const data = await res.json();
-    //   if (data.success) {
-    //     alert("Profile submitted successfully! Awaiting verification.");
-    //   } else {
-    //     alert(data.message || "Error submitting profile");
-    //   }
+      if (data.success) {
+          toast.success("Profile submitted successfully! Awaiting verification.");
+      } else {
+          toast.success(data.message || "Error submitting profile");
+      }
+
     } catch (err) {
       console.error(err);
-      alert("Something went wrong while submitting.");
+      const msg = err.response?.data?.message || "Invalid or expired code. Please try again.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
+
+  
+    // 🟢 Fetch existing company data on mount
+  useEffect(() => {
+    const loadingId = toast.loading("Loading company data...");
+    const fetchCompanyData = async () => {
+      if (!id) return;
+
+      try {
+        const { data } = await api.get(`/company/me/${id}`);
+
+        if (data?.success && data.company) {
+          const company = data.company;
+
+          setFormData({
+            name: company.name || "",
+            username: company.username || "",
+            email: company.email || "",
+            company_website: company.company_website || "",
+            company_size: company.company_size || "",
+            about: company.about || "",
+            location: company.location || "",
+          });
+
+          if (company.logo) {
+            setPreview(company.logo?.url);
+          }
+
+          if (Array.isArray(company.founders) && company.founders.length > 0) {
+            setFounders(company.founders.map((f) => ({ email: f.email || "" })));
+          }
+
+          if (Array.isArray(company.socialLinks) && company.socialLinks.length > 0) {
+            setSocialLinks(
+              company.socialLinks.map((s) => ({
+                platform: s.platform || "twitter",
+                url: s.url || "",
+              }))
+            );
+          }
+        } else {
+          toast.error("Failed to load company data", { id: loadingId });
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Error loading company data", { id: loadingId });
+      } finally {
+        toast.dismiss(loadingId);
+      }
+    };
+
+    if (id) {
+      fetchCompanyData();
+    }
+  }, [id]);
+
+
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -165,7 +227,7 @@ export default function CompanyProfileForm() {
                         alt="Logo"
                         width={112}
                         height={112}
-                        className="rounded-full object-cover border border-border min-w-28 min-h-28"
+                        className="rounded-full object-cover border border-border min-w-28 min-h-28 max-w-28 max-h-28"
                       />
                       <Button
                         type="button"
@@ -178,7 +240,7 @@ export default function CompanyProfileForm() {
                       </Button>
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center min-w-28 min-h-28 rounded-full border border-dashed text-muted-foreground text-sm">
+                    <div className="flex flex-col items-center justify-center min-w-28 min-h-28 max-w-28 max-h-28 rounded-full border border-dashed text-muted-foreground text-sm">
                       <Upload className="w-5 h-5 mb-1" />
                       Upload Logo
                     </div>
@@ -225,9 +287,9 @@ export default function CompanyProfileForm() {
                   <Field>
                     <FieldLabel>Website</FieldLabel>
                     <Input
-                      name="website"
+                      name="company_website"
                       placeholder="https://example.com"
-                      value={formData.website}
+                      value={formData.company_website}
                       onChange={handleInputChange}
                     />
                   </Field>
@@ -238,12 +300,12 @@ export default function CompanyProfileForm() {
                   <FieldLabel>Company Size</FieldLabel>
                   <Select
                     onValueChange={(val) =>
-                      setFormData({ ...formData, size: val })
+                      setFormData({ ...formData, company_size: val })
                     }
                   >
                     <SelectTrigger>
                       <SelectValue
-                        placeholder={formData.size || "Select size"}
+                        placeholder={formData.company_size || "Select size"}
                       />
                     </SelectTrigger>
                     <SelectContent>
@@ -283,6 +345,10 @@ export default function CompanyProfileForm() {
                             <SelectItem value="github">GitHub</SelectItem>
                             <SelectItem value="linkedin">LinkedIn</SelectItem>
                             <SelectItem value="youtube">YouTube</SelectItem>
+                            <SelectItem value="facebook">Facebook</SelectItem>
+                            <SelectItem value="behance">Behance</SelectItem>
+                            <SelectItem value="dribble">Dribble</SelectItem>
+                            <SelectItem value="instagram">Instagram</SelectItem>
                             <SelectItem value="website">Website</SelectItem>
                           </SelectContent>
                         </Select>

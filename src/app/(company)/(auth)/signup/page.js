@@ -26,7 +26,7 @@ export default function SignupForm({ ...props }) {
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
-    userName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -47,20 +47,20 @@ export default function SignupForm({ ...props }) {
         .toLowerCase()
         .replace(/\s+/g, "_") // 🔹 replace spaces with underscores
         .replace(/[^a-z0-9_]/g, ""); // allow underscore, remove other special chars
-      setForm((prev) => ({ ...prev, userName: generated }));
+      setForm((prev) => ({ ...prev, username: generated }));
     }
   }, [form.name]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
 
-    if (id === "userName") {
+    if (id === "username") {
       // ✅ enforce lowercase, replace spaces with underscore, allow underscore
       const sanitized = value
         .toLowerCase()
         .replace(/\s+/g, "_")
         .replace(/[^a-z0-9_]/g, "");
-      setForm((prev) => ({ ...prev, userName: sanitized }));
+      setForm((prev) => ({ ...prev, username: sanitized }));
       return;
     }
 
@@ -103,7 +103,7 @@ export default function SignupForm({ ...props }) {
       setLoading(true);
       const res = await api.post("/create-company", {
         name: form.name,
-        userName: form.userName,
+        username: form.username,
         email: form.email,
         password: form.password,
       });
@@ -156,12 +156,12 @@ export default function SignupForm({ ...props }) {
                   </Field>
 
                   <Field>
-                    <FieldLabel htmlFor="userName">Username</FieldLabel>
+                    <FieldLabel htmlFor="username">Username</FieldLabel>
                     <Input
-                      id="userName"
+                      id="username"
                       type="text"
                       placeholder="helius_dev"
-                      value={form.userName}
+                      value={form.username}
                       onChange={handleChange}
                       required
                     />
