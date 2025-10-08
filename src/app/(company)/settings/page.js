@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Field,
@@ -34,6 +33,17 @@ export default function CompanyProfileForm() {
     { platform: "twitter", url: "" },
   ]);
   const [preview, setPreview] = useState(null);
+  const [logoFile, setLogoFile] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    website: "",
+    size: "",
+    about: "",
+    location: "",
+  });
+  const [loading, setLoading] = useState(false);
 
   const handleAddFounder = () => setFounders([...founders, { email: "" }]);
   const handleRemoveFounder = (index) =>
@@ -57,18 +67,75 @@ export default function CompanyProfileForm() {
   const handleLogoChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
+      setLogoFile(file);
       const reader = new FileReader();
       reader.onload = () => setPreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
-  const handleLogoRemove = () => setPreview(null);
+  const handleLogoRemove = () => {
+    setPreview(null);
+    setLogoFile(null);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const payload = new FormData();
+
+      payload.append("name", formData.name);
+      payload.append("username", formData.username);
+      payload.append("email", formData.email);
+      payload.append("website", formData.website);
+      payload.append("size", formData.size);
+      payload.append("about", formData.about);
+      payload.append("location", formData.location);
+
+      founders.forEach((f, i) => payload.append(`founders[${i}]`, f.email));
+      socialLinks.forEach((s, i) => {
+        payload.append(`socialLinks[${i}][platform]`, s.platform);
+        payload.append(`socialLinks[${i}][url]`, s.url);
+      });
+
+      if (logoFile) payload.append("logo", logoFile);
+      console.log(formData);
+      console.log(founders);
+      console.log(socialLinks);
+      console.log(payload);
+
+      const res = await fetch("/verify-company-email", {
+        method: "POST",
+        body: payload,
+      });
+
+      const data = await res.json();
+    //   if (data.success) {
+    //     alert("Profile submitted successfully! Awaiting verification.");
+    //   } else {
+    //     alert(data.message || "Error submitting profile");
+    //   }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong while submitting.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-2xl flex-col gap-6">
-        {/* Header */}
+        {/* Logo */}
         <a href="#" className="flex items-center gap-2 self-center font-medium">
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
             <Image src="/logo2.svg" alt="Snipost logo" width={18} height={18} />
@@ -87,7 +154,7 @@ export default function CompanyProfileForm() {
           </CardHeader>
 
           <CardContent>
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <FieldGroup>
                 {/* Logo Upload */}
                 <div className="flex items-center gap-4">
@@ -119,38 +186,65 @@ export default function CompanyProfileForm() {
                   <Input type="file" accept="image/*" onChange={handleLogoChange} />
                 </div>
 
-                {/* Company Name + Username */}
+                {/* Name + Username */}
                 <Field>
                   <FieldLabel>Company Name</FieldLabel>
-                  <Input placeholder="e.g. Solana Labs" />
+                  <Input
+                    name="name"
+                    placeholder="e.g. Solana Labs"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                  />
                 </Field>
 
                 <Field>
                   <FieldLabel>Username</FieldLabel>
-                  <Input placeholder="solanalabs" />
+                  <Input
+                    name="username"
+                    placeholder="solanalabs"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                  />
                   <FieldDescription>
                     Auto-generated from company name.
                   </FieldDescription>
                 </Field>
 
-                {/* Email & Website */}
+                {/* Email + Website */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <Field>
                     <FieldLabel>Email</FieldLabel>
-                    <Input type="email" placeholder="company@example.com" />
+                    <Input
+                      type="email"
+                      name="email"
+                      placeholder="company@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                    />
                   </Field>
                   <Field>
                     <FieldLabel>Website</FieldLabel>
-                    <Input placeholder="https://example.com" />
+                    <Input
+                      name="website"
+                      placeholder="https://example.com"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                    />
                   </Field>
                 </div>
 
                 {/* Company Size */}
                 <Field>
                   <FieldLabel>Company Size</FieldLabel>
-                  <Select>
+                  <Select
+                    onValueChange={(val) =>
+                      setFormData({ ...formData, size: val })
+                    }
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select size" />
+                      <SelectValue
+                        placeholder={formData.size || "Select size"}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1-10">1–10 employees</SelectItem>
@@ -173,7 +267,7 @@ export default function CompanyProfileForm() {
                     {socialLinks.map((social, index) => (
                       <div
                         key={index}
-                        className="flex  gap-2 items-start sm:items-center"
+                        className="flex gap-2 items-start sm:items-center"
                       >
                         <Select
                           value={social.platform}
@@ -230,15 +324,23 @@ export default function CompanyProfileForm() {
                 <Field>
                   <FieldLabel>About Company</FieldLabel>
                   <Textarea
+                    name="about"
                     placeholder="Describe what your company does..."
                     className="min-h-[100px]"
+                    value={formData.about}
+                    onChange={handleInputChange}
                   />
                 </Field>
 
                 {/* Location */}
                 <Field>
                   <FieldLabel>Location</FieldLabel>
-                  <Input placeholder="e.g. Lagos, Nigeria" />
+                  <Input
+                    name="location"
+                    placeholder="e.g. Lagos, Nigeria"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                  />
                 </Field>
 
                 {/* Founders */}
@@ -284,8 +386,14 @@ export default function CompanyProfileForm() {
 
                 {/* Submit */}
                 <Field>
-                  <Button type="submit" className="w-full">
-                    Submit for Verification
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={loading}
+                  >
+                    {loading
+                      ? "Submitting..."
+                      : "Submit for Verification"}
                   </Button>
                 </Field>
               </FieldGroup>
