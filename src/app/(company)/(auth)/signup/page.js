@@ -113,9 +113,7 @@ export default function SignupForm({ ...props }) {
 
     } catch (error) {
       console.error("Signup error:", error);
-      const msg =
-      error.response?.data?.message ||
-      "Something went wrong. Please try again.";
+      const msg = error.response?.data?.message || "Something went wrong. Please try again.";
       toast.error(msg);
     } finally {
       setLoading(false);

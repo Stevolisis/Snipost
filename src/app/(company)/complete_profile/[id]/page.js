@@ -28,10 +28,14 @@ import {
 import { Trash2, Plus, Upload } from "lucide-react";
 import api from "@/utils/axiosConfig";
 import { toast } from "sonner";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { authenticateSuccess } from "@/lib/redux/slices/auth";
 
 export default function CompanyProfileForm() {
   const { id } = useParams();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [founders, setFounders] = useState([{ email: "" }]);
   const [socialLinks, setSocialLinks] = useState([
     { platform: "twitter", url: "" },
@@ -113,17 +117,15 @@ export default function CompanyProfileForm() {
       payload.append("socialLinks", JSON.stringify(socialLinks));
 
       if (logoFile) payload.append("logo", logoFile);
-      console.log(formData);
-      console.log(founders);
-      console.log(socialLinks);
-      console.log(payload);
 
       const {data} = await api.post(`/complete-company-profile/${id}`, payload, {
           headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (data.success) {
-          toast.success("Profile submitted successfully! Awaiting verification.");
+          toast.success(data.message || "Profile submitted successfully! Awaiting verification.");
+          dispatch(authenticateSuccess(data));
+          return router.push("/dashboard");
       } else {
           toast.success(data.message || "Error submitting profile");
       }
@@ -145,10 +147,10 @@ export default function CompanyProfileForm() {
       if (!id) return;
 
       try {
-        const { data } = await api.get(`/company/me/${id}`);
+        const { data } = await api.get(`/get-company/${id}`);
 
-        if (data?.success && data.company) {
-          const company = data.company;
+        if (data?.success && data.user) {
+          const company = data.user;
 
           setFormData({
             name: company.name || "",
@@ -181,7 +183,8 @@ export default function CompanyProfileForm() {
         }
       } catch (err) {
         console.error(err);
-        toast.error("Error loading company data", { id: loadingId });
+        const msg = err.response?.data?.message ||"Error loading company data";
+        toast.error(msg, { id: loadingId });
       } finally {
         toast.dismiss(loadingId);
       }
