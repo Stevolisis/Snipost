@@ -132,7 +132,7 @@ const Header = () => {
     if (jwtToken) {
       getNotifications();
     }
-  }, []);
+  }, [jwtToken]);
   // console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
 const called = useRef(false);
@@ -238,7 +238,7 @@ const called = useRef(false);
 
       <SearchComponent />
       {/* <WalletMultiButtonDynamic> */}
-      {userData.role ==="developer" && ((connected && walletAddress && jwtToken && userData && isConnected) ? 
+      {userData?.role ==="developer" && ((connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />

@@ -240,7 +240,7 @@ const called = useRef(false);
       {/* <WalletMultiButtonDynamic> */}
 
 
-      {userData.role === "company" && ((jwtToken && userData) ? 
+      {userData?.role === "company" && ((jwtToken && userData) ? 
         <CompanyProfileDropDown>
           <Button variant="muted" className="gap-2 py-2! text-xs sm:text-sm border border-zinc-700" onClick={() => handleWalletClick()}>
             <Image
