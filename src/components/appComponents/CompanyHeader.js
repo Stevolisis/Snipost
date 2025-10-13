@@ -1,4 +1,4 @@
-// src/components/layout/Header.jsx
+// src/components/layout/CompanyHeader.jsx
 "use client"
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -21,7 +21,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { CompanyProfileDropDown } from './CompanyProfileDropDown'
 
 
-const Header = () => {
+const CompanyHeader = () => {
   const { connect, connected, connecting, wallet, publicKey, disconnect } = useWallet()
   const dispatch = useDispatch();
   const router = useRouter();
@@ -238,21 +238,28 @@ const called = useRef(false);
 
       <SearchComponent />
       {/* <WalletMultiButtonDynamic> */}
-      {userData.role ==="developer" && ((connected && walletAddress && jwtToken && userData && isConnected) ? 
-        <ProfileDropDown>
-          <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
-            <Wallet className="h-4 w-4" />
-            {walletAddress.toString().slice(0, 4)}...{walletAddress.toString().slice(-4)}
+
+
+      {userData.role === "company" && ((jwtToken && userData) ? 
+        <CompanyProfileDropDown>
+          <Button variant="muted" className="gap-2 py-2! text-xs sm:text-sm border border-zinc-700" onClick={() => handleWalletClick()}>
+            <Image
+              src={userData?.logo?.url || "/default_avatar.png"}
+              alt="Profile"
+              width={27}
+              height={27}
+              className='h-6 w-6 rounded-full object-cover aspect-square'
+            />
+            {userData?.name?.length > 8 ? `${userData.name.slice(0, 8)}...` : userData.name}
+            <ChevronDown className="h-4 w-4" />
           </Button>
-        </ProfileDropDown>
+        </CompanyProfileDropDown>
         :
-        <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
-          <Wallet className="h-4 w-4" />
-          {connecting ? "Connecting..." : "Connect Wallet"}
+        <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => router.push("/signin")}>
+          <CircleUser className="h-7 w-7" />
+          {connecting ? "Connecting..." : "Sign in"}
         </Button>)
       }  
-
-
 
 
 
@@ -287,4 +294,4 @@ const called = useRef(false);
   )
 }
 
-export default Header
+export default CompanyHeader

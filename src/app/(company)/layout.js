@@ -1,8 +1,8 @@
 import { Geist } from "next/font/google";
 import "../globals.css";
-import Header from "@/components/appComponents/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { CompanyProfilePrompt } from "@/components/appComponents/CompanyProfilePrompt";
+import CompanyHeader from "@/components/appComponents/CompanyHeader";
 
 
 const geist = Geist({
@@ -15,7 +15,7 @@ export default function CompanyLayout({ children }) {
   return (
     <>
       <CompanyProfilePrompt />
-      <Header/>
+      <CompanyHeader/>
         <Toaster />
           <main className="font-[var(--font-geist)] w-full">
             {children}

@@ -82,18 +82,18 @@ export default function Layout({ children }) {
             <meta name="msapplication-TileColor" content="#E5FF4A" />
 
         </head>
-      <body className={`${geist.variable} antialiased`}>
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-          <WalletContextProvider>
-            <ReduxStateProvider>
-                <Toaster />
-                  <main className="font-[var(--font-geist)] w-full">
-                    {children}
-                  </main>
-            </ReduxStateProvider>          
-          </WalletContextProvider>          
-        </GoogleOAuthProvider>
-      </body>
+        <body className={`${geist.variable} antialiased`}>
+          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+            <WalletContextProvider>
+              <ReduxStateProvider>
+                  <Toaster />
+                    <main className="font-[var(--font-geist)] w-full">
+                      {children}
+                    </main>
+              </ReduxStateProvider>          
+            </WalletContextProvider>          
+          </GoogleOAuthProvider>
+        </body>
     </html>
   );
 }
