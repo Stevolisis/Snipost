@@ -3,6 +3,8 @@ import "../globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { CompanyProfilePrompt } from "@/components/appComponents/CompanyProfilePrompt";
 import CompanyHeader from "@/components/appComponents/CompanyHeader";
+import { CompanyAppSidebar } from "@/components/appComponents/CompanySidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 
 const geist = Geist({
@@ -16,10 +18,14 @@ export default function CompanyLayout({ children }) {
     <>
       <CompanyProfilePrompt />
       <CompanyHeader/>
+      <SidebarProvider>
+        <CompanyAppSidebar className="mt-18"/>
         <Toaster />
-          <main className="font-[var(--font-geist)] w-full">
-            {children}
-          </main>
+        <main className="font-[var(--font-geist)] w-full">
+          <SidebarTrigger size={30}/>
+          {children}
+        </main> 
+      </SidebarProvider>
     </>
   );
 }
