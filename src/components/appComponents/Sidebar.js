@@ -228,7 +228,7 @@ export function AppSidebar({ ...props }) {
           <SidebarMenu>
             {userData && <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
-                <Link href={`/profile/${userData._id}`}>
+                <Link href={userData?.role === "developer" ? `/profile/${userData._id}` : `/dashboard`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {
                       userData?.avatar?.url ? 
@@ -250,7 +250,7 @@ export function AppSidebar({ ...props }) {
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">{userData?.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">@{userData?.userName}</span>
+                    <span className="truncate text-xs text-muted-foreground">@{userData?.userName || userData?.username}</span>
                   </div>
                 </Link>
               </SidebarMenuButton>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { updateUserData } from "@/lib/redux/slices/auth";
@@ -19,33 +19,89 @@ import {
 } from "lucide-react";
 import SearchDevelopers from "@/components/appComponents/SearchDevelopers";
 import Recents from "@/components/appComponents/RecentDocumentations";
+import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from "@/lib/redux/slices/snippets";
+import { loadTransactionsSuccess } from "@/lib/redux/slices/profile";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
   const { userData, jwtToken } = useAppSelector((state) => state.auth);
+  const isOwner = userData?._id;
+  const { snippets } = useAppSelector((state) => state.snippets);
+  const { earned } = useAppSelector((state) => state.profile);
+  const [comments, setComments] = useState([]);
+  console.log("Snippets in dashboard:", snippets);
+
+  const fetchSnippets = async () => {
+    try {
+      dispatch(loadSnippetsStart())
+      const response = await api.get(`/get-user-snippets/${isOwner}?limit=5`)
+      const snippets = response.data.snippets || []
+      dispatch(loadSnippetsSuccess(snippets))
+    } catch (err) {
+      dispatch(snippetsFailure(err.message || 'Failed to load snippets'))
+    }
+  }
+  
+  const fetchTransactions = async () => {
+    if (!isOwner) return
+    
+    try {
+      const response = await api.get('/get-transactions', {
+        headers: { Authorization: `Bearer ${jwtToken}` }
+      })
+      dispatch(loadTransactionsSuccess(response.data.transactions || []));
+    } catch (err) {
+      console.error('Failed to fetch transactions:', err)
+      toast.error('Failed to load transaction history')
+    }
+  }
+
+  const fetchUser = async () => {
+    const loadingId = toast.loading("Loading company data...");
+    try {
+      const { data } = await api.get("/company/me", {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      });
+      dispatch(updateUserData(data.user));
+    } catch (err) {
+      console.log(err);
+      const msg =
+        err.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(msg, { id: loadingId });
+    } finally {
+      toast.dismiss(loadingId);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const response = await api.get(`/get-recent-comments?limit=7`, {
+        headers: { Authorization: `Bearer ${jwtToken}` }
+      });
+      console.log("Fetched comments:", response.data.comments);
+      setComments(response.data.comments || []);
+    } catch (err) {
+      console.error("Failed to fetch comments:", err);
+      toast.error("Failed to load recent comments");
+    }
+  };
+  console.log("Comments state in dashboard:", comments);
 
   useEffect(() => {
     if (jwtToken) {
-      const fetchUser = async () => {
-        const loadingId = toast.loading("Loading company data...");
-        try {
-          const { data } = await api.get("/company/me", {
-            headers: { Authorization: `Bearer ${jwtToken}` },
-          });
-          dispatch(updateUserData(data.user));
-        } catch (err) {
-          console.log(err);
-          const msg =
-            err.response?.data?.message ||
-            "Something went wrong. Please try again.";
-          toast.error(msg, { id: loadingId });
-        } finally {
-          toast.dismiss(loadingId);
-        }
-      };
       fetchUser();
+      fetchComments();
     }
   }, [jwtToken, dispatch]);
+
+  useEffect(() => {
+    fetchSnippets();
+  }, [isOwner]);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [isOwner, jwtToken]);
 
   const stats = [
     {
@@ -62,13 +118,13 @@ const Dashboard = () => {
     },
     {
       label: "Followers",
-      value: "2,547",
+      value: userData?.followers?.length || "0",
       change: "+15.2% from last month",
       icon: Users,
     },
     {
       label: "Earned (SOL)",
-      value: "0.428",
+      value: earned?.reduce((sum, tx) => sum + tx.amount, 0).toFixed(2) || "0.00",
       change: "+23.1% from last month",
       icon: Coins,
     },
@@ -79,19 +135,19 @@ const Dashboard = () => {
       icon: FileText,
       title: "Create Documentation",
       subtitle: "Start with a template",
-      href: "/docs/new",
+      href: "/create_docs",
     },
     {
       icon: Laptop,
       title: "Add Code Example",
       subtitle: "Share practical code",
-      href: "/snippets/new",
+      href: "/create_example",
     },
     {
       icon: RefreshCw,
       title: "Post Update",
       subtitle: "Changelog or news",
-      href: "/updates",
+      href: "/create_update",
     },
     {
       icon: UserPlus,
@@ -165,7 +221,7 @@ const Dashboard = () => {
       </div>
       <SearchDevelopers/>
 
-      <Recents />
+      <Recents snippets={snippets}/>
     </div>
   );
 };

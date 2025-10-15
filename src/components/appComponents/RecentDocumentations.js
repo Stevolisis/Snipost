@@ -6,7 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 
-export default function Recents() {
+export default function Recents({snippets}) {
+  console.log("Snippets prop in Recents:", snippets);
   const docs = [
     { title: "Getting Started Guide", type: "User Guide", status: "Published", views: "2,341", updated: "2 days ago" },
     { title: "API Reference v2.0", type: "API Docs", status: "Published", views: "1,823", updated: "5 days ago" },
@@ -96,7 +97,7 @@ export default function Recents() {
             <TableHeader>
               <TableRow>
                 <TableHead className="min-w-[200px]">Title</TableHead>
-                <TableHead>Language</TableHead>
+                <TableHead>Forks</TableHead>
                 <TableHead>Upvotes</TableHead>
                 <TableHead>Views</TableHead>
                 <TableHead>Comments</TableHead>
@@ -104,21 +105,21 @@ export default function Recents() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {codeExamples.map((item, i) => (
+              {snippets.map((item, i) => (
                 <TableRow key={i}>
                   <TableCell className="font-medium truncate max-w-[220px]" title={item.title}>
                     {item.title}
                   </TableCell>
-                  <TableCell>{item.lang}</TableCell>
-                  <TableCell>{item.upvotes}</TableCell>
-                  <TableCell>{item.views}</TableCell>
-                  <TableCell>{item.comments}</TableCell>
+                  <TableCell>{item.forkCount}</TableCell>
+                  <TableCell>{item.upvoteCount}</TableCell>
+                  <TableCell>{item.visits.length}</TableCell>
+                  <TableCell>{item.commentNo}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Link href={`/examples/edit/${i}`}>
+                      {/* <Link href={`/examples/edit/${i}`}>
                         <Button variant="outline" size="sm">Edit</Button>
-                      </Link>
-                      <Link href={`/examples/view/${i}`}>
+                      </Link> */}
+                      <Link href={`/snippet/${item._id}`}>
                         <Button variant="default" size="sm">View</Button>
                       </Link>
                     </div>

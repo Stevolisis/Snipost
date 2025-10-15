@@ -238,7 +238,7 @@ const called = useRef(false);
 
       <SearchComponent />
       {/* <WalletMultiButtonDynamic> */}
-      {userData?.role ==="developer" && ((connected && walletAddress && jwtToken && userData && isConnected) ? 
+      {(connected && walletAddress && jwtToken && userData && isConnected) ? 
         <ProfileDropDown>
           <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
             <Wallet className="h-4 w-4" />
@@ -249,7 +249,7 @@ const called = useRef(false);
         <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => handleWalletClick()}>
           <Wallet className="h-4 w-4" />
           {connecting ? "Connecting..." : "Connect Wallet"}
-        </Button>)
+        </Button>
       }  
 
 

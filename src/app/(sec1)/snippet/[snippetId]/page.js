@@ -70,7 +70,7 @@ const Page = ({params}) => {
   
   const fetchUser = async()=>{
     try{
-      const response = await api.get("/me",{
+      const response = await api.get(`${userData.role === "developer" ? "/me" : "/company/me"}`,{
         headers:{
           Authorization:`Bearer ${jwtToken}`
         }
@@ -353,22 +353,6 @@ const Page = ({params}) => {
 
   return (
     <>
-      <Head>
-        <title>Snipost - The SocialFi Platform for Solana Developers</title>
-        <meta name="description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="Snipost - The SocialFi Platform for Solana Developers" />
-        <meta property="og:description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
-        <meta property="og:image" content="https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png" />
-        <meta property="og:url" content="https://snipost.vercel.app" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Snipost - The SocialFi Platform for Solana Developers" />
-        <meta name="twitter:description" content="Snipost is the SocialFi platform where Solana developers share code snippets, document projects, and earn SOL in a trusted community." />
-        <meta name="twitter:image" content="https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/4JmubmYDJnFtstwHbaZPev/0c3576832aae5b1a4d98c8c9f98863c3/Vercel_Home_OG.png" />
-        <meta name="theme-color" content="#E5FF4A" />
-        <meta name="msapplication-TileColor" content="#E5FF4A" />
-      </Head>
       {
         snippet && 
         <div className='px-5 flex flex-col md:flex-row gap-5'>
@@ -627,21 +611,21 @@ const Page = ({params}) => {
                     className="rounded-full"
                   />
                   <div>
-                    <Link href={`/profile/${snippet.user?._id}`} className="text-sm font-semibold text-foreground hover:underline">
+                    <Link href={userData.role === "developer" ? `/profile/${snippet.user?._id}` :"/dev_org"} className="text-sm font-semibold text-foreground hover:underline">
                       <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
                         {snippet.user?.name || 'Unknown User'}
                       </CardTitle>
                     </Link>
 
                     <CardDescription className="text-[11px] text-muted-foreground">
-                      by @{snippet.user?.userName || 'unknown'}
+                      by @{snippet.user?.userName || snippet.user?.username || 'unknown'}
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
 
               <CardContent className="-mt-4">
-                <div className='text-xs md:text-sm'>
+                <div className='text-xs md:text-sm break-words'>
                   {snippet.user?.about || 'No description available'}
                 </div>
                 <div className='pt-4'>

@@ -39,7 +39,7 @@ const page = () => {
           });
           return
         }
-        dispatch(snippetsFailure(err.message || 'Failed to load snippets'));
+        dispatch(snippetsFailure(err.response?.data?.message || err.message || 'Failed to load snippets'));
       }
     };
 

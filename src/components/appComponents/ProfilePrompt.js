@@ -10,7 +10,6 @@ import api from '@/utils/axiosConfig';
 export function ProfilePrompt() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-
   const { hasShownProfilePrompt = false } = useAppSelector((state) => state.notifications ?? {});
   const { jwtToken } = useAppSelector((state) => state.auth);
 
