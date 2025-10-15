@@ -70,7 +70,7 @@ const Page = ({params}) => {
   
   const fetchUser = async()=>{
     try{
-      const response = await api.get(`${userData.role === "developer" ? "/me" : "/company/me"}`,{
+      const response = await api.get(`${userData?.role === "developer" ? "/me" : "/company/me"}`,{
         headers:{
           Authorization:`Bearer ${jwtToken}`
         }
@@ -92,7 +92,7 @@ const Page = ({params}) => {
 
           const response = api.put('/follow-user', {
             followId: targetUser._id,
-            role: userData.role
+            role: userData?.role
           }, {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -611,7 +611,7 @@ const Page = ({params}) => {
                     className="rounded-full"
                   />
                   <div>
-                    <Link href={userData.role === "developer" ? `/profile/${snippet.user?._id}` :"/dev_org"} className="text-sm font-semibold text-foreground hover:underline">
+                    <Link href={userData?.role === "developer" ? `/profile/${snippet.user?._id}` :"/dev_org"} className="text-sm font-semibold text-foreground hover:underline">
                       <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
                         {snippet.user?.name || 'Unknown User'}
                       </CardTitle>
