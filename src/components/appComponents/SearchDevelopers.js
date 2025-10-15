@@ -11,6 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import api from "@/utils/axiosConfig";
+import { useAppSelector } from "@/lib/redux/hooks";
+import Link from "next/link";
 
 const platforms = [
   { name: "GitHub", icon: Github },
@@ -19,61 +22,55 @@ const platforms = [
   { name: "Snipost", icon: Globe },
 ];
 
-const dummyDevelopers = [
-  {
-    name: "Ada Lovelace",
-    platform: "GitHub",
-    avatar: "https://i.pravatar.cc/100?img=1",
-    bio: "Full-stack engineer passionate about AI, blockchain, and open source.",
-    url: "https://github.com/",
-  },
-  {
-    name: "John Doe",
-    platform: "LinkedIn",
-    avatar: "https://i.pravatar.cc/100?img=2",
-    bio: "Frontend developer specializing in React, Next.js, and modern UI systems.",
-    url: "https://linkedin.com/",
-  },
-  {
-    name: "Sophia Carter",
-    platform: "X (Twitter)",
-    avatar: "https://i.pravatar.cc/100?img=3",
-    bio: "Tech content creator and software engineer exploring Web3 & DevTools.",
-    url: "https://twitter.com/",
-  },
-  {
-    name: "Ethan Brooks",
-    platform: "Snipost",
-    avatar: "https://i.pravatar.cc/100?img=4",
-    bio: "Developer advocate sharing code snippets and tutorials on Snipost.",
-    url: "https://snipost.com/",
-  },
-  {
-    name: "Liam Johnson",
-    platform: "GitHub",
-    avatar: "https://i.pravatar.cc/100?img=5",
-    bio: "Backend engineer with focus on Node.js, APIs, and database performance.",
-    url: "https://github.com/",
-  },
-];
-
 const SearchDevelopers = () => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState("GitHub");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
+  const { userData, jwtToken } = useAppSelector((state) => state.auth);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
     setLoading(true);
-    // Simulate API call delay
-    setTimeout(() => {
-      const filtered = dummyDevelopers.filter((dev) =>
-        dev.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setResults(filtered.length ? filtered : dummyDevelopers);
+
+    try {
+      const response = await api.get("/search-developers", {
+        params: { query, limit: 20 },
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+
+      const data = response.data;
+
+      if (data.success) {
+        const formatted = data.devs.map((dev) => ({
+          _id: dev._id,
+          name: dev.name || dev.userName,
+          platform:
+            dev.socialLinks?.length > 0
+              ? dev.socialLinks[0].platform
+              : "Snipost",
+          avatar: dev.avatar?.url || "/default_avatar.png",
+          bio: dev.about || "No bio available",
+          url:
+            dev.socialLinks?.[0]?.link &&
+            dev.socialLinks[0].link.includes("http")
+              ? dev.socialLinks[0].link
+              : dev.socialLinks?.[0]?.link
+              ? `https://${dev.socialLinks[0].link}`
+              : "#",
+        }));
+        setResults(formatted);
+      } else {
+        setResults([]);
+      }
+    } catch (err) {
+      console.error("Search failed:", err);
+      setResults([]);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -89,7 +86,7 @@ const SearchDevelopers = () => {
           </div>
 
           {/* Search bar */}
-          <div className="flex  items-center gap-3">
+          <div className="flex items-center gap-3">
             <Input
               placeholder="Search by name, skills, GitHub, X handle, etc..."
               value={query}
@@ -137,26 +134,28 @@ const SearchDevelopers = () => {
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {results.map((dev, i) => (
-                  <div
+                  <Link
                     key={i}
-                    onClick={() => window.open(dev.url, "_blank")}
+                    href={"/profile/" + dev?._id}
                     className="bg-card border border-border hover:border-primary rounded-xl p-4 cursor-pointer transition-all hover:shadow-md flex flex-col justify-between h-full"
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={dev.avatar || "/default_avatar.png"}
+                        src={dev.avatar}
                         alt={dev.name}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div>
                         <h4 className="font-semibold text-sm">{dev.name}</h4>
-                        <p className="text-xs text-muted-foreground">{dev.platform}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {dev.platform}
+                        </p>
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground mt-3 line-clamp-3">
                       {dev.bio}
                     </p>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

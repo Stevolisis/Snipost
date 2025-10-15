@@ -221,7 +221,7 @@ const Dashboard = () => {
       </div>
       <SearchDevelopers/>
 
-      <Recents snippets={snippets}/>
+      <Recents snippets={snippets} comments={comments}/>
     </div>
   );
 };

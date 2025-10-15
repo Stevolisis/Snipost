@@ -244,7 +244,7 @@ const called = useRef(false);
         <CompanyProfileDropDown>
           <Button variant="muted" className="gap-2 py-2! text-xs sm:text-sm border border-zinc-700" onClick={() => handleWalletClick()}>
             <Image
-              src={userData?.logo?.url || "/default_avatar.png"}
+              src={userData?.avatar?.url || "/default_avatar.png"}
               alt="Profile"
               width={27}
               height={27}

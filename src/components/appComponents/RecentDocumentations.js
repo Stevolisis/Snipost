@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import { formatPublishedDate } from "@/utils/formatPublishedDate"
 
-export default function Recents({snippets}) {
+export default function Recents({snippets, comments}) {
   console.log("Snippets prop in Recents:", snippets);
   const docs = [
     { title: "Getting Started Guide", type: "User Guide", status: "Published", views: "2,341", updated: "2 days ago" },
@@ -19,11 +20,11 @@ export default function Recents({snippets}) {
     { title: "Database Connection Pool", lang: "Python", upvotes: 156, views: "2,134", comments: 28 },
   ]
 
-  const comments = [
-    { user: "John Doe", content: "Authentication Flow", comment: "Great example! Very helpful...", time: "5 mins ago" },
-    { user: "Jane Smith", content: "API Reference v2.0", comment: "Is there a rate limit on...", time: "1 hour ago" },
-    { user: "Mike Johnson", content: "WebSocket Manager", comment: "This solved my problem!", time: "3 hours ago" },
-  ]
+  // const comments = [
+  //   { user: "John Doe", content: "Authentication Flow", comment: "Great example! Very helpful...", time: "5 mins ago" },
+  //   { user: "Jane Smith", content: "API Reference v2.0", comment: "Is there a rate limit on...", time: "1 hour ago" },
+  //   { user: "Mike Johnson", content: "WebSocket Manager", comment: "This solved my problem!", time: "3 hours ago" },
+  // ]
 
   return (
     <div className="py-8 space-y-8">
@@ -156,20 +157,20 @@ export default function Recents({snippets}) {
             <TableBody>
               {comments.map((item, i) => (
                 <TableRow key={i}>
-                  <TableCell className="font-medium">{item.user}</TableCell>
-                  <TableCell className="truncate max-w-[180px]" title={item.content}>
-                    {item.content}
+                  <TableCell className="font-medium truncate max-w-[180px]">{item?.author?.entity?.name}</TableCell>
+                  <TableCell className="truncate max-w-[180px]" title={item?.contentRef?.entity?.title}>
+                    {item?.contentRef?.entity?.title}
                   </TableCell>
-                  <TableCell className="truncate max-w-[220px]" title={item.comment}>
-                    {item.comment}
+                  <TableCell className="truncate max-w-[220px]" title={item?.text}>
+                    {item?.text}
                   </TableCell>
-                  <TableCell>{item.time}</TableCell>
+                  <TableCell>{formatPublishedDate(item?.createdAt)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Link href={`/comments/reply/${i}`}>
+                      {/* <Link href={`/comments/reply/${i}`}>
                         <Button variant="outline" size="sm">Reply</Button>
-                      </Link>
-                      <Link href={`/comments/view/${i}`}>
+                      </Link> */}
+                      <Link href={`/snippet/${item?.contentRef?.entity?._id}#${item?._id}`}>
                         <Button variant="default" size="sm">View</Button>
                       </Link>
                     </div>

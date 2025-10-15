@@ -73,7 +73,7 @@ export function CompanyAppSidebar({ ...props }) {
           {userData && (
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
-                <Link href={`/profile/${userData._id}`}>
+                <Link href={`/dev_org/${userData._id}`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {userData?.logo?.url ? (
                       <Image

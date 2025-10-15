@@ -251,7 +251,6 @@ const CommentBox = () => {
         </Drawer>
     );
 
-
     const handleComment = async () => {
         if (comment === "") {
             toast.error("Comment cannot be empty");
@@ -263,6 +262,8 @@ const CommentBox = () => {
                 contentId: snippet._id,
                 contentType: snippet.codeBlocks ? "Snippet" : "Snap",
                 text: comment,
+                snippetOwnerId: snippet.user._id,
+                snippetOwnerType: snippet.user.role,
                 mentions: [
                     // Include the snippet creator
                     {

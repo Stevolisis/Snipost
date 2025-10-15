@@ -88,10 +88,10 @@ export function ProfileDropDown({ children }) {
           <div href="#" className="flex items-center gap-x-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
               {
-                userData?.avatar.url ? 
+                userData?.avatar?.url ? 
                 <Image
-                  src={userData.avatar.url}
-                  alt={userData.avatar.public_id || "Profile Avatar"}
+                  src={userData?.avatar?.url}
+                  alt={userData?.avatar?.public_id || "Profile Avatar"}
                   width={50}
                   height={50}
                   className='object-cover'

@@ -27,7 +27,7 @@ export function CompanyProfileDropDown({ children }) {
         {
           label: "Profile",
           icon: User,
-          href: `/profile/${userData?._id}`,
+          href: `/dev_org/${userData?._id}`,
           shortcut: "⇧⌘P",
         },
         {
@@ -88,10 +88,10 @@ export function CompanyProfileDropDown({ children }) {
           <div href="#" className="flex items-center gap-x-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
               {
-                userData?.logo.url ? 
+                userData?.avatar?.url ? 
                 <Image
-                  src={userData.logo.url}
-                  alt={userData.logo.public_id || "Profile Logo"}
+                  src={userData.avatar?.url}
+                  alt={userData.avatar?.public_id || "Profile Logo"}
                   width={50}
                   height={50}
                   className='object-cover'
