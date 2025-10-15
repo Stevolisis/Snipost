@@ -1,13 +1,11 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import {
-  AudioWaveform,
-  Command,
   Home,
-  Telescope,
-  TrendingUp,
-  Users2,
   Plus,
+  FileText,
+  SquareCode,
+  FolderSync,
 } from "lucide-react"
 import {
   Sidebar,
@@ -23,7 +21,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-  SidebarFooter,
 } from "@/components/ui/sidebar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import Image from "next/image"
@@ -40,9 +37,9 @@ export function CompanyAppSidebar({ ...props }) {
   const data = {
     navMain: [
       { title: "Dashboard", url: "/dashboard", icon: Home },
-      { title: "Documentation", url: "/dev_org/documentation", icon: Users2 },
-      { title: "Code Examples", url: "/dev_org/snippets", icon: TrendingUp },
-      { title: "Updates", url: "/dev_org/updates", icon: Telescope },
+      { title: "Documentation", url: "/dev_org/documentation", icon: FileText },
+      { title: "Code Examples", url: "/dev_org/snippets", icon: SquareCode },
+      { title: "Updates", url: "/dev_org/updates", icon: FolderSync },
     ],
     workspaces: [
       { name: "Installation", url: "/dev_org/documentation/installation", emoji: "🏠" },

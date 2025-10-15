@@ -244,7 +244,7 @@ const CreateExamples = () => {
         });
         return
       }
-      toast.error(err.response?.data?.message || "Limit exceeded", { id });
+      toast.error(err.response?.data?.message || err.message, { id });
     }
   };
 
@@ -321,8 +321,8 @@ const CreateExamples = () => {
   );
 
   return (
-    <div className="flex justify-center">
-      <Card className="px-6 bg-transparent w-[97%] md:w-[80%]">
+    <div className="w-full mt-5">
+      <Card className="px-6 bg-transparent w-full">
         <div className="">
           <Input 
             placeholder="Title" 
