@@ -135,25 +135,25 @@ const Dashboard = () => {
       icon: FileText,
       title: "Create Documentation",
       subtitle: "Start with a template",
-      href: "/create_docs",
+      href: "/docs/create_documentation",
     },
     {
       icon: Laptop,
       title: "Add Code Example",
       subtitle: "Share practical code",
-      href: "/create_example",
+      href: "/docs/create_example",
     },
     {
       icon: RefreshCw,
       title: "Post Update",
       subtitle: "Changelog or news",
-      href: "/create_update",
+      href: "/docs/create_update",
     },
     {
       icon: UserPlus,
       title: "Invite Team Member",
       subtitle: "Collaborate together",
-      href: "/team/invite",
+      href: "/#",
     },
   ];
 

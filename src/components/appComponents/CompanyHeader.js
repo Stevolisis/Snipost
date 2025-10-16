@@ -240,7 +240,7 @@ const called = useRef(false);
       {/* <WalletMultiButtonDynamic> */}
 
 
-      {userData?.role === "company" && ((jwtToken && userData) ? 
+      {(jwtToken && userData) ? 
         <CompanyProfileDropDown>
           <Button variant="muted" className="gap-2 py-2! text-xs sm:text-sm border border-zinc-700" onClick={() => handleWalletClick()}>
             <Image
@@ -258,7 +258,7 @@ const called = useRef(false);
         <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => router.push("/signin")}>
           <CircleUser className="h-7 w-7" />
           {connecting ? "Connecting..." : "Sign in"}
-        </Button>)
+        </Button>
       }  
 
 
