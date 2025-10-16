@@ -1,0 +1,239 @@
+       .ProseMirror {
+          min-height: 500px;
+          padding: 1.5rem;
+        }
+
+        .ProseMirror:focus {
+          outline: none;
+        }
+
+        /* Headings */
+        .ProseMirror h1 {
+          font-size: 2.25em;
+          font-weight: 700;
+          margin-top: 0;
+          margin-bottom: 0.5em;
+          scroll-margin: 2em;
+        }
+
+        .ProseMirror h2 {
+          font-size: 1.875em;
+          font-weight: 600;
+          margin-top: 1.5em;
+          margin-bottom: 0.5em;
+          scroll-margin: 1.5em;
+        }
+
+        .ProseMirror h3 {
+          font-size: 1.5em;
+          font-weight: 600;
+          margin-top: 1.5em;
+          margin-bottom: 0.5em;
+          scroll-margin: 1em;
+        }
+
+        /* Paragraphs & Text */
+        .ProseMirror p {
+          margin: 1em 0;
+          line-height: 1.7;
+        }
+        
+        .ProseMirror ul,
+         .ProseMirror ol {
+           margin: 1em 0;
+           padding-left: 2rem;
+           list-style-position: outside;
+         }
+            
+         .ProseMirror ul {
+           list-style-type: disc;
+         }
+            
+         .ProseMirror ol {
+           list-style-type: decimal;
+         }
+            
+         .ProseMirror li {
+           margin: 0.4em 0;
+           line-height: 1.6;
+         }
+            
+         /* Nested lists */
+         .ProseMirror ul ul,
+         .ProseMirror ol ol,
+         .ProseMirror ul ol,
+         .ProseMirror ol ul {
+           margin-left: 1.25rem;
+           list-style-type: circle;
+         }
+        /* Blockquotes */
+        .ProseMirror blockquote {
+          border-left: 4px solid #404044;
+          padding-left: 1em;
+          margin: 1.5em 0;
+          font-style: italic;
+          background: #2b2b30;
+          padding: 1em;
+          border-radius: 4px;
+        }
+          
+        .ProseMirror pre .language-badge {
+          position: absolute;
+          top: 0;
+          right: 0;
+          background: hsl(var(--primary));
+          color: hsl(var(--primary-foreground));
+          padding: 0.25em 0.75em;
+          font-size: 0.75em;
+          border-bottom-left-radius: 6px;
+          text-transform: uppercase;
+          font-weight: 500;
+        }
+
+
+        /* --- TABLE STYLES: full width, gray borders, gray header, light-gray cells --- */
+        .ProseMirror table,
+        .ProseMirror .tiptap-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1.25rem 0;
+        }
+
+        .ProseMirror th,
+        .ProseMirror td {
+          border: 1px solid #ffffff1a; /* gray-300 border */
+          padding: 0.05rem 1rem;
+        }
+
+        .ProseMirror tbody th {
+          background: #404044; /* header gray */
+          color: white; /* dark text for header */
+          font-weight: 600;
+        }
+
+        .ProseMirror tbody td {
+          background: #27272a; /* light gray for other cells */
+          color: white; /* body text */
+        }
+
+        /* When hovering a row, slightly darker background */
+        .ProseMirror tbody tr:hover td {
+          background: #2b2b30;
+        }
+
+        /* Selected cell style when using table selection */
+        .ProseMirror .selectedCell {
+          background: #e6f0ff !important; /* subtle blue highlight for selected cell */
+        }
+
+        /* Ensure table occupies the editor container width — responsive */
+        .ProseMirror table { display: table; table-layout: fixed; width: 100%; }
+        .ProseMirror th, .ProseMirror td { word-break: break-word; }
+
+
+        .ProseMirror .selectedCell {
+          background: hsl(var(--accent)) !important;
+        }
+
+        /* Horizontal Rule */
+        .ProseMirror hr {
+          border: none;
+          border-top: 2px solid #363638;
+          margin: 2em 0;
+        }
+
+        /* Highlight */
+        .ProseMirror mark {
+          background: #363638;
+          color: lightgray;
+          padding: 0.1em 0.2em;
+          border: 1px solid #404044;
+          border-radius: 6px;
+        }
+
+        /* Link */
+        .ProseMirror a {
+          text-decoration: underline;
+          cursor: pointer;
+        }
+
+        .ProseMirror a:hover {
+          opacity: 0.8;
+        }
+
+        /* Syntax Highlighting */
+        .hljs {
+          background: transparent !important;
+        }
+
+        .hljs-keyword {
+          color: hsl(var(--primary)) !important;
+        }
+
+        .hljs-string {
+          color: hsl(var(--success)) !important;
+        }
+
+        .hljs-function {
+          color: hsl(var(--info)) !important;
+        }
+
+        .hljs-comment {
+          color: hsl(var(--muted-foreground)) !important;
+          font-style: italic;
+        }
+
+        .hljs-number {
+          color: hsl(var(--warning)) !important;
+        }
+
+        .hljs-attr {
+          color: hsl(var(--secondary-foreground)) !important;
+        }
+               .ProseMirror {
+          min-height: 500px;
+          padding: 1.5rem;
+        }
+
+        .ProseMirror:focus {
+          outline: none;
+        }
+
+        /* --- CODE BLOCK: contrast, rounded, syntax coloring (local only) --- */
+        .ProseMirror pre {
+          background: #2b2b30; /* darker panel for code — doesn't change site background */
+          color: #e6eef6;
+          padding: 1rem;
+          border-radius: 8px;
+          overflow-x: auto;
+          margin: 1.25rem 0;
+          border: 1px solid #404044;
+          font-family: 'Menlo', 'Monaco', 'JetBrains Mono', monospace;
+          font-size: 0.9rem;
+          line-height: 1.5;
+        }
+
+        .ProseMirror pre code { background: transparent; color: inherit; }
+
+        /* Syntax colors (highlight.js classes used by lowlight) */
+        .hljs-keyword { color: #c792ea !important; }
+        .hljs-string { color: #c3e88d !important; }
+        .hljs-function { color: #82aaff !important; }
+        .hljs-comment { color: #697098 !important; font-style: italic; }
+        .hljs-number { color: #f78c6c !important; }
+        .hljs-attr { color: #ffcb6b !important; }
+
+        /* keep inline code visible */
+        .ProseMirror code:not(pre code) {
+          background: #11182722;
+          color: #e6eef6;
+          padding: 0.15rem 0.35rem;
+          border-radius: 4px;
+          font-family: 'Menlo', 'Monaco', monospace;
+        }
+
+        /* Horizontal rule */
+        .ProseMirror hr { border: none; border-top: 2px solid #36363a; margin: 1.5rem 0; }
+
+        /* keep links obvious */
+        

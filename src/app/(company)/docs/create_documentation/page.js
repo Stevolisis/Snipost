@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Book, Plug, FileText, Shield, GraduationCap, ClipboardList } from "lucide-react"
+import DocsEditor from "@/components/appComponents/DocsEditor"
 
 const templates = [
   {
@@ -47,8 +48,8 @@ const CreateDocumentation = () => {
   const [selected, setSelected] = useState(null)
 
   return (
-    <div className="w-full max-w-6xl mx-auto mt-6">
-      <div className="bg-muted/10 rounded-2xl p-6 md:p-10 border border-zinc-800">
+    <div className="w-full h-screen flex flex-col">
+      <div className="bg-muted/10 rounded-2xl p-6 md:p-10 border border-zinc-800 mb-10">
         <h2 className="text-xl md:text-2xl font-semibold mb-6 text-white">
           Choose a Template
         </h2>
@@ -63,14 +64,14 @@ const CreateDocumentation = () => {
               <button
                 key={template.id}
                 onClick={() => setSelected(template.id)}
-                className={`text-left rounded-xl border transition-all duration-200 cursor-pointer
+                className={`text-left rounded-xl border transition-all duration-200
                   ${
                     active
-                      ? "border-primary bg-zinc-800/50"
+                      ? "border-yellow-400 bg-zinc-800/50"
                       : "border-zinc-800 hover:border-primary hover:bg-zinc-800/30"
                   }`}
               >
-                <Card className="bg-transparent border-0 flex items-center">
+                <Card className="bg-transparent border-0 h-[120px] flex items-center">
                   <CardContent className="flex items-start space-x-3 p-4">
                     <div className="p-2 rounded-md bg-zinc-800">
                       <Icon className="h-5 w-5 text-white" />
@@ -90,6 +91,8 @@ const CreateDocumentation = () => {
           })}
         </div>
       </div>
+
+      <DocsEditor />
     </div>
   )
 }
