@@ -29,17 +29,13 @@ import {
   Grid3x3, 
   AlignLeft, 
   AlignCenter, 
-  AlignRight, 
-  Eye, 
-  FileDown, 
+  AlignRight,  
   Underline as UnderlineIcon,
   Minus, 
   Highlighter, 
   Strikethrough,
-  Plus,
   Trash2,
-  Rows,
-  Columns
+  Pilcrow
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,6 +43,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { AiOutlineInsertRowAbove, AiOutlineInsertRowBelow, AiOutlineInsertRowLeft, AiOutlineInsertRowRight } from "react-icons/ai";
 import "./editor.css";
 // Initialize syntax highlighter
 const lowlight = createLowlight();
@@ -100,6 +97,12 @@ const MenuBar = ({ editor }) => {
           action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
           isActive: editor.isActive('heading', { level: 3 }),
           title: 'Heading 3'
+        },
+        { 
+          icon: Pilcrow, 
+          action: () => editor.chain().focus().setParagraph().run(),
+          isActive: editor.isActive('paragraph'),
+          title: 'Paragraph'
         },
       ]
     },
@@ -235,7 +238,7 @@ const MenuBar = ({ editor }) => {
                   <Button
                     key={item.title}
                     onClick={item.action}
-                    variant={item.isActive ? "default" : "ghost"}
+                    variant={item.isActive ? "default" : "outline"}
                     size="sm"
                     className="h-8 w-8 p-0"
                     title={item.title}
@@ -253,65 +256,65 @@ const MenuBar = ({ editor }) => {
               <div className="flex gap-1">
                 <Button
                   onClick={() => editor.chain().focus().addColumnBefore().run()}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   className="h-8 w-8 p-0"
                   title="Add Column Before"
                 >
-                  <Columns size={14} />
+                  <AiOutlineInsertRowLeft size={14} />
                 </Button>
                 <Button
                   onClick={() => editor.chain().focus().addColumnAfter().run()}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   className="h-8 px-2"
                   title="Add Column After"
                 >
-                  <Columns size={14} />
-                  <Plus size={12} className="ml-1" />
+                  <AiOutlineInsertRowRight size={14} />
                 </Button>
-                <Button
-                  onClick={() => editor.chain().focus().deleteColumn().run()}
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 px-2"
-                  title="Delete Column"
-                >
-                  <Columns size={14} />
-                  <Minus size={12} className="ml-1" />
-                </Button>
+
                 <Button
                   onClick={() => editor.chain().focus().addRowBefore().run()}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   className="h-8 w-8 p-0"
                   title="Add Row Before"
                 >
-                  <Rows size={14} />
+                  <AiOutlineInsertRowAbove size={14} />
                 </Button>
                 <Button
                   onClick={() => editor.chain().focus().addRowAfter().run()}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   className="h-8 px-2"
                   title="Add Row After"
                 >
-                  <Rows size={14} />
-                  <Plus size={12} className="ml-1" />
+                  <AiOutlineInsertRowBelow size={14} />
+                </Button>
+
+                <Button
+                  onClick={() => editor.chain().focus().deleteColumn().run()}
+                  variant="outline"
+                  size="sm"
+                  className="h-8 px-2 border border-muted"
+                  title="Delete Column"
+                >
+                  <AiOutlineInsertRowRight size={14} />
+                  <Minus size={12} />
                 </Button>
                 <Button
                   onClick={() => editor.chain().focus().deleteRow().run()}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   className="h-8 px-2"
                   title="Delete Row"
                 >
-                  <Rows size={14} />
+                  <AiOutlineInsertRowBelow size={14} />
                   <Minus size={12} className="ml-1" />
                 </Button>
                 <Button
                   onClick={() => editor.chain().focus().deleteTable().run()}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   className="h-8 w-8 p-0 text-destructive"
                   title="Delete Table"
@@ -525,16 +528,6 @@ export default function DocsEditor() {
     },
   });
 
-  const downloadContent = () => {
-    const content = editor?.getHTML() || '';
-    const blob = new Blob([content], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'snipost-documentation.html';
-    a.click();
-  };
-
   const getWordCount = () => {
     const text = editor?.getText() || '';
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
@@ -566,53 +559,23 @@ export default function DocsEditor() {
               <p className="text-sm text-muted-foreground">Web3 Documentation Platform</p>
             </div>
             <div className="flex items-center gap-4">
-              <Badge variant="secondary">
-                {getWordCount()} words
-              </Badge>
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => setShowPreview(!showPreview)}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  {showPreview ? 'Edit' : 'Preview'}
-                </Button>
-                <Button
-                  onClick={downloadContent}
-                  size="sm"
-                >
-                  <FileDown className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
-              </div>
+              <Badge variant="secondary"> {getWordCount()} words </Badge>
             </div>
           </div>
         </CardHeader>
       </Card>
 
       {/* Editor */}
-  {/* Sticky Toolbar — stays visible */}
-  {!showPreview && editor && (
+
     <div className="sticky top-0 z-200 bg-background border-b">
       <MenuBar editor={editor} />
     </div>
-  )}
+
+
       {/* Content Area */}
       <Card className="flex-1 rounded-none border-0">
         <CardContent className="p-0 h-full">
-          {showPreview ? (
-            <div className="p-8 max-w-4xl mx-auto">
-              <div 
-                className="prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ 
-                  __html: editor?.getHTML() || '<p>No content</p>' 
-                }}
-              />
-            </div>
-          ) : (
-            editor && <EditorContent editor={editor} className="h-full" />
-          )}
+          <EditorContent editor={editor} className="h-full" />
         </CardContent>
       </Card>
 
