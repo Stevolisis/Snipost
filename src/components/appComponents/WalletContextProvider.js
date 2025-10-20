@@ -13,7 +13,7 @@ const WalletContextProvider = ({ children }) => {
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
   ], []);
-  
+
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect={true}>

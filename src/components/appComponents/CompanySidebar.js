@@ -70,12 +70,12 @@ export function CompanyAppSidebar({ ...props }) {
           {userData && (
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
-                <Link href={`/dev_org/${userData._id}`}>
+                <Link href={`/dev_org/profile/${userData._id}`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    {userData?.logo?.url ? (
+                    {userData?.avatar?.url ? (
                       <Image
-                        src={userData.logo.url}
-                        alt={userData.logo.public_id}
+                        src={userData.avatar.url}
+                        alt={userData.avatar.public_id}
                         width={40}
                         height={40}
                         className="object-cover"

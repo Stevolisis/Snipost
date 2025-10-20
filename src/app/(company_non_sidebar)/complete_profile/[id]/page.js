@@ -149,8 +149,8 @@ export default function CompanyProfileForm() {
       try {
         const { data } = await api.get(`/get-company/${id}`);
 
-        if (data?.success && data.user) {
-          const company = data.user;
+        if (data?.success) {
+          const company = data.company;
 
           setFormData({
             name: company.name || "",
@@ -162,8 +162,8 @@ export default function CompanyProfileForm() {
             location: company.location || "",
           });
 
-          if (company.logo) {
-            setPreview(company.logo?.url);
+          if (company.avatar) {
+            setPreview(company.avatar?.url);
           }
 
           if (Array.isArray(company.founders) && company.founders.length > 0) {

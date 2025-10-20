@@ -14,12 +14,14 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Award, Bell, History, IdCard, MessageCircle, PackagePlus, Settings, User } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function CompanyProfileDropDown({ children }) {
   const { isConnected, walletAddress, jwtToken, userData, isLoading } = useAppSelector((state) => state.auth);
   const { disconnect } = useWallet();
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const menuItems = [
     {
@@ -27,7 +29,7 @@ export function CompanyProfileDropDown({ children }) {
         {
           label: "Profile",
           icon: User,
-          href: `/dev_org/${userData?._id}`,
+          href: `/dev_org/profile/${userData?._id}`,
           shortcut: "⇧⌘P",
         },
         {
@@ -75,7 +77,8 @@ export function CompanyProfileDropDown({ children }) {
   const handleLogout = async() => {
     await disconnect();
     dispatch(disconnectWallet());
-    toast.success("Logged out succesfully")
+    toast.success("Logged out succesfully");
+    router.push("/signin");
   }
 
   return (

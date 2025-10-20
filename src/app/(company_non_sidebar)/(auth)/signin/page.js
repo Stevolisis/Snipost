@@ -1,4 +1,6 @@
-import React from 'react'
+"use client";
+import { useState } from 'react';
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,8 +21,48 @@ import { Input } from "@/components/ui/input"
 import { GalleryVerticalEnd } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useAppDispatch } from '@/lib/redux/hooks'
+import { authenticateSuccess } from '@/lib/redux/slices/auth'
+import api from '@/utils/axiosConfig'
+import { toast } from 'sonner'
 
 export default function Signin({ ...props }) {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      try {
+        setLoading(true);
+        const {data} = await api.post(`/login`, {
+          email: e.target.email.value,
+          password: e.target.password.value,
+        });
+  
+        if (data.success) {
+            toast.success(data.message || "Profile submitted successfully! Awaiting verification.");
+            dispatch(authenticateSuccess(data));
+            return router.push("/dashboard");
+        } else {
+            toast.success(data.message || "Error submitting profile");
+        }
+  
+      } catch (err) {
+        console.error(err);
+        const msg = err.response?.data?.message || "Invalid or expired code. Please try again.";
+        
+        if(err.response?.data?.message === "Please verify your email first") {
+          router.push(`/otp/${err?.response?.data?.company?._id}`);
+        }
+        
+        toast.error(msg);
+      } finally {
+        setLoading(false);
+      }
+    };
+
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -40,7 +82,7 @@ export default function Signin({ ...props }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <FieldGroup>
                   <Field>
                     <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -61,10 +103,12 @@ export default function Signin({ ...props }) {
                         Forgot your password?
                       </a>
                     </div>
-                    <Input id="password" type="password" required />
+                    <Input id="password" type="password"  required />
                   </Field>
                   <Field>
-                    <Button type="submit">Sign In</Button>
+                    <Button type="submit" disabled={loading}>
+                      {loading ? "Signing in..." : "Sign In"}
+                    </Button>
                     <FieldDescription className="text-center">
                       Don't have an account? <Link href="/signup">Sign up</Link>
                     </FieldDescription>
