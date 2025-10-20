@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
@@ -14,6 +14,26 @@ import js from 'highlight.js/lib/languages/javascript';
 import ts from 'highlight.js/lib/languages/typescript';
 import html from 'highlight.js/lib/languages/xml';
 import python from 'highlight.js/lib/languages/python';
+import java from 'highlight.js/lib/languages/java';
+import ruby from 'highlight.js/lib/languages/ruby';
+import php from 'highlight.js/lib/languages/php';
+import c from 'highlight.js/lib/languages/c';
+import cpp from 'highlight.js/lib/languages/cpp';
+import csharp from 'highlight.js/lib/languages/csharp';
+import go from 'highlight.js/lib/languages/go';
+import rust from 'highlight.js/lib/languages/rust';
+import swift from 'highlight.js/lib/languages/swift';
+import kotlin from 'highlight.js/lib/languages/kotlin';
+import scala from 'highlight.js/lib/languages/scala';
+import sql from 'highlight.js/lib/languages/sql';
+import bash from 'highlight.js/lib/languages/bash';
+import shell from 'highlight.js/lib/languages/shell';
+import json from 'highlight.js/lib/languages/json';
+import yaml from 'highlight.js/lib/languages/yaml';
+import markdown from 'highlight.js/lib/languages/markdown';
+import dockerfile from 'highlight.js/lib/languages/dockerfile';
+import xml from 'highlight.js/lib/languages/xml';
+import scss from 'highlight.js/lib/languages/scss';
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import { 
   Bold, 
@@ -35,7 +55,10 @@ import {
   Highlighter, 
   Strikethrough,
   Trash2,
-  Pilcrow
+  Pilcrow,
+  Save,
+  X,
+  Crown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,37 +66,123 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription,
+  DialogFooter 
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { AiOutlineInsertRowAbove, AiOutlineInsertRowBelow, AiOutlineInsertRowLeft, AiOutlineInsertRowRight } from "react-icons/ai";
 import "./editor.css";
-// Initialize syntax highlighter
+
+// Initialize syntax highlighter with ALL languages
 const lowlight = createLowlight();
+
+// Register all languages
 lowlight.register('html', html);
 lowlight.register('css', css);
 lowlight.register('javascript', js);
 lowlight.register('typescript', ts);
 lowlight.register('python', python);
+lowlight.register('java', java);
+lowlight.register('ruby', ruby);
+lowlight.register('php', php);
+lowlight.register('c', c);
+lowlight.register('cpp', cpp);
+lowlight.register('csharp', csharp);
+lowlight.register('go', go);
+lowlight.register('rust', rust);
+lowlight.register('swift', swift);
+lowlight.register('kotlin', kotlin);
+lowlight.register('scala', scala);
+lowlight.register('sql', sql);
+lowlight.register('bash', bash);
+lowlight.register('shell', shell);
+lowlight.register('json', json);
+lowlight.register('yaml', yaml);
+lowlight.register('markdown', markdown);
+lowlight.register('dockerfile', dockerfile);
+lowlight.register('xml', xml);
+lowlight.register('scss', scss);
 
-const MenuBar = ({ editor }) => {
+const MenuBar = ({ editor, maxWordsReached }) => {
   const [linkUrl, setLinkUrl] = useState('');
-  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [linkText, setLinkText] = useState('');
+  const [showLinkDialog, setShowLinkDialog] = useState(false);
+  const [showCodeDialog, setShowCodeDialog] = useState(false);
   const [codeLanguage, setCodeLanguage] = useState('javascript');
-  const [showCodeLanguage, setShowCodeLanguage] = useState(false);
+  const [_, forceUpdate] = useReducer(x => x + 1, 0);
+
+  // Force re-render when editor state changes
+  useEffect(() => {
+    if (!editor) return;
+
+    const update = () => {
+      forceUpdate();
+    };
+
+    editor.on('transaction', update);
+    editor.on('selectionUpdate', update);
+    editor.on('update', update);
+
+    return () => {
+      editor.off('transaction', update);
+      editor.off('selectionUpdate', update);
+      editor.off('update', update);
+    };
+  }, [editor]);
 
   if (!editor) return null;
 
   const setLink = () => {
-    if (linkUrl) {
-      editor.chain().focus().setLink({ href: linkUrl }).run();
-    } else {
-      editor.chain().focus().unsetLink().run();
+    if (linkUrl && !maxWordsReached) {
+      const selectedText = editor.state.selection.empty ? linkText : editor.state.doc.textBetween(
+        editor.state.selection.from,
+        editor.state.selection.to
+      );
+      
+      const finalText = selectedText || linkText || 'Link';
+      
+      editor.chain().focus().setLink({ href: linkUrl }).insertContent(finalText).run();
     }
     setLinkUrl('');
-    setShowLinkInput(false);
+    setLinkText('');
+    setShowLinkDialog(false);
   };
 
   const setCodeBlock = () => {
-    editor.chain().focus().toggleCodeBlock({ language: codeLanguage }).run();
-    setShowCodeLanguage(false);
+    if (!maxWordsReached) {
+      editor.chain().focus().toggleCodeBlock({ language: codeLanguage }).run();
+    }
+    setShowCodeDialog(false);
+  };
+
+  const openLinkDialog = () => {
+    if (maxWordsReached) return;
+    
+    // Get selected text for link
+    const selectedText = editor.state.doc.textBetween(
+      editor.state.selection.from,
+      editor.state.selection.to
+    );
+    setLinkText(selectedText);
+    setShowLinkDialog(true);
+  };
+
+  const removeLink = () => {
+    if (!maxWordsReached) {
+      editor.chain().focus().unsetLink().run();
+    }
+    setShowLinkDialog(false);
+  };
+
+  const handleButtonAction = (action) => {
+    if (!maxWordsReached) {
+      action();
+    }
   };
 
   const menuGroups = [
@@ -164,7 +273,7 @@ const MenuBar = ({ editor }) => {
         },
         { 
           icon: Code, 
-          action: () => setShowCodeLanguage(!showCodeLanguage),
+          action: () => setShowCodeDialog(true),
           isActive: editor.isActive('codeBlock'),
           title: 'Code Block'
         },
@@ -198,7 +307,7 @@ const MenuBar = ({ editor }) => {
       items: [
         { 
           icon: Link2, 
-          action: () => setShowLinkInput(!showLinkInput),
+          action: () => openLinkDialog(),
           isActive: editor.isActive('link'),
           title: 'Add Link'
         },
@@ -219,144 +328,227 @@ const MenuBar = ({ editor }) => {
   const languageOptions = [
     { value: 'javascript', label: 'JavaScript' },
     { value: 'typescript', label: 'TypeScript' },
+    { value: 'java', label: 'Java' },
+    { value: 'python', label: 'Python' },
+    { value: 'ruby', label: 'Ruby' },
+    { value: 'php', label: 'PHP' },
+    { value: 'c', label: 'C' },
+    { value: 'cpp', label: 'C++' },
+    { value: 'csharp', label: 'C#' },
+    { value: 'go', label: 'Go' },
+    { value: 'rust', label: 'Rust' },
+    { value: 'swift', label: 'Swift' },
+    { value: 'kotlin', label: 'Kotlin' },
+    { value: 'scala', label: 'Scala' },
     { value: 'html', label: 'HTML' },
     { value: 'css', label: 'CSS' },
-    { value: 'python', label: 'Python' },
+    { value: 'scss', label: 'SCSS' },
+    { value: 'json', label: 'JSON' },
+    { value: 'xml', label: 'XML' },
+    { value: 'yaml', label: 'YAML' },
+    { value: 'markdown', label: 'Markdown' },
+    { value: 'sql', label: 'SQL' },
+    { value: 'bash', label: 'Bash' },
+    { value: 'shell', label: 'Shell' },
+    { value: 'dockerfile', label: 'Dockerfile' },
     { value: 'plaintext', label: 'Plain Text' }
   ];
 
   return (
-    <Card className="rounded-none border-b-0 sticky top-15 z-10">
-      <CardContent className="p-3">
-        <div className="flex flex-wrap gap-2 items-center">
-          {menuGroups.map((group, groupIndex) => (
-            <React.Fragment key={group.name}>
-              {groupIndex > 0 && <Separator orientation="vertical" className="h-6" />}
-              
-              <div className="flex gap-1">
-                {group.items.map((item) => (
+    <>
+      <Card className="rounded-none border-b-0 sticky top-0 z-40 bg-background">
+        <CardContent className="p-3">
+          <div className="flex flex-wrap gap-2 items-center">
+            {menuGroups.map((group, groupIndex) => (
+              <React.Fragment key={group.name}>
+                {groupIndex > 0 && <Separator orientation="vertical" className="h-6" />}
+                
+                <div className="flex gap-1">
+                  {group.items.map((item) => (
+                    <Button
+                      key={item.title}
+                      onClick={() => handleButtonAction(item.action)}
+                      variant={item.isActive ? "default" : "outline"}
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      title={maxWordsReached ? "Word limit reached (500 words)" : item.title}
+                      disabled={maxWordsReached}
+                    >
+                      <item.icon size={16} />
+                    </Button>
+                  ))}
+                </div>
+              </React.Fragment>
+            ))}
+
+            {/* Table Controls - Only show when in a table */}
+            {editor.isActive('table') && (
+              <>
+                <Separator orientation="vertical" className="h-6" />
+                <div className="flex gap-1">
                   <Button
-                    key={item.title}
-                    onClick={item.action}
-                    variant={item.isActive ? "default" : "outline"}
+                    onClick={() => !maxWordsReached && editor.chain().focus().addColumnBefore().run()}
+                    variant="outline"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    title={item.title}
+                    title={maxWordsReached ? "Word limit reached" : "Add Column Before"}
+                    disabled={maxWordsReached}
                   >
-                    <item.icon size={16} />
+                    <AiOutlineInsertRowLeft size={14} />
                   </Button>
-                ))}
-              </div>
-            </React.Fragment>
-          ))}
+                  <Button
+                    onClick={() => !maxWordsReached && editor.chain().focus().addColumnAfter().run()}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2"
+                    title={maxWordsReached ? "Word limit reached" : "Add Column After"}
+                    disabled={maxWordsReached}
+                  >
+                    <AiOutlineInsertRowRight size={14} />
+                  </Button>
 
-          {/* Table Controls */}
-            <>
-              <Separator orientation="vertical" className="h-6" />
-              <div className="flex gap-1">
-                <Button
-                  onClick={() => editor.chain().focus().addColumnBefore().run()}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  title="Add Column Before"
-                >
-                  <AiOutlineInsertRowLeft size={14} />
-                </Button>
-                <Button
-                  onClick={() => editor.chain().focus().addColumnAfter().run()}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-2"
-                  title="Add Column After"
-                >
-                  <AiOutlineInsertRowRight size={14} />
-                </Button>
+                  <Button
+                    onClick={() => !maxWordsReached && editor.chain().focus().addRowBefore().run()}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    title={maxWordsReached ? "Word limit reached" : "Add Row Before"}
+                    disabled={maxWordsReached}
+                  >
+                    <AiOutlineInsertRowAbove size={14} />
+                  </Button>
+                  <Button
+                    onClick={() => !maxWordsReached && editor.chain().focus().addRowAfter().run()}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2"
+                    title={maxWordsReached ? "Word limit reached" : "Add Row After"}
+                    disabled={maxWordsReached}
+                  >
+                    <AiOutlineInsertRowBelow size={14} />
+                  </Button>
 
-                <Button
-                  onClick={() => editor.chain().focus().addRowBefore().run()}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  title="Add Row Before"
-                >
-                  <AiOutlineInsertRowAbove size={14} />
-                </Button>
-                <Button
-                  onClick={() => editor.chain().focus().addRowAfter().run()}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-2"
-                  title="Add Row After"
-                >
-                  <AiOutlineInsertRowBelow size={14} />
-                </Button>
+                  <Button
+                    onClick={() => !maxWordsReached && editor.chain().focus().deleteColumn().run()}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2 border border-muted"
+                    title={maxWordsReached ? "Word limit reached" : "Delete Column"}
+                    disabled={maxWordsReached}
+                  >
+                    <AiOutlineInsertRowRight size={14} />
+                    <Minus size={12} />
+                  </Button>
+                  <Button
+                    onClick={() => !maxWordsReached && editor.chain().focus().deleteRow().run()}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2"
+                    title={maxWordsReached ? "Word limit reached" : "Delete Row"}
+                    disabled={maxWordsReached}
+                  >
+                    <AiOutlineInsertRowBelow size={14} />
+                    <Minus size={12} className="ml-1" />
+                  </Button>
+                  <Button
+                    onClick={() => !maxWordsReached && editor.chain().focus().deleteTable().run()}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-destructive"
+                    title={maxWordsReached ? "Word limit reached" : "Delete Table"}
+                    disabled={maxWordsReached}
+                  >
+                    <Trash2 size={14} />
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-                <Button
-                  onClick={() => editor.chain().focus().deleteColumn().run()}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-2 border border-muted"
-                  title="Delete Column"
-                >
-                  <AiOutlineInsertRowRight size={14} />
-                  <Minus size={12} />
-                </Button>
-                <Button
-                  onClick={() => editor.chain().focus().deleteRow().run()}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-2"
-                  title="Delete Row"
-                >
-                  <AiOutlineInsertRowBelow size={14} />
-                  <Minus size={12} className="ml-1" />
-                </Button>
-                <Button
-                  onClick={() => editor.chain().focus().deleteTable().run()}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-destructive"
-                  title="Delete Table"
-                >
-                  <Trash2 size={14} />
-                </Button>
-              </div>
-            </>
-
-          {/* Link Input */}
-          {showLinkInput && (
-            <div className="flex gap-2 items-center ml-2">
+      {/* Link Dialog */}
+      <Dialog open={showLinkDialog} onOpenChange={setShowLinkDialog}>
+        <DialogContent className="sm:max-w-md z-50">
+          <DialogHeader>
+            <DialogTitle>Insert Link</DialogTitle>
+            <DialogDescription>
+              {maxWordsReached 
+                ? "Word limit reached (500 words). Cannot add more content."
+                : "Add a link to your document. You can use selected text or enter custom link text."
+              }
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="link-text">Link Text</Label>
               <Input
-                type="text"
+                id="link-text"
+                placeholder="Enter link text..."
+                value={linkText}
+                onChange={(e) => setLinkText(e.target.value)}
+                disabled={maxWordsReached}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="link-url">URL</Label>
+              <Input
+                id="link-url"
                 placeholder="https://example.com"
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
-                className="w-48"
                 onKeyPress={(e) => e.key === 'Enter' && setLink()}
-                autoFocus
+                disabled={maxWordsReached}
               />
-              <Button onClick={setLink} size="sm">
-                Add
-              </Button>
+            </div>
+          </div>
+          <DialogFooter className="flex justify-between sm:justify-between">
+            {editor.isActive('link') && (
               <Button 
-                onClick={() => setShowLinkInput(false)} 
+                onClick={removeLink} 
+                variant="destructive"
+                type="button"
+                disabled={maxWordsReached}
+              >
+                Remove Link
+              </Button>
+            )}
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => setShowLinkDialog(false)} 
                 variant="outline" 
-                size="sm"
+                type="button"
               >
                 Cancel
               </Button>
+              <Button onClick={setLink} type="button" disabled={maxWordsReached}>
+                Insert Link
+              </Button>
             </div>
-          )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-          {/* Code Language Selector */}
-          {showCodeLanguage && (
-            <div className="flex gap-2 items-center ml-2">
-              <Select value={codeLanguage} onValueChange={setCodeLanguage}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
+      {/* Code Block Dialog */}
+      <Dialog open={showCodeDialog} onOpenChange={setShowCodeDialog}>
+        <DialogContent className="sm:max-w-md z-50">
+          <DialogHeader>
+            <DialogTitle>Insert Code Block</DialogTitle>
+            <DialogDescription>
+              {maxWordsReached
+                ? "Word limit reached (500 words). Cannot add more content."
+                : "Choose a programming language for syntax highlighting."
+              }
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="code-language">Language</Label>
+              <Select value={codeLanguage} onValueChange={setCodeLanguage} disabled={maxWordsReached}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select language" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[300px]">
                   {languageOptions.map((lang) => (
                     <SelectItem key={lang.value} value={lang.value}>
                       {lang.label}
@@ -364,31 +556,48 @@ const MenuBar = ({ editor }) => {
                   ))}
                 </SelectContent>
               </Select>
-              <Button onClick={setCodeBlock} size="sm">
-                Insert
-              </Button>
-              <Button 
-                onClick={() => setShowCodeLanguage(false)} 
-                variant="outline" 
-                size="sm"
-              >
-                Cancel
-              </Button>
             </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            <div className="text-sm text-muted-foreground">
+              {maxWordsReached
+                ? "Maximum word count reached. You cannot add more content."
+                : "The code block will be inserted at your current cursor position."
+              }
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              onClick={() => setShowCodeDialog(false)} 
+              variant="outline" 
+              type="button"
+            >
+              Cancel
+            </Button>
+            <Button onClick={setCodeBlock} type="button" disabled={maxWordsReached}>
+              Insert Code Block
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
 export default function DocsEditor() {
-  const [showPreview, setShowPreview] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState('');
+  const [wordCount, setWordCount] = useState(0);
+  const [maxWordsReached, setMaxWordsReached] = useState(false);
+  const [showLimitWarning, setShowLimitWarning] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const calculateWordCount = (text) => {
+    if (!text || text.trim() === '') return 0;
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -430,7 +639,7 @@ export default function DocsEditor() {
     <h1>Local Development</h1>
     <p>Learn how to build and test programs using the <strong>Company SDK Framework</strong> on your local machine.</p>
 
-    <p>The Company SDK simplifies the process of building and testing integrations with the Company API. Whether you’re setting up a sandbox project or creating production-ready tools, this guide walks you through all essential setup steps.</p>
+    <p>The Company SDK simplifies the process of building and testing integrations with the Company API. Whether you're setting up a sandbox project or creating production-ready tools, this guide walks you through all essential setup steps.</p>
 
     <h2>Prerequisites</h2>
     <ul>
@@ -466,7 +675,7 @@ export default function DocsEditor() {
 
     <h3>3. Build the Project</h3>
     <pre><code class="language-bash">npm run build</code></pre>
-    <p>If successful, you’ll see an output similar to:</p>
+    <p>If successful, you'll see an output similar to:</p>
     <pre><code>Build complete. Ready for deployment.</code></pre>
 
     <h3>4. Test the Integration</h3>
@@ -526,11 +735,105 @@ export default function DocsEditor() {
         class: 'prose prose-invert max-w-none p-6 focus:outline-none min-h-[500px]',
       },
     },
+    onUpdate: ({ editor }) => {
+      const text = editor.getText();
+      const currentWordCount = calculateWordCount(text);
+      
+      // Update word count
+      setWordCount(currentWordCount);
+      
+      // Handle both reaching and going below the limit
+      if (currentWordCount >= 500) {
+        if (!maxWordsReached) {
+          setMaxWordsReached(true);
+          setShowLimitWarning(true);
+          setTimeout(() => setShowLimitWarning(false), 3000);
+        }
+      } else {
+        // If we go below 500, remove the limit
+        if (maxWordsReached) {
+          setMaxWordsReached(false);
+        }
+      }
+    },
   });
 
+  // Handle paste events
+  useEffect(() => {
+    if (!editor) return;
+
+    const handlePaste = (event) => {
+      const pastedText = event.clipboardData?.getData('text/plain') || '';
+      const pastedWords = calculateWordCount(pastedText);
+      
+      if (maxWordsReached || wordCount + pastedWords > 500) {
+        event.preventDefault();
+        setShowLimitWarning(true);
+        setTimeout(() => setShowLimitWarning(false), 3000);
+        return false;
+      }
+    };
+
+    const editorElement = editor.view.dom;
+    editorElement.addEventListener('paste', handlePaste, true);
+
+    return () => {
+      editorElement.removeEventListener('paste', handlePaste, true);
+    };
+  }, [editor, maxWordsReached, wordCount]);
+
+  // Set editor to non-editable when limit reached
+  useEffect(() => {
+    if (editor) {
+      if (maxWordsReached) {
+        editor.setOptions({ editable: false });
+      } else {
+        editor.setOptions({ editable: true });
+      }
+    }
+  }, [editor, maxWordsReached]);
+
   const getWordCount = () => {
-    const text = editor?.getText() || '';
-    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    return wordCount;
+  };
+
+  const showCrown = wordCount >= 400;
+
+  // Function to get the content for API submission
+  const getEditorContent = () => {
+    if (!editor) return null;
+    
+    const htmlContent = editor.getHTML();
+    const jsonContent = editor.getJSON();
+    const textContent = editor.getText();
+    
+    return {
+      html: htmlContent,
+      json: jsonContent,
+      text: textContent,
+      wordCount: getWordCount()
+    };
+  };
+
+  // Function to submit to API
+  const handleSubmit = async () => {
+    if (!editor) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus('Submitting...');
+
+    try {
+      const content = getEditorContent();
+      console.log(content)
+      
+      // Your API call here
+    } catch (error) {
+      console.error('Error submitting document:', error);
+      setSubmitStatus('Error saving document');
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSubmitStatus(''), 3000);
+    }
   };
 
   if (!isClient) {
@@ -549,9 +852,9 @@ export default function DocsEditor() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-auto flex flex-col">
       {/* Header */}
-      <Card className=" border-b-0 rounded-none">
+      <Card className="border-b-0 rounded-none sticky top-0 z-30 bg-background">
         <CardHeader className="pb-3">
           <div className="flex justify-between items-center">
             <div>
@@ -559,27 +862,78 @@ export default function DocsEditor() {
               <p className="text-sm text-muted-foreground">Web3 Documentation Platform</p>
             </div>
             <div className="flex items-center gap-4">
-              <Badge variant="secondary"> {getWordCount()} words </Badge>
+              <Badge 
+                variant={maxWordsReached ? "destructive" : wordCount >= 400 ? "default" : "secondary"}
+                className="flex items-center gap-2"
+              >
+                {wordCount} words
+                {showCrown && <Crown size={14} className="text-yellow-400" />}
+                {maxWordsReached && <span className="ml-1">(Max Reached)</span>}
+              </Badge>
             </div>
           </div>
         </CardHeader>
       </Card>
 
-      {/* Editor */}
+      {/* Warning Toast */}
+      {showLimitWarning && (
+        <div className="fixed top-20 right-4 z-50 animate-in slide-in-from-right duration-300">
+          <Card className="bg-destructive text-destructive-foreground border-destructive">
+            <CardContent className="p-3">
+              <div className="flex items-center gap-2">
+                <Crown size={16} />
+                <span className="font-medium">Word limit reached! Maximum 500 words allowed.</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-    <div className="sticky top-0 z-200 bg-background border-b">
-      <MenuBar editor={editor} />
-    </div>
-
+      {/* Editor - MenuBar is now inside the main sticky container */}
+      <div className="sticky top-[73px] z-40 bg-background border-b">
+        <MenuBar editor={editor} wordCount={wordCount} maxWordsReached={maxWordsReached} />
+      </div>
 
       {/* Content Area */}
-      <Card className="flex-1 rounded-none border-0">
-        <CardContent className="p-0 h-full">
-          <EditorContent editor={editor} className="h-full" />
+      <Card className="flex-1 rounded-none border-0 flex flex-col relative">
+        <CardContent className="p-0 flex-1">
+          <EditorContent 
+            editor={editor} 
+            className="h-full" 
+          />
+          {maxWordsReached && (
+            <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
+              <div className="text-center p-4 bg-background border rounded-lg shadow-lg">
+                <Crown size={48} className="text-yellow-400 mx-auto mb-2" />
+                <h3 className="text-lg font-semibold mb-2">Word Limit Reached!</h3>
+                <p className="text-muted-foreground">You've reached the maximum of 500 words.</p>
+                <p className="text-sm text-muted-foreground mt-1">No further editing is allowed.</p>
+              </div>
+            </div>
+          )}
         </CardContent>
+        
+        {/* Submit Button Section */}
+        <div className="border-t p-4 bg-muted/20">
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-muted-foreground">
+              {submitStatus && (
+                <Badge variant={submitStatus.includes('Error') ? "destructive" : "default"}>
+                  {submitStatus}
+                </Badge>
+              )}
+            </div>
+            <Button 
+              onClick={handleSubmit} 
+              disabled={isSubmitting || !editor}
+              className="flex items-center gap-2"
+            >
+              <Save size={16} />
+              {isSubmitting ? 'Saving...' : 'Save Document'}
+            </Button>
+          </div>
+        </div>
       </Card>
-
-
     </div>
   );
 }

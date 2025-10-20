@@ -145,9 +145,9 @@
         /* Highlight */
         .ProseMirror mark {
           background: #363638;
-          color: lightgray;
+          color: rgb(236, 236, 236);
           padding: 0.1em 0.2em;
-          border: 1px solid #404044;
+          border: 1px solid #646464;
           border-radius: 6px;
         }
 

@@ -33,6 +33,7 @@ const CompanyHeader = () => {
   const [profile2, setprofile2] = useState("Sign in with Github");
   const searchParams = useSearchParams();
   const code = searchParams.get("code"); 
+  const called = useRef(false);
 
   const handleWalletClick = useCallback(async () => {
     try {
@@ -135,7 +136,6 @@ const CompanyHeader = () => {
   }, []);
   // console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
-const called = useRef(false);
   useEffect(() => {
   if (code && !called.current) {
     called.current = true;
