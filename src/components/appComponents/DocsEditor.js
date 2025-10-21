@@ -58,7 +58,9 @@ import {
   Pilcrow,
   Save,
   X,
-  Crown
+  Crown,
+  Undo,
+  Redo
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -322,7 +324,26 @@ const MenuBar = ({ editor, maxWordsReached }) => {
           title: 'Horizontal Rule'
         }
       ]
-    }
+    },
+    {
+      name: 'History',
+      items: [
+        { 
+          icon: Undo, 
+          action: () => editor.chain().focus().undo().run(),
+          isActive: false,
+          title: 'Undo',
+          disabled: !editor.can().undo() || maxWordsReached
+        },
+        { 
+          icon: Redo, 
+          action: () => editor.chain().focus().redo().run(),
+          isActive: false,
+          title: 'Redo',
+          disabled: !editor.can().redo() || maxWordsReached
+        },
+      ]
+    },
   ];
 
   const languageOptions = [
@@ -589,6 +610,7 @@ export default function DocsEditor() {
   const [wordCount, setWordCount] = useState(0);
   const [maxWordsReached, setMaxWordsReached] = useState(false);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
+  const maxWordTreshold = 500;
 
   useEffect(() => {
     setIsClient(true);
@@ -766,7 +788,7 @@ export default function DocsEditor() {
       const pastedText = event.clipboardData?.getData('text/plain') || '';
       const pastedWords = calculateWordCount(pastedText);
       
-      if (maxWordsReached || wordCount + pastedWords > 500) {
+      if (maxWordsReached || wordCount + pastedWords > maxWordTreshold) {
         event.preventDefault();
         setShowLimitWarning(true);
         setTimeout(() => setShowLimitWarning(false), 3000);
@@ -841,7 +863,7 @@ export default function DocsEditor() {
       <div className="w-full h-screen flex flex-col">
         <Card className="rounded-none border-b-0">
           <CardHeader className="pb-3">
-            <CardTitle>Snipost Editor</CardTitle>
+            <CardTitle>Documentation Editor</CardTitle>
           </CardHeader>
         </Card>
         <div className="flex-1 flex items-center justify-center">
@@ -855,18 +877,17 @@ export default function DocsEditor() {
     <div className="w-full h-auto flex flex-col">
       {/* Header */}
       <Card className="border-b-0 rounded-none sticky top-0 z-30 bg-background">
-        <CardHeader className="pb-3">
+        <CardHeader className="">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle>Snipost Editor</CardTitle>
-              <p className="text-sm text-muted-foreground">Web3 Documentation Platform</p>
+              <CardTitle>Documentation Editor</CardTitle>
             </div>
             <div className="flex items-center gap-4">
               <Badge 
                 variant={maxWordsReached ? "destructive" : wordCount >= 400 ? "default" : "secondary"}
                 className="flex items-center gap-2"
               >
-                {wordCount} words
+                {wordCount}/{maxWordTreshold} words
                 {showCrown && <Crown size={14} className="text-yellow-400" />}
                 {maxWordsReached && <span className="ml-1">(Max Reached)</span>}
               </Badge>
@@ -882,7 +903,7 @@ export default function DocsEditor() {
             <CardContent className="p-3">
               <div className="flex items-center gap-2">
                 <Crown size={16} />
-                <span className="font-medium">Word limit reached! Maximum 500 words allowed.</span>
+                <span className="font-medium">Word limit reached! Maximum {maxWordTreshold} words allowed.</span>
               </div>
             </CardContent>
           </Card>
@@ -906,7 +927,7 @@ export default function DocsEditor() {
               <div className="text-center p-4 bg-background border rounded-lg shadow-lg">
                 <Crown size={48} className="text-yellow-400 mx-auto mb-2" />
                 <h3 className="text-lg font-semibold mb-2">Word Limit Reached!</h3>
-                <p className="text-muted-foreground">You've reached the maximum of 500 words.</p>
+                <p className="text-muted-foreground">You've reached the maximum of {maxWordTreshold} words.</p>
                 <p className="text-sm text-muted-foreground mt-1">No further editing is allowed.</p>
               </div>
             </div>
