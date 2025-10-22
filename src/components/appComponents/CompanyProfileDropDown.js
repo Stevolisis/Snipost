@@ -29,40 +29,40 @@ export function CompanyProfileDropDown({ children }) {
         {
           label: "Profile",
           icon: User,
-          href: `/dev_org/profile/${userData?._id}`,
+          href: `/dev_org/profile/${userData?._id}/examples`,
           shortcut: "⇧⌘P",
         },
-        {
-          label: "Notifications",
-          icon: Bell,
-          href: `/notifications`,
-          shortcut: "⇧⌘N",
-        },
-        {
-          label: "DevCard",
-          icon: IdCard,
-          href: "/account/devcard",
-          shortcut: "⌘B",
-        },
-        {
-          label: "Achievement",
-          icon: Award,
-          href: `/profile/${userData?._id}/achievements`,
-          shortcut: "⌘S",
-        },
+        // {
+        //   label: "Notifications",
+        //   icon: Bell,
+        //   href: `/notifications`,
+        //   shortcut: "⇧⌘N",
+        // },
+        // {
+        //   label: "DevCard",
+        //   icon: IdCard,
+        //   href: "/account/devcard",
+        //   shortcut: "⌘B",
+        // },
+        // {
+        //   label: "Achievement",
+        //   icon: Award,
+        //   href: `/profile/${userData?._id}/achievements`,
+        //   shortcut: "⌘S",
+        // },
       ],
     },
     {
       group: [
-        {
-          label: "Subscription",
-          icon: PackagePlus,
-          href: "/account/subscription",
-        },
+        // {
+        //   label: "Subscription",
+        //   icon: PackagePlus,
+        //   href: "/account/subscription",
+        // },
         {
           label: "Settings",
           icon: Settings,
-          href: "/account/settings",
+          href: `/dev_org/settings/${userData?._id}`,
           shortcut: "⌘T",
         },
         {
