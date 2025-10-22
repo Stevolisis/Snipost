@@ -17,7 +17,6 @@ import {
   Strikethrough,
   Pilcrow,
   Save,
-  X,
   Crown,
   Undo,
   Redo
@@ -149,56 +148,52 @@ const MenuBar = ({ editor, maxWordsReached }) => {
           action: () => editor.chain().focus().undo().run(),
           isActive: false,
           title: 'Undo',
-          disabled: !editor.can().undo() || maxWordsReached
+          disabled: !editor.can().undo()
         },
         { 
           icon: Redo, 
           action: () => editor.chain().focus().redo().run(),
           isActive: false,
           title: 'Redo',
-          disabled: !editor.can().redo() || maxWordsReached
+          disabled: !editor.can().redo()
         },
       ]
     },
   ];
 
   return (
-    <>
-      <Card className="rounded-none border-b-0 sticky top-0 z-40 bg-background">
-        <CardContent className="p-3">
-          <div className="flex flex-wrap gap-2 items-center">
-            {menuGroups.map((group, groupIndex) => (
-              <React.Fragment key={group.name}>
-                {groupIndex > 0 && <Separator orientation="vertical" className="h-6" />}
-                
-                <div className="flex gap-1">
-                  {group.items.map((item) => (
-                    <Button
-                      key={item.title}
-                      onClick={() => handleButtonAction(item.action)}
-                      variant={item.isActive ? "default" : "outline"}
-                      size="sm"
-                      className="h-8 w-8 p-0"
-                      title={maxWordsReached ? `Word limit reached (${maxWordTreshold} words)` : item.title}
-                      disabled={maxWordsReached || item.disabled}
-                    >
-                      <item.icon size={16} />
-                    </Button>
-                  ))}
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </>
+    <Card className="rounded-none border-b-0 sticky top-0 z-40 bg-background">
+      <CardContent className="p-3">
+        <div className="flex flex-wrap gap-2 items-center">
+          {menuGroups.map((group, groupIndex) => (
+            <React.Fragment key={group.name}>
+              {groupIndex > 0 && <Separator orientation="vertical" className="h-6" />}
+              
+              <div className="flex gap-1">
+                {group.items.map((item) => (
+                  <Button
+                    key={item.title}
+                    onClick={() => handleButtonAction(item.action)}
+                    variant={item.isActive ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    title={maxWordsReached ? `Word limit reached (${maxWordTreshold} words)` : item.title}
+                    disabled={maxWordsReached || item.disabled}
+                  >
+                    <item.icon size={16} />
+                  </Button>
+                ))}
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
-export default function DocsEditor() {
+export default function UpdateEditor({ onContentChange, initialContent }) {
   const [isClient, setIsClient] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [maxWordsReached, setMaxWordsReached] = useState(false);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
@@ -220,13 +215,13 @@ export default function DocsEditor() {
           levels: [3],
         },
         history: {
-          depth: 100, // Enable proper undo history
+          depth: 100,
         },
       }),
       Underline,
       Highlight.configure({ multicolor: true }),
     ],
-    content: `    
+    content: initialContent || `    
         <h3>✨ New Features:</h3>
         <ul>
         <li>Added developer search by GitHub, X, Discord, and LinkedIn profiles</li>
@@ -267,6 +262,17 @@ export default function DocsEditor() {
           setMaxWordsReached(false);
         }
       }
+
+      // Send content to parent component
+      if (onContentChange) {
+        const content = {
+          html: editor.getHTML(),
+          json: editor.getJSON(),
+          text: editor.getText(),
+          wordCount: currentWordCount
+        };
+        onContentChange(content);
+      }
     },
   });
 
@@ -282,14 +288,25 @@ export default function DocsEditor() {
           if (editor.can().redo()) {
             event.preventDefault();
             editor.chain().focus().redo().run();
+            return;
           }
         } else {
           // Ctrl+Z for undo
           if (editor.can().undo()) {
             event.preventDefault();
             editor.chain().focus().undo().run();
+            return;
           }
         }
+      }
+
+      // Prevent typing when limit is reached (but allow navigation and undo/redo)
+      if (maxWordsReached && 
+          !event.ctrlKey && !event.metaKey && 
+          event.key.length === 1 && // Single character keys
+          !event.altKey) {
+        event.preventDefault();
+        return;
       }
     };
 
@@ -299,7 +316,7 @@ export default function DocsEditor() {
     return () => {
       editorElement.removeEventListener('keydown', handleKeyDown);
     };
-  }, [editor]);
+  }, [editor, maxWordsReached]);
 
   // Handle paste events
   useEffect(() => {
@@ -325,82 +342,27 @@ export default function DocsEditor() {
     };
   }, [editor, maxWordsReached, wordCount]);
 
-  // FIXED: Don't set editable to false - instead use CSS and event prevention
+  // Set editor to non-editable when limit reached (but allow undo/redo through keyboard)
   useEffect(() => {
     if (editor) {
-      // Always keep the editor editable for undo/redo to work
-      editor.setOptions({ editable: true });
-    }
-  }, [editor]);
-
-  // Prevent typing when limit is reached
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleBeforeInput = (event) => {
       if (maxWordsReached) {
-        event.preventDefault();
-        return false;
+        // Only disable editing through the editor's own API
+        // This still allows keyboard shortcuts to work
+        editor.setOptions({ editable: false });
+      } else {
+        editor.setOptions({ editable: true });
       }
-    };
-
-    const editorElement = editor.view.dom;
-    editorElement.addEventListener('beforeinput', handleBeforeInput, true);
-
-    return () => {
-      editorElement.removeEventListener('beforeinput', handleBeforeInput, true);
-    };
+    }
   }, [editor, maxWordsReached]);
-
-  const getWordCount = () => {
-    return wordCount;
-  };
 
   const showCrown = wordCount >= warningWordThreshold;
 
-  // Function to get the content for API submission
-  const getEditorContent = () => {
-    if (!editor) return null;
-    
-    const htmlContent = editor.getHTML();
-    const jsonContent = editor.getJSON();
-    const textContent = editor.getText();
-    
-    return {
-      html: htmlContent,
-      json: jsonContent,
-      text: textContent,
-      wordCount: getWordCount()
-    };
-  };
-
-  // Function to submit to API
-  const handleSubmit = async () => {
-    if (!editor) return;
-
-    setIsSubmitting(true);
-    setSubmitStatus('Submitting...');
-
-    try {
-      const content = getEditorContent();
-      console.log(content)
-      
-      // Your API call here
-    } catch (error) {
-      console.error('Error submitting document:', error);
-      setSubmitStatus('Error saving document');
-    } finally {
-      setIsSubmitting(false);
-      setTimeout(() => setSubmitStatus(''), 3000);
-    }
-  };
-
   if (!isClient) {
     return (
-      <div className="w-full h-screen flex flex-col">
+      <div className="w-full flex flex-col">
         <Card className="rounded-none border-b-0">
           <CardHeader className="pb-3">
-            <CardTitle>Update/Changelog Editor</CardTitle>
+            <CardTitle>Update Editor</CardTitle>
           </CardHeader>
         </Card>
         <div className="flex-1 flex items-center justify-center">
@@ -417,7 +379,8 @@ export default function DocsEditor() {
         <CardHeader className="">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle>Update/Changelog Editor</CardTitle>
+              <CardTitle>Update Editor</CardTitle>
+              <p className="text-sm text-muted-foreground">Write your project updates</p>
             </div>
             <div className="flex items-center gap-4">
               <Badge 
@@ -447,15 +410,15 @@ export default function DocsEditor() {
         </div>
       )}
 
-      {/* Editor - MenuBar is now inside the main sticky container */}
+      {/* Editor Menu */}
       <div className="sticky top-[73px] z-40 bg-background border-b">
         <MenuBar editor={editor} wordCount={wordCount} maxWordsReached={maxWordsReached} />
       </div>
 
-      {/* Content Area - Fixed height container */}
+      {/* Editor Content - REMOVED pointer-events-none */}
       <Card className="flex-1 rounded-none border-0 flex flex-col relative" style={{ height: '500px' }}>
         <CardContent className="p-0 flex-1 h-full overflow-hidden">
-          <div className={`h-full overflow-y-auto ${maxWordsReached ? 'pointer-events-none select-none' : ''}`}>
+          <div className="h-full overflow-y-auto">
             <EditorContent 
               editor={editor} 
               className="h-full" 
@@ -467,32 +430,11 @@ export default function DocsEditor() {
                 <Crown size={48} className="text-yellow-400 mx-auto mb-2" />
                 <h3 className="text-lg font-semibold mb-2">Word Limit Reached!</h3>
                 <p className="text-muted-foreground">You've reached the maximum of {maxWordTreshold} words.</p>
-                <p className="text-sm text-muted-foreground mt-1">Use Ctrl+Z to undo and continue editing.</p>
+                <p className="text-sm text-muted-foreground mt-1">Use <kbd className="px-2 py-1 bg-muted rounded text-xs">Ctrl+Z</kbd> to undo and continue editing.</p>
               </div>
             </div>
           )}
         </CardContent>
-        
-        {/* Submit Button Section */}
-        <div className="border-t p-4 bg-muted/20">
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-muted-foreground">
-              {submitStatus && (
-                <Badge variant={submitStatus.includes('Error') ? "destructive" : "default"}>
-                  {submitStatus}
-                </Badge>
-              )}
-            </div>
-            <Button 
-              onClick={handleSubmit} 
-              disabled={isSubmitting || !editor}
-              className="flex items-center gap-2"
-            >
-              <Save size={16} />
-              {isSubmitting ? 'Saving...' : 'Save Document'}
-            </Button>
-          </div>
-        </div>
       </Card>
     </div>
   );

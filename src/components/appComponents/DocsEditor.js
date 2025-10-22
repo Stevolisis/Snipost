@@ -57,7 +57,6 @@ import {
   Trash2,
   Pilcrow,
   Save,
-  X,
   Crown,
   Undo,
   Redo
@@ -84,31 +83,14 @@ import "./editor.css";
 const lowlight = createLowlight();
 
 // Register all languages
-lowlight.register('html', html);
-lowlight.register('css', css);
-lowlight.register('javascript', js);
-lowlight.register('typescript', ts);
-lowlight.register('python', python);
-lowlight.register('java', java);
-lowlight.register('ruby', ruby);
-lowlight.register('php', php);
-lowlight.register('c', c);
-lowlight.register('cpp', cpp);
-lowlight.register('csharp', csharp);
-lowlight.register('go', go);
-lowlight.register('rust', rust);
-lowlight.register('swift', swift);
-lowlight.register('kotlin', kotlin);
-lowlight.register('scala', scala);
-lowlight.register('sql', sql);
-lowlight.register('bash', bash);
-lowlight.register('shell', shell);
-lowlight.register('json', json);
-lowlight.register('yaml', yaml);
-lowlight.register('markdown', markdown);
-lowlight.register('dockerfile', dockerfile);
-lowlight.register('xml', xml);
-lowlight.register('scss', scss);
+[
+  ['html', html], ['css', css], ['javascript', js], ['typescript', ts],
+  ['python', python], ['java', java], ['ruby', ruby], ['php', php],
+  ['c', c], ['cpp', cpp], ['csharp', csharp], ['go', go], ['rust', rust],
+  ['swift', swift], ['kotlin', kotlin], ['scala', scala], ['sql', sql],
+  ['bash', bash], ['shell', shell], ['json', json], ['yaml', yaml],
+  ['markdown', markdown], ['dockerfile', dockerfile], ['xml', xml], ['scss', scss]
+].forEach(([lang, module]) => lowlight.register(lang, module));
 
 const MenuBar = ({ editor, maxWordsReached }) => {
   const [linkUrl, setLinkUrl] = useState('');
@@ -165,7 +147,6 @@ const MenuBar = ({ editor, maxWordsReached }) => {
   const openLinkDialog = () => {
     if (maxWordsReached) return;
     
-    // Get selected text for link
     const selectedText = editor.state.doc.textBetween(
       editor.state.selection.from,
       editor.state.selection.to
@@ -333,14 +314,14 @@ const MenuBar = ({ editor, maxWordsReached }) => {
           action: () => editor.chain().focus().undo().run(),
           isActive: false,
           title: 'Undo',
-          disabled: !editor.can().undo() || maxWordsReached
+          disabled: !editor.can().undo()
         },
         { 
           icon: Redo, 
           action: () => editor.chain().focus().redo().run(),
           isActive: false,
           title: 'Redo',
-          disabled: !editor.can().redo() || maxWordsReached
+          disabled: !editor.can().redo()
         },
       ]
     },
@@ -393,7 +374,7 @@ const MenuBar = ({ editor, maxWordsReached }) => {
                       size="sm"
                       className="h-8 w-8 p-0"
                       title={maxWordsReached ? "Word limit reached (500 words)" : item.title}
-                      disabled={maxWordsReached}
+                      disabled={maxWordsReached || item.disabled}
                     >
                       <item.icon size={16} />
                     </Button>
@@ -402,7 +383,7 @@ const MenuBar = ({ editor, maxWordsReached }) => {
               </React.Fragment>
             ))}
 
-            {/* Table Controls - Only show when in a table */}
+            {/* Table Controls */}
             {editor.isActive('table') && (
               <>
                 <Separator orientation="vertical" className="h-6" />
@@ -427,7 +408,6 @@ const MenuBar = ({ editor, maxWordsReached }) => {
                   >
                     <AiOutlineInsertRowRight size={14} />
                   </Button>
-
                   <Button
                     onClick={() => !maxWordsReached && editor.chain().focus().addRowBefore().run()}
                     variant="outline"
@@ -448,7 +428,6 @@ const MenuBar = ({ editor, maxWordsReached }) => {
                   >
                     <AiOutlineInsertRowBelow size={14} />
                   </Button>
-
                   <Button
                     onClick={() => !maxWordsReached && editor.chain().focus().deleteColumn().run()}
                     variant="outline"
@@ -496,7 +475,7 @@ const MenuBar = ({ editor, maxWordsReached }) => {
             <DialogDescription>
               {maxWordsReached 
                 ? "Word limit reached (500 words). Cannot add more content."
-                : "Add a link to your document. You can use selected text or enter custom link text."
+                : "Add a link to your document."
               }
             </DialogDescription>
           </DialogHeader>
@@ -578,12 +557,6 @@ const MenuBar = ({ editor, maxWordsReached }) => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="text-sm text-muted-foreground">
-              {maxWordsReached
-                ? "Maximum word count reached. You cannot add more content."
-                : "The code block will be inserted at your current cursor position."
-              }
-            </div>
           </div>
           <DialogFooter>
             <Button 
@@ -603,10 +576,8 @@ const MenuBar = ({ editor, maxWordsReached }) => {
   );
 };
 
-export default function DocsEditor() {
+export default function DocsEditor({ onContentChange, initialContent, templateName }) {
   const [isClient, setIsClient] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState('');
   const [wordCount, setWordCount] = useState(0);
   const [maxWordsReached, setMaxWordsReached] = useState(false);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
@@ -627,6 +598,9 @@ export default function DocsEditor() {
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3],
+        },
+        history: {
+          depth: 100,
         },
       }),
       HorizontalRule,
@@ -657,101 +631,11 @@ export default function DocsEditor() {
         },
       }),
     ],
-    content: `
-    <h1>Local Development</h1>
-    <p>Learn how to build and test programs using the <strong>Company SDK Framework</strong> on your local machine.</p>
-
-    <p>The Company SDK simplifies the process of building and testing integrations with the Company API. Whether you're setting up a sandbox project or creating production-ready tools, this guide walks you through all essential setup steps.</p>
-
-    <h2>Prerequisites</h2>
-    <ul>
-        <li>Node.js 18+</li>
-        <li>npm or yarn</li>
-        <li>Git</li>
-        <li>A registered Company API Key</li>
-    </ul>
-
-    <p>You can verify your setup by running:</p>
-    <pre><code class="language-bash">node -v
-    npm -v</code></pre>
-
-    <h2>Getting Started</h2>
-    <p>This section outlines the basic steps to initialize and run your first local project.</p>
-
-    <h3>1. Create a New Project</h3>
-    <pre><code class="language-bash">npx company-cli init my-project</code></pre>
-
-    <p>Move into your new project folder:</p>
-    <pre><code class="language-bash">cd my-project</code></pre>
-
-    <p>Your default structure will look like this:</p>
-    <pre><code>my-project/
-    ├── src/
-    ├── package.json
-    ├── .env
-    └── README.md</code></pre>
-
-    <h3>2. Install Dependencies</h3>
-    <pre><code class="language-bash">npm install</code></pre>
-    <p>This installs the Company SDK and all required packages to get started.</p>
-
-    <h3>3. Build the Project</h3>
-    <pre><code class="language-bash">npm run build</code></pre>
-    <p>If successful, you'll see an output similar to:</p>
-    <pre><code>Build complete. Ready for deployment.</code></pre>
-
-    <h3>4. Test the Integration</h3>
-    <p>You can run unit and integration tests locally:</p>
-    <pre><code class="language-bash">npm test</code></pre>
-
-    <p>Create a <code>.env</code> file and add your API key:</p>
-    <pre><code>COMPANY_API_KEY=your_api_key_here</code></pre>
-
-    <p>Then test a simple request:</p>
-    <pre><code class="language-javascript">import { Company } from "company-sdk";
-    import { css } from '@codemirror/lang-css';
-
-    const client = new Company(process.env.COMPANY_API_KEY);
-    client.users.getProfile().then(console.log);</code></pre>
-
-    <h3>5. Deploy to Sandbox</h3>
-    <p>When your integration works locally, deploy to the sandbox environment:</p>
-    <pre><code class="language-bash">npx company-cli deploy --env sandbox</code></pre>
-
-    <p>This uploads your current code to your sandbox workspace. You can preview requests, logs, and metrics in your <a href="https://dashboard.company.dev">Company Dashboard</a>.</p>
-
-    <h3>6. Update and Redeploy</h3>
-    <pre><code class="language-bash">npm run build
-    npx company-cli deploy --env sandbox</code></pre>
-
-    <h3>7. Clean Up</h3>
-    <pre><code class="language-bash">npm run clean</code></pre>
-    <p>This deletes compiled artifacts and resets the environment.</p>
-
-    <h2>Project File Structure</h2>
-    <pre><code>my-project/
-    ├── src/
-    │   ├── api/
-    │   ├── utils/
-    │   ├── index.js
-    ├── tests/
-    │   ├── integration.test.js
-    │   ├── unit.test.js
-    ├── .env
-    ├── package.json
-    ├── README.md
-    └── company.config.json</code></pre>
-
-    <h2>Next Steps</h2>
-    <ul>
-        <li>Review the <a href="https://docs.company.dev/sdk">Company SDK Reference</a></li>
-        <li>Explore advanced guides like authentication flows and API hooks</li>
-        <li>Connect your project to production once validated in the sandbox</li>
-    </ul>
-
-    <p><strong>Happy building!</strong></p>
+    content: initialContent || `
+      <h1>Documentation Editor</h1>
+      <p>Select a template from above or start writing your documentation.</p>
+      <p>This editor supports rich formatting, code blocks, tables, and more.</p>
     `,
-
     editorProps: {
       attributes: {
         class: 'prose prose-invert max-w-none p-6 focus:outline-none min-h-[500px]',
@@ -765,7 +649,7 @@ export default function DocsEditor() {
       setWordCount(currentWordCount);
       
       // Handle both reaching and going below the limit
-      if (currentWordCount >= 500) {
+      if (currentWordCount >= maxWordTreshold) {
         if (!maxWordsReached) {
           setMaxWordsReached(true);
           setShowLimitWarning(true);
@@ -777,8 +661,68 @@ export default function DocsEditor() {
           setMaxWordsReached(false);
         }
       }
+
+      // Send content to parent component
+      if (onContentChange) {
+        const content = {
+          html: editor.getHTML(),
+          json: editor.getJSON(),
+          text: editor.getText(),
+          wordCount: currentWordCount
+        };
+        onContentChange(content);
+      }
     },
   });
+
+  // Reset editor content when initialContent changes
+  useEffect(() => {
+    if (editor && initialContent) {
+      editor.commands.setContent(initialContent);
+    }
+  }, [editor, initialContent]);
+
+  // Handle keyboard shortcuts - FIXED: Always allow undo/redo
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleKeyDown = (event) => {
+      // ALWAYS allow undo/redo regardless of word limit
+      if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+        if (event.shiftKey) {
+          // Ctrl+Shift+Z for redo
+          if (editor.can().redo()) {
+            event.preventDefault();
+            editor.chain().focus().redo().run();
+            return;
+          }
+        } else {
+          // Ctrl+Z for undo
+          if (editor.can().undo()) {
+            event.preventDefault();
+            editor.chain().focus().undo().run();
+            return;
+          }
+        }
+      }
+
+      // Prevent typing when limit is reached (but allow navigation and undo/redo)
+      if (maxWordsReached && 
+          !event.ctrlKey && !event.metaKey && 
+          event.key.length === 1 && // Single character keys
+          !event.altKey) {
+        event.preventDefault();
+        return;
+      }
+    };
+
+    const editorElement = editor.view.dom;
+    editorElement.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      editorElement.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [editor, maxWordsReached]);
 
   // Handle paste events
   useEffect(() => {
@@ -804,10 +748,12 @@ export default function DocsEditor() {
     };
   }, [editor, maxWordsReached, wordCount]);
 
-  // Set editor to non-editable when limit reached
+  // Set editor to non-editable when limit reached (but allow undo/redo through keyboard)
   useEffect(() => {
     if (editor) {
       if (maxWordsReached) {
+        // Only disable editing through the editor's own API
+        // This still allows keyboard shortcuts to work
         editor.setOptions({ editable: false });
       } else {
         editor.setOptions({ editable: true });
@@ -815,48 +761,7 @@ export default function DocsEditor() {
     }
   }, [editor, maxWordsReached]);
 
-  const getWordCount = () => {
-    return wordCount;
-  };
-
   const showCrown = wordCount >= 400;
-
-  // Function to get the content for API submission
-  const getEditorContent = () => {
-    if (!editor) return null;
-    
-    const htmlContent = editor.getHTML();
-    const jsonContent = editor.getJSON();
-    const textContent = editor.getText();
-    
-    return {
-      html: htmlContent,
-      json: jsonContent,
-      text: textContent,
-      wordCount: getWordCount()
-    };
-  };
-
-  // Function to submit to API
-  const handleSubmit = async () => {
-    if (!editor) return;
-
-    setIsSubmitting(true);
-    setSubmitStatus('Submitting...');
-
-    try {
-      const content = getEditorContent();
-      console.log(content)
-      
-      // Your API call here
-    } catch (error) {
-      console.error('Error submitting document:', error);
-      setSubmitStatus('Error saving document');
-    } finally {
-      setIsSubmitting(false);
-      setTimeout(() => setSubmitStatus(''), 3000);
-    }
-  };
 
   if (!isClient) {
     return (
@@ -880,7 +785,12 @@ export default function DocsEditor() {
         <CardHeader className="">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle>Documentation Editor</CardTitle>
+              <CardTitle>
+                {templateName ? `${templateName} Editor` : 'Documentation Editor'}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {templateName ? `Editing ${templateName} template` : 'Create your documentation'}
+              </p>
             </div>
             <div className="flex items-center gap-4">
               <Badge 
@@ -910,50 +820,33 @@ export default function DocsEditor() {
         </div>
       )}
 
-      {/* Editor - MenuBar is now inside the main sticky container */}
+      {/* Editor Menu */}
       <div className="sticky top-[73px] z-40 bg-background border-b">
         <MenuBar editor={editor} wordCount={wordCount} maxWordsReached={maxWordsReached} />
       </div>
 
-      {/* Content Area */}
+      {/* Editor Content - REMOVED pointer-events-none */}
       <Card className="flex-1 rounded-none border-0 flex flex-col relative">
         <CardContent className="p-0 flex-1">
-          <EditorContent 
-            editor={editor} 
-            className="h-full" 
-          />
+          <div className="h-full">
+            <EditorContent 
+              editor={editor} 
+              className="h-full" 
+            />
+          </div>
           {maxWordsReached && (
             <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
               <div className="text-center p-4 bg-background border rounded-lg shadow-lg">
                 <Crown size={48} className="text-yellow-400 mx-auto mb-2" />
                 <h3 className="text-lg font-semibold mb-2">Word Limit Reached!</h3>
                 <p className="text-muted-foreground">You've reached the maximum of {maxWordTreshold} words.</p>
-                <p className="text-sm text-muted-foreground mt-1">No further editing is allowed.</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Use <kbd className="px-2 py-1 bg-muted rounded text-xs">Ctrl+Z</kbd> to undo and continue editing.
+                </p>
               </div>
             </div>
           )}
         </CardContent>
-        
-        {/* Submit Button Section */}
-        <div className="border-t p-4 bg-muted/20">
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-muted-foreground">
-              {submitStatus && (
-                <Badge variant={submitStatus.includes('Error') ? "destructive" : "default"}>
-                  {submitStatus}
-                </Badge>
-              )}
-            </div>
-            <Button 
-              onClick={handleSubmit} 
-              disabled={isSubmitting || !editor}
-              className="flex items-center gap-2"
-            >
-              <Save size={16} />
-              {isSubmitting ? 'Saving...' : 'Save Document'}
-            </Button>
-          </div>
-        </div>
       </Card>
     </div>
   );

@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Megaphone, Bug, Sparkles, Shield, Zap } from 'lucide-react'
+import { Megaphone, Bug, Sparkles, Shield, Zap, Save } from 'lucide-react'
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import UpdateEditor from '@/components/appComponents/UpdateEditor';
-
 
 const exampleUpdate = {
   version: "v2.4.0 - Major Update",
@@ -22,16 +22,58 @@ const exampleUpdate = {
   ]
 };
 
-const create_update = () => {
-    const [title, setTitle] = useState("");
+const CreateUpdate = () => {
+  const [title, setTitle] = useState("");
+  const [editorContent, setEditorContent] = useState(null);
   
+  // Handle editor content changes
+  const handleEditorChange = (content) => {
+    setEditorContent(content);
+    console.log('Current editor content:', content);
+  };
+
+  // Submit the final form
+  const handleSubmitUpdate = async () => {
+    if (!title || !editorContent) {
+      alert('Please add a title and content');
+      return;
+    }
+
+    const updateData = {
+      title,
+      content: editorContent,
+      date: new Date().toISOString().split('T')[0] // Today's date
+    };
+
+    console.log('Submitting update:', updateData);
+    
+    // Here you would make your API call
+    try {
+      // const response = await fetch('/api/updates', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(updateData)
+      // });
+      
+      // if (response.ok) {
+      //   alert('Update created successfully!');
+      // } else {
+      //   alert('Failed to create update');
+      // }
+      
+      // For now, just log to console
+      alert('Update ready for submission! Check console for data.');
+    } catch (error) {
+      console.error('Error submitting update:', error);
+      alert('Error creating update');
+    }
+  };
+
   return (
-    <div className="w-full h-screen flex flex-col">
-
-
+    <div className="w-full min-h-screen flex flex-col p-4">
       {/* Example Update Preview */}
       <div className="bg-muted/10 rounded-2xl p-6 md:p-10 border border-zinc-800">
-              <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-6">
           <div className="p-2 rounded-lg bg-blue-500/10">
             <Megaphone className="h-6 w-6 text-blue-400" />
           </div>
@@ -96,24 +138,52 @@ const create_update = () => {
         </div>
       </div>
 
+      {/* Your Update Form */}
+      <div className="w-full mt-5">
+        <Card className="bg-transparent w-full border-zinc-800">
+          <CardContent className="p-6">
+            <div className="mb-6">
+              <Input
+                placeholder="Title e.g., v2.4.0 - Major Update" 
+                value={title}
+                required
+                onChange={(e) => setTitle(e.target.value)}
+                className="text-lg"
+              />
+            </div>
+            
+            {/* Pass the callback function to UpdateEditor */}
+            <UpdateEditor onContentChange={handleEditorChange} />
+          </CardContent>
+        </Card>
+      </div>
 
-
-        <div className="w-full mt-5">
-            <Card className="px-6 bg-transparent w-full">
-              <div className="">
-                <Input
-                  placeholder="Title e.g., v2.4.0 - Major Update" 
-                  value={title}
-                  required
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-              
-              <UpdateEditor />
-            </Card>
+      {/* Submit Section */}
+      <div className="mt-6 p-6 bg-muted/10 rounded-lg border border-zinc-800">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="font-semibold text-white">Ready to publish?</h3>
+            <p className="text-sm text-zinc-400">
+              {editorContent ? `${editorContent.wordCount} words written` : 'Start writing your update...'}
+             
+            </p>
+           {title ?  
+            <p className="text-sm text-zinc-400"> {`Title: "${title}"`} </p> :
+             <p className="text-sm text-red-400">  Fill Title Field</p>
+           }
+          </div>
+          <Button 
+            onClick={handleSubmitUpdate}
+            disabled={!title || !editorContent}
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90"
+          >
+            <Save size={16} />
+            Publish Update
+          </Button>
         </div>
+      </div>
     </div>
   )
 }
 
-export default create_update
+export default CreateUpdate;
