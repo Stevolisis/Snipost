@@ -31,7 +31,7 @@ import dockerfile from 'highlight.js/lib/languages/dockerfile';
 import xml from 'highlight.js/lib/languages/xml';
 import scss from 'highlight.js/lib/languages/scss';
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import "./editor.css";
+import "@/components/appComponents/editor.css";
 import api from '@/utils/axiosConfig';
 import { toast } from 'sonner';
 import { useAppDispatch } from '@/lib/redux/hooks';
@@ -100,7 +100,7 @@ const CompanyDocs = () => {
     };
 
     fetchComapnyDocumentations();
-  }, [dispatch, companyId]);
+  }, [companyId]);
 
   // Update editor content when selected document changes
   useEffect(() => {
