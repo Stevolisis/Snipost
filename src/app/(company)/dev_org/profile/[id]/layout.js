@@ -1,5 +1,5 @@
 "use client"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
 import { FileText, Code2, Bell, Zap, MapPin, Building2, Calendar, Globe, ArrowRight, Users } from "lucide-react"
@@ -60,7 +60,9 @@ export default function DevOrgLayout({ children }) {
     { icon: Building2, label: profile?.company_size },
     { icon: Users, label: profile?.followers?.length + " followers" || "No followers yet" },
     { icon: Globe, label: profile?.company_website, isLink: true }
-  ]
+  ];
+  const [similarCompanies, setsimilarCompanies] = useState([]);
+
   const fetchProfile = async () => {
     const loadingId=toast.loading('Loading profile...');
     try {
@@ -76,9 +78,23 @@ export default function DevOrgLayout({ children }) {
     }
   }
 
+  const fetchCompanies = async () => {
+    const loadingId=toast.loading('Loading companies...');
+    try {
+      const {data} = await api.get(`/get-all-companies?limit=${7}`)
+      // setsimilarCompanies(data.companies.filter((comp) => comp._id !== id).slice(0,4));
+      setsimilarCompanies(data.companies);
+      toast.success("Companies loaded succesfully",{ id: loadingId });
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response?.data?.message || 'Failed to load profile', {id: loadingId})
+    }
+  }
+
   useEffect(() => {
     console.log('Fetching profile for id:', id);
-    fetchProfile()
+    fetchProfile();
+    fetchCompanies();
   }, [id]);
 
 
@@ -208,10 +224,10 @@ export default function DevOrgLayout({ children }) {
                 {similarCompanies.map((company, idx) => (
                   <Link 
                     key={idx} 
-                    href="#"
+                    href={`/dev_org/profile/${company._id}`}
                     className={cn(
                       "block p-3 rounded-lg border-2 transition-all group",
-                      company.color
+                      "bg-blue-500/10 border-blue-500/20 hover:border-blue-500/40"
                     )}
                   >
                     <div className="flex items-start justify-between">
@@ -224,7 +240,7 @@ export default function DevOrgLayout({ children }) {
                           <span>{company.location}</span>
                         </div>
                         <Badge variant="outline" className="text-xs mt-1">
-                          {company.industry}
+                          {company.followers?.length || 0} Followers
                         </Badge>
                       </div>
                       <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
