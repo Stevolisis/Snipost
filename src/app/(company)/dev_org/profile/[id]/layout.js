@@ -13,24 +13,6 @@ import { toast } from "sonner"
 import api from "@/utils/axiosConfig"
 import { Skeleton } from '@/components/ui/skeleton'
 
-// Company data structure
-const companyData = {
-  name: "CodeFlow Solutions",
-  description: "Enterprise-grade developer tools and documentation platform",
-  info: [
-    { icon: MapPin, label: "San Francisco, CA" },
-    { icon: Building2, label: "50-200 employees" },
-    { icon: Calendar, label: "Founded 2021" },
-    { icon: Globe, label: "codeflow.dev", isLink: true }
-  ],
-  sidebar: {
-    companyType: "SaaS Platform",
-    industry: "Developer Tools",
-    headquarters: "San Francisco, CA",
-    techStack: ["React", "Node.js", "PostgreSQL", "Redis", "Docker", "AWS"],
-    pricing: "Enterprise pricing available"
-  }
-}
 
 // Navigation tabs structure
 const navigationTabs = [
@@ -176,7 +158,7 @@ export default function DevOrgLayout({ children }) {
 
         {/* Tabs and Main Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
-          <div>
+          <div className="">
             {/* Navigation Tabs */}
             <div className="relative mb-8">
               <div className="absolute bottom-0 left-0 w-full h-px bg-border" />

@@ -161,3 +161,20 @@ body {
 #custom-scroll::-webkit-scrollbar-thumb:hover {
   background: #E5FF4A;
 }
+
+
+#docs-scroll-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+#docs-scroll-container::-webkit-scrollbar-track {
+  background: rgba(153, 138, 138, 0.2);
+  border-radius: 10px;
+}
+#docs-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(22, 22, 22, 0.452);
+  border-radius: 10px;
+}
+#docs-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #E5FF4A;
+}
