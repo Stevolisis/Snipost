@@ -35,127 +35,127 @@ const CompanyHeader = () => {
   const code = searchParams.get("code"); 
   const called = useRef(false);
 
-  const handleWalletClick = useCallback(async () => {
-    try {
-      dispatch(connectWalletStart());
-      setVisible(true);
-    } catch (err) {
-      toast.error(`Connection failed: ${err.message}`);
-      console.log("disconnecting due to error: ", err.message);
-      dispatch(disconnectWallet());
-      await disconnect();
-    }
-  }, [setVisible, dispatch, disconnect])
+  // const handleWalletClick = useCallback(async () => {
+  //   try {
+  //     dispatch(connectWalletStart());
+  //     setVisible(true);
+  //   } catch (err) {
+  //     toast.error(`Connection failed: ${err.message}`);
+  //     console.log("disconnecting due to error: ", err.message);
+  //     dispatch(disconnectWallet());
+  //     await disconnect();
+  //   }
+  // }, [setVisible, dispatch, disconnect])
 
-  const signInWithBackend = async () => {
-    dispatch(authenticateStart());
-    const loaderId = toast.loading("Signing in...");
-    try{
-      const timestamp = Date.now()
-      const message = `signin-user:${timestamp}`
-      const messageBytes = new TextEncoder().encode(message)
-      const signature = await wallet.adapter.signMessage(messageBytes)
-      const signatureBase58 = bs58.encode(signature)
+  // const signInWithBackend = async () => {
+  //   dispatch(authenticateStart());
+  //   const loaderId = toast.loading("Signing in...");
+  //   try{
+  //     const timestamp = Date.now()
+  //     const message = `signin-user:${timestamp}`
+  //     const messageBytes = new TextEncoder().encode(message)
+  //     const signature = await wallet.adapter.signMessage(messageBytes)
+  //     const signatureBase58 = bs58.encode(signature)
       
-      const response = await api.post("/user-sign-in",{
-        publicKey: publicKey.toBase58(),
-        signature: signatureBase58,
-        message
-      })
-      dispatch(authenticateSuccess(response.data));
-      toast.success("Signed in successfully", { id: loaderId });
-    } catch(err) {
-      console.log("disconnecting due to error2: ", err.message);
-      toast.error(`Sign in failed: ${err?.response?.data?.message||err.message}`, { id: loaderId });
-      dispatch(authFailure(err.message));
-      await disconnect();
-    }
-  }
+  //     const response = await api.post("/user-sign-in",{
+  //       publicKey: publicKey.toBase58(),
+  //       signature: signatureBase58,
+  //       message
+  //     })
+  //     dispatch(authenticateSuccess(response.data));
+  //     toast.success("Signed in successfully", { id: loaderId });
+  //   } catch(err) {
+  //     console.log("disconnecting due to error2: ", err.message);
+  //     toast.error(`Sign in failed: ${err?.response?.data?.message||err.message}`, { id: loaderId });
+  //     dispatch(authFailure(err.message));
+  //     await disconnect();
+  //   }
+  // }
 
-  const connectToSelectedWallet = useCallback(async() => {
-    if (!userInitiatedConnection || !wallet) return
-    console.log("Connecting to wallet:", wallet.adapter.name);
-    try{
-      await connect();
-    }catch(err){
-      dispatch(disconnectWallet());
-      console.log("disconnecting due to error3: ", err.message);
-      await disconnect();
-    }finally {
-      setUserInitiatedConnection(false) // Reset after attempt
-    }
-  },[wallet, connect, disconnect, userInitiatedConnection])
+  // const connectToSelectedWallet = useCallback(async() => {
+  //   if (!userInitiatedConnection || !wallet) return
+  //   console.log("Connecting to wallet:", wallet.adapter.name);
+  //   try{
+  //     await connect();
+  //   }catch(err){
+  //     dispatch(disconnectWallet());
+  //     console.log("disconnecting due to error3: ", err.message);
+  //     await disconnect();
+  //   }finally {
+  //     setUserInitiatedConnection(false) // Reset after attempt
+  //   }
+  // },[wallet, connect, disconnect, userInitiatedConnection])
 
   // Track when modal closes and user selected a wallet
-  useEffect(() => {
-    if (prevVisible && !visible && wallet) {
-      // Modal just closed and we have a wallet selected
-      setUserInitiatedConnection(true);
-    }
-    setPrevVisible(visible);
-  }, [visible, wallet, prevVisible]);
+  // useEffect(() => {
+  //   if (prevVisible && !visible && wallet) {
+  //     // Modal just closed and we have a wallet selected
+  //     setUserInitiatedConnection(true);
+  //   }
+  //   setPrevVisible(visible);
+  // }, [visible, wallet, prevVisible]);
 
   // Trigger connection when user selects wallet from modal
-  useEffect(() => {
-    if (userInitiatedConnection && wallet && !connected) {
-      connectToSelectedWallet();
-    }
-  }, [userInitiatedConnection, wallet, connected, connectToSelectedWallet]);
+  // useEffect(() => {
+  //   if (userInitiatedConnection && wallet && !connected) {
+  //     connectToSelectedWallet();
+  //   }
+  // }, [userInitiatedConnection, wallet, connected, connectToSelectedWallet]);
 
   // Handle successful connection
-  useEffect(() => {
-    if (publicKey && userInitiatedConnection) {
-      dispatch(connectWalletSuccess({
-        walletAddress: publicKey.toBase58()
-      }))
-      signInWithBackend();
-    }
-  }, [publicKey, userInitiatedConnection]);
+  // useEffect(() => {
+  //   if (publicKey && userInitiatedConnection) {
+  //     dispatch(connectWalletSuccess({
+  //       walletAddress: publicKey.toBase58()
+  //     }))
+  //     signInWithBackend();
+  //   }
+  // }, [publicKey, userInitiatedConnection]);
   
   
-  const getNotifications = async () => {
-    try{
-      dispatch(loadNotificationsStart())
-      const response = await api.get("/get-notifications",{
-        headers: {
-          Authorization: `Bearer ${jwtToken}`
-        }
-      })
-      dispatch(loadNotificationsSuccess(response.data));
-    } catch(err) {
-      dispatch(loadNotificationsFailure(err?.response?.data?.message || "Failed to load notifications"))
-      console.error("Error loading notifications:", err);
-    }
-  }
+  // const getNotifications = async () => {
+  //   try{
+  //     dispatch(loadNotificationsStart())
+  //     const response = await api.get("/get-notifications",{
+  //       headers: {
+  //         Authorization: `Bearer ${jwtToken}`
+  //       }
+  //     })
+  //     dispatch(loadNotificationsSuccess(response.data));
+  //   } catch(err) {
+  //     dispatch(loadNotificationsFailure(err?.response?.data?.message || "Failed to load notifications"))
+  //     console.error("Error loading notifications:", err);
+  //   }
+  // }
 
   // console.log(connected , walletAddress , jwtToken , userData , isConnected)
-  useEffect(() => {
-    if (jwtToken) {
-      getNotifications();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (jwtToken) {
+  //     getNotifications();
+  //   }
+  // }, []);
   // console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
-  useEffect(() => {
-  if (code && !called.current) {
-    called.current = true;
+  // useEffect(() => {
+  // if (code && !called.current) {
+  //   called.current = true;
 
-      // Exchange code for token  
-      const fetchData = async () => {
-        try {
-          const response = await fetch(`/api/github?code=${code}`);
-          const data = await response.json();
-          console.log("GitHub OAuth Data:", data);
-        } catch (error) {
-          console.error("Error fetching GitHub profile:", error);
-        }
-      };
-      fetchData();
-    } else {
-      console.log(code+" - no code");
-      setprofile2("Sign in with Github")
-    }
-  }, [code]);
+  //     // Exchange code for token  
+  //     const fetchData = async () => {
+  //       try {
+  //         const response = await fetch(`/api/github?code=${code}`);
+  //         const data = await response.json();
+  //         console.log("GitHub OAuth Data:", data);
+  //       } catch (error) {
+  //         console.error("Error fetching GitHub profile:", error);
+  //       }
+  //     };
+  //     fetchData();
+  //   } else {
+  //     console.log(code+" - no code");
+  //     setprofile2("Sign in with Github")
+  //   }
+  // }, [code]);
 
   
 
@@ -194,32 +194,32 @@ const CompanyHeader = () => {
 
 
   //Github Auth
-  const loginWithGitHub = () => {
-    const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
-    const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
-    const scope = [
-      "read:user",       // Read user profile info (followers, company, bio, etc.)
-      "user:email",      // Access public + private emails
-      "repo",            // Full control of public + private repos (needed for private repo counts)
-      // "gist",            // List/create/edit/delete gists
-      // "workflow",        // Access/manage GitHub Actions workflows
-      // "read:org",        // Read org memberships
-      // "admin:org",       // Full org management (dangerous, usually not needed)
-      // "admin:repo_hook", // Manage repo webhooks
-      // "notifications",   // Read user’s notifications
-      // "read:discussion", // Access discussions
-      // "project",         // Manage projects
-    ].join(" ");
+  // const loginWithGitHub = () => {
+  //   const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+  //   const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
+  //   const scope = [
+  //     "read:user",       // Read user profile info (followers, company, bio, etc.)
+  //     "user:email",      // Access public + private emails
+  //     "repo",            // Full control of public + private repos (needed for private repo counts)
+  //     // "gist",            // List/create/edit/delete gists
+  //     // "workflow",        // Access/manage GitHub Actions workflows
+  //     // "read:org",        // Read org memberships
+  //     // "admin:org",       // Full org management (dangerous, usually not needed)
+  //     // "admin:repo_hook", // Manage repo webhooks
+  //     // "notifications",   // Read user’s notifications
+  //     // "read:discussion", // Access discussions
+  //     // "project",         // Manage projects
+  //   ].join(" ");
 
-    const githubAuthUrl =`https://github.com/login/oauth/authorize?` +
-    new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      scope,
-    });
+  //   const githubAuthUrl =`https://github.com/login/oauth/authorize?` +
+  //   new URLSearchParams({
+  //     client_id: clientId,
+  //     redirect_uri: redirectUri,
+  //     scope,
+  //   });
 
-    window.location.href = githubAuthUrl;
-  }
+  //   window.location.href = githubAuthUrl;
+  // }
 
   return (
     <header className="sticky top-0 z-[50] flex items-center justify-between px-3 md:px-9 py-4 bg-background border-b border-border shadow-sm">

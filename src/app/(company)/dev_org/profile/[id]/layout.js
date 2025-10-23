@@ -1,12 +1,17 @@
 "use client"
-
+import { useEffect } from "react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
-import { FileText, Code2, Bell, Zap, MapPin, Building2, Calendar, Globe, ArrowRight } from "lucide-react"
+import { FileText, Code2, Bell, Zap, MapPin, Building2, Calendar, Globe, ArrowRight, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { loadProfileFailure, loadProfileStart, loadProfileSuccess } from "@/lib/redux/slices/profile"
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
+import { toast } from "sonner"
+import api from "@/utils/axiosConfig"
+import { Skeleton } from '@/components/ui/skeleton'
 
 // Company data structure
 const companyData = {
@@ -66,6 +71,62 @@ export default function DevOrgLayout({ children }) {
   const { id } = useParams()
   const pathname = usePathname()
   const basePath = `/dev_org/profile/${id}`
+  const dispatch = useAppDispatch();
+  const { profile, loading, error} = useAppSelector((state) => state.profile)
+  const info= [
+    { icon: MapPin, label: profile?.location || "Location not specified" },
+    { icon: Building2, label: profile?.company_size },
+    { icon: Users, label: profile?.followers?.length + " followers" || "No followers yet" },
+    { icon: Globe, label: profile?.company_website, isLink: true }
+  ]
+  const fetchProfile = async () => {
+    const loadingId=toast.loading('Loading profile...');
+    try {
+      console.log("start")
+      dispatch(loadProfileStart())
+      const {data} = await api.get(`/get-company/${id}`)
+      dispatch(loadProfileSuccess(data.company));
+      toast.success('Profile loaded successfully', {id: loadingId})
+    } catch (err) {
+      console.log(err);
+      dispatch(loadProfileFailure(err.response?.data?.message || 'Failed to load profile'));
+      toast.error(err.response?.data?.message || 'Failed to load profile', {id: loadingId})
+    }
+  }
+
+  useEffect(() => {
+    console.log('Fetching profile for id:', id);
+    fetchProfile()
+  }, [id]);
+
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row gap-5">
+          <div className="md:w-1/3 space-y-4">
+            <Skeleton className="h-64 w-full" />
+          </div>
+          <div className="md:w-2/3 space-y-4">
+            <Skeleton className="h-96 w-full" />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !profile) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardContent className="p-4 text-center">
+            <p>{error || 'Profile not found'}</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+  console.log('Profile data:', profile);
 
   return (
     <div className="min-h-screen bg-background">
@@ -81,13 +142,13 @@ export default function DevOrgLayout({ children }) {
                   <span className="text-xs font-medium text-primary">Active Platform</span>
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-primary">
-                  {companyData.name}
+                  {profile?.name}
                 </h1>
-                <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
-                  {companyData.description}
+                <p className="text-sm md:text-base text-muted-foreground max-w-2xl line-clamp-5">
+                  {profile?.about}
                 </p>
                 <div className="flex flex-wrap items-center gap-3 pt-2">
-                  {companyData.info.map((item, index) => {
+                  {info.map((item, index) => {
                     const Icon = item.icon
                     return (
                       <div key={index} className="flex items-center gap-6">
@@ -101,7 +162,7 @@ export default function DevOrgLayout({ children }) {
                             <span>{item.label}</span>
                           )}
                         </div>
-                        {index < companyData.info.length - 1 && (
+                        {index < info.length - 1 && (
                           <Separator orientation="vertical" className="h-4" />
                         )}
                       </div>
