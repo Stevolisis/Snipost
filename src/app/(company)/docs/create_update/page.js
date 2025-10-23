@@ -5,6 +5,10 @@ import { Megaphone, Bug, Sparkles, Shield, Zap, Save } from 'lucide-react'
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import UpdateEditor from '@/components/appComponents/UpdateEditor';
+import { Label } from '@/components/ui/label';
+import api from '@/utils/axiosConfig';
+import { useAppSelector } from '@/lib/redux/hooks';
+import { toast } from 'sonner';
 
 const exampleUpdate = {
   version: "v2.4.0 - Major Update",
@@ -25,6 +29,8 @@ const exampleUpdate = {
 const CreateUpdate = () => {
   const [title, setTitle] = useState("");
   const [editorContent, setEditorContent] = useState(null);
+  const { jwtToken } = useAppSelector((state) => state.auth)
+
   
   // Handle editor content changes
   const handleEditorChange = (content) => {
@@ -41,31 +47,27 @@ const CreateUpdate = () => {
 
     const updateData = {
       title,
-      content: editorContent,
-      date: new Date().toISOString().split('T')[0] // Today's date
+      content: editorContent?.html,
+      wordCount: editorContent?.wordCount || 0,
     };
 
     console.log('Submitting update:', updateData);
     
     // Here you would make your API call
     try {
-      // const response = await fetch('/api/updates', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(updateData)
-      // });
-      
-      // if (response.ok) {
-      //   alert('Update created successfully!');
-      // } else {
-      //   alert('Failed to create update');
-      // }
-      
+      const {data} = await api.post('/create-update', updateData,{
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+      console.log('Update created successfully:', data);
+      setTitle("");
+      setEditorContent(null);
       // For now, just log to console
-      alert('Update ready for submission! Check console for data.');
+      toast.success(data?.message || 'Update created successfully');
     } catch (error) {
       console.error('Error submitting update:', error);
-      alert('Error creating update');
+      toast.error('Error creating update');
     }
   };
 
@@ -143,12 +145,13 @@ const CreateUpdate = () => {
         <Card className="bg-transparent w-full border-zinc-800">
           <CardContent className="p-6">
             <div className="mb-6">
+              <Label>Title</Label>
               <Input
                 placeholder="Title e.g., v2.4.0 - Major Update" 
                 value={title}
                 required
                 onChange={(e) => setTitle(e.target.value)}
-                className="text-lg"
+                className="text-lg mt-3"
               />
             </div>
             

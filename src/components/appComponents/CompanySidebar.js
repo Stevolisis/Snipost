@@ -100,7 +100,7 @@ export function CompanyAppSidebar({ ...props }) {
           )}
         </SidebarMenu>
 
-        <Button onClick={() => router.push("/snippet-editor")}>
+        <Button onClick={() => router.push("/docs/create_documentation")}>
           <Plus />
           <p>Create Content</p>
         </Button>

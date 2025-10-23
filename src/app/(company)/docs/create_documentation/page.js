@@ -5,6 +5,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Book, Plug, FileText, Shield, GraduationCap, ClipboardList } from "lucide-react"
 import DocsEditor from "@/components/appComponents/DocsEditor"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import api from "@/utils/axiosConfig"
+import { useAppSelector } from "@/lib/redux/hooks"
+import { toast } from "sonner"
 
 const templates = [
   {
@@ -274,9 +279,11 @@ const templates = [
 ]
 
 const CreateDocumentation = () => {
+  const [title, setTitle] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [editorContent, setEditorContent] = useState(null)
-  const [currentTemplateContent, setCurrentTemplateContent] = useState("")
+  const [currentTemplateContent, setCurrentTemplateContent] = useState("");
+  const { jwtToken } = useAppSelector((state) => state.auth);
 
   // Handle editor content changes
   const handleEditorChange = (content) => {
@@ -306,26 +313,29 @@ const CreateDocumentation = () => {
     }
 
     const documentationData = {
-      template: selectedTemplate,
-      title: template?.title,
-      content: editorContent,
-      createdAt: new Date().toISOString()
+      templateId: template.id,
+      title: title,
+      content: editorContent?.html,
+      wordCount: editorContent?.wordCount,
     }
 
     console.log('Submitting documentation:', documentationData)
     
     // Your API call here
     try {
-      // const response = await fetch('/api/documentation', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(documentationData)
-      // })
-      
-      alert('Documentation ready for submission! Check console for data.')
+      const {data} = await api.post('/create-documentation', documentationData,{
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+      setTitle("");
+      setSelectedTemplate(null);
+      setEditorContent(null);
+      setCurrentTemplateContent("");
+      toast.success(data?.message||'Documentation created successfully');
     } catch (error) {
       console.error('Error submitting documentation:', error)
-      alert('Error creating documentation')
+      toast.error('Error creating documentation')
     }
   }
 
@@ -348,10 +358,10 @@ const CreateDocumentation = () => {
               <button
                 key={template.id}
                 onClick={() => handleTemplateSelect(template)}
-                className={`text-left rounded-xl border transition-all duration-200
+                className={`text-left rounded-xl border transition-all duration-200 cursor-pointer
                   ${
                     active
-                      ? "border-yellow-400 bg-zinc-800/50"
+                      ? "border-primary bg-zinc-800/50"
                       : "border-zinc-800 hover:border-primary hover:bg-zinc-800/30"
                   }`}
               >
@@ -380,7 +390,18 @@ const CreateDocumentation = () => {
       {selectedTemplate && (
         <div className="w-full">
           <Card className="bg-transparent w-full border-zinc-800">
-            <CardContent className="p-0">
+            <CardContent className="p-6">
+              <div className="mb-6">
+                <Label>Title</Label>
+                <Input
+                  placeholder="Title e.g, Installation" 
+                  value={title}
+                  required
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="text-lg mt-4"
+                />
+              </div>
+
               {/* Pass template content and callback to editor */}
               <DocsEditor 
                 key={selectedTemplate} // This forces re-render when template changes

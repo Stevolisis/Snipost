@@ -20,7 +20,6 @@ import {
 import SearchDevelopers from "@/components/appComponents/SearchDevelopers";
 import Recents from "@/components/appComponents/RecentDocumentations";
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from "@/lib/redux/slices/snippets";
-import { loadTransactionsSuccess } from "@/lib/redux/slices/profile";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -29,6 +28,7 @@ const Dashboard = () => {
   const { snippets } = useAppSelector((state) => state.snippets);
   const { earned } = useAppSelector((state) => state.profile);
   const [comments, setComments] = useState([]);
+  const [docs, setDocs] = useState([]);
   console.log("Snippets in dashboard:", snippets);
 
   const fetchSnippets = async () => {
@@ -42,14 +42,12 @@ const Dashboard = () => {
     }
   }
   
-  const fetchTransactions = async () => {
+  const fetchDocs = async () => {
     if (!isOwner) return
     
     try {
-      const response = await api.get('/get-transactions', {
-        headers: { Authorization: `Bearer ${jwtToken}` }
-      })
-      dispatch(loadTransactionsSuccess(response.data.transactions || []));
+      const response = await api.get(`get-company-documentations/${isOwner}`)
+      setDocs(response.data.documentations || [])
     } catch (err) {
       console.error('Failed to fetch transactions:', err)
       toast.error('Failed to load transaction history')
@@ -86,7 +84,21 @@ const Dashboard = () => {
       toast.error("Failed to load recent comments");
     }
   };
-  console.log("Comments state in dashboard:", comments);
+
+  
+  const deleteDocs = async(id) => {
+    try{
+      const {data}= await api.delete(`/delete-documentation/${id}`,{
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+      await fetchDocs();
+      toast.success(data?.message || 'Documentation deleted successfully');
+    }catch(err){
+      toast.error(err.response?.data?.message || 'Failed to delete documentation');
+    }
+  }
 
   useEffect(() => {
     if (jwtToken) {
@@ -100,8 +112,8 @@ const Dashboard = () => {
   }, [isOwner]);
 
   useEffect(() => {
-    fetchTransactions();
-  }, [isOwner, jwtToken]);
+    fetchDocs();
+  }, [isOwner]);
 
   const stats = [
     {
@@ -221,7 +233,7 @@ const Dashboard = () => {
       </div>
       <SearchDevelopers/>
 
-      <Recents snippets={snippets} comments={comments}/>
+      <Recents snippets={snippets} comments={comments} docs={docs} deleteDocs={deleteDocs}/>
     </div>
   );
 };
