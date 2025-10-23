@@ -87,6 +87,7 @@ const Dashboard = () => {
 
   
   const deleteDocs = async(id) => {
+    const loadingId= toast.loading("Deleting documentation...");
     try{
       const {data}= await api.delete(`/delete-documentation/${id}`,{
         headers:{
@@ -94,9 +95,9 @@ const Dashboard = () => {
         }
       });
       await fetchDocs();
-      toast.success(data?.message || 'Documentation deleted successfully');
+      toast.success(data?.message || 'Documentation deleted successfully', {id: loadingId});
     }catch(err){
-      toast.error(err.response?.data?.message || 'Failed to delete documentation');
+      toast.error(err.response?.data?.message || 'Failed to delete documentation', {id: loadingId});
     }
   }
 
