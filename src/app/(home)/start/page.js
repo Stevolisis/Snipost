@@ -189,7 +189,7 @@ export default function LandingPage() {
       </section>
 
       {/* Developer Features */}
-      <section className="container mx-auto px-6 py-12 sm:py-12">
+      <section className="container mx-auto px-6 py-12 sm:py-12 pt-20 sm:pt-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Your Proof Speaks Louder Than Portfolios
@@ -218,7 +218,7 @@ export default function LandingPage() {
 
       
       {/* Snaps Section */}
-<section className="container mx-auto px-6 py-12 sm:py-12 text-center">
+<section className="container mx-auto px-6 py-12 sm:py-12 pt-20 sm:pt-24 text-center bg-primary/10 rounded-lg shadow-2xl">
   <h2 className="text-3xl md:text-4xl font-bold mb-4">Explain Better with Snaps</h2>
   <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
     Some ideas can't be explained with just text. With Snaps, developers can create visual explainers for features, SDKs, and concepts — making their proof of work easy to understand and share.
@@ -250,8 +250,36 @@ export default function LandingPage() {
 </section>
 
 
+      {/* Ecosystem Section */}
+      <section className="container mx-auto px-6 py-12 sm:py-12 pt-20 sm:pt-24 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Join a Living Developer Ecosystem</h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+          Follow your favourite SDKs, tools, and developers. Get real code updates, visual examples, and authentic builds all in one stream.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {ecosystem.map((item, i) => (
+            <Card
+              key={i}
+              className="bg-background/60 border border-zinc-800 hover:border-primary/50 hover:shadow-lg transition-all"
+            >
+              <CardHeader>
+                <div className=" flex justify-center">
+                  <div className="mb-4 p-3 bg-primary/10 w-fit rounded-lg">{item.icon}</div>
+                </div>
+                <CardTitle className="text-lg -mb-4">{item.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>{item.description}</CardDescription>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+
+
       {/* Company Features */}
-      <section className="container mx-auto px-6 py-12 sm:py-12 bg-muted/10 rounded-xl">
+      <section className="container mx-auto px-6 py-12 sm:py-12 pt-20 sm:pt-24 bg-muted/10 rounded-xl">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             For Companies Document. Engage. Hire.
@@ -302,32 +330,6 @@ export default function LandingPage() {
                   </p>
                 </CardContent>
               </Card>
-        </div>
-      </section>
-
-      {/* Ecosystem Section */}
-      <section className="container mx-auto px-6 py-12 sm:py-12 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Join a Living Developer Ecosystem</h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-          Follow your favourite SDKs, tools, and developers. Get real code updates, visual examples, and authentic builds all in one stream.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {ecosystem.map((item, i) => (
-            <Card
-              key={i}
-              className="bg-background/60 border border-zinc-800 hover:border-primary/50 hover:shadow-lg transition-all"
-            >
-              <CardHeader>
-                <div className=" flex justify-center">
-                  <div className="mb-4 p-3 bg-primary/10 w-fit rounded-lg">{item.icon}</div>
-                </div>
-                <CardTitle className="text-lg -mb-4">{item.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>{item.description}</CardDescription>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </section>
 
