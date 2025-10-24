@@ -87,7 +87,7 @@ const CompanyDocsUpdates = () => {
           {/* Update Header */}
           <button
             onClick={() => setExpandedUpdate(isExpanded ? null : update._id)}
-            className="w-full text-left p-6 hover:bg-zinc-800/30 transition-colors"
+            className="w-full cursor-pointer text-left p-6 hover:bg-zinc-800/30 transition-colors"
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
