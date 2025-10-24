@@ -42,9 +42,9 @@ const Page = () => {
 
 
   const featuredSnaps = [
-    { id: 1, title: "Solana Program Anatomy", image: "/artboard3.png", views: "2.4k", url: "/snaps/solana-program-anatomy" },
-    { id: 2, title: "Wallet Integration Guide", image: "/artboard2.png", views: "1.8k", url: "/snaps/wallet-integration" },
-    { id: 3, title: "Anchor Framework Basics", image: "/artboard4.png", views: "3.1k", url: "/snaps/anchor-basics" }
+    { id: 1, title: "Netflix", description:"Not just codes but illustrations", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1754661577/dihkqv0mcrgdoofcdipi.png", views: "2.4k", url: "/snaps/solana-program-anatomy" },
+    { id: 2, title: "Snipost Codes", description:"Simple code explaniers", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1752689068/cfdbp1br74zlvdbamlhu.png", views: "1.8k", url: "/snaps/wallet-integration" },
+    { id: 3, title: "Code and Infographics", description:"Elegant visual explainer template for devs.", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1752706721/imxmgmgphavaa337z0yu.png", views: "3.1k", url: "/snaps/anchor-basics" }
   ];
 
     
@@ -385,7 +385,7 @@ const Page = () => {
                       <img 
                         src={snap.image} 
                         alt={snap.title}
-                        className="w-full h-full object-cover rounded-t-lg"
+                        className="w-full h-full object-contain rounded-t-lg"
                       />
                       <div className="absolute top-2 right-2">
                         <Badge variant="secondary" className="bg-background/80">
@@ -395,12 +395,7 @@ const Page = () => {
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold mb-2">{snap.title}</h3>
-                      <Button size="sm" className="w-full" asChild>
-                        <Link href={snap.url}>
-                          View Snap
-                          <Presentation className="h-3 w-3 ml-1" />
-                        </Link>
-                      </Button>
+                      <p className='text-muted-foreground'>{snap.description}</p>
                     </div>
                   </CardContent>
                 </Card>
