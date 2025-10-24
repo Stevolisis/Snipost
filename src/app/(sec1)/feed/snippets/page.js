@@ -258,9 +258,9 @@ const Page = () => {
                         alt={dev?.userName}
                         className="h-12 w-12 rounded-full mb-2 object-cover"
                       />
-                      <h3 className="font-medium">{dev?.name || dev?.userName}</h3>
+                      <h3 className="font-medium">{dev?.name}</h3>
                       <p className="text-xs text-muted-foreground mt-1 mb-3 line-clamp-2">
-                        {dev?.role || 'Developer'}
+                        {dev?.userName}
                       </p>
                       <Button variant="outline" size="sm" asChild>
                         <Link href={`/profile/${dev._id}`}>View Profile</Link>
