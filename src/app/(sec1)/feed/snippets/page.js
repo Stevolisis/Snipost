@@ -42,7 +42,7 @@ const Page = () => {
 
 
   const featuredSnaps = [
-    { id: 1, title: "Netflix", description:"Not just codes but illustrations", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1754661577/dihkqv0mcrgdoofcdipi.png", views: "2.4k", url: "/snaps/solana-program-anatomy" },
+    { id: 1, title: "Netflix", description:"Not just codes but illustrations", image: "https://ik.imagekit.io/snipost/artboard%20-%202025-10-25T102545.284.png", views: "2.4k", url: "/snaps/solana-program-anatomy" },
     { id: 2, title: "Snipost Codes", description:"Simple code explaniers", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1752689068/cfdbp1br74zlvdbamlhu.png", views: "1.8k", url: "/snaps/wallet-integration" },
     { id: 3, title: "Code and Infographics", description:"Elegant visual explainer template for devs.", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1752706721/imxmgmgphavaa337z0yu.png", views: "3.1k", url: "/snaps/anchor-basics" }
   ];
