@@ -1,0 +1,756 @@
+{
+    "accessToken": "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",
+    "user": {
+        "login": "Stevolisis",
+        "id": 66651054,
+        "node_id": "MDQ6VXNlcjY2NjUxMDU0",
+        "avatar_url": "https://avatars.githubusercontent.com/u/66651054?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/Stevolisis",
+        "html_url": "https://github.com/Stevolisis",
+        "followers_url": "https://api.github.com/users/Stevolisis/followers",
+        "following_url": "https://api.github.com/users/Stevolisis/following{/other_user}",
+        "gists_url": "https://api.github.com/users/Stevolisis/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/Stevolisis/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/Stevolisis/subscriptions",
+        "organizations_url": "https://api.github.com/users/Stevolisis/orgs",
+        "repos_url": "https://api.github.com/users/Stevolisis/repos",
+        "events_url": "https://api.github.com/users/Stevolisis/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/Stevolisis/received_events",
+        "type": "User",
+        "user_view_type": "private",
+        "site_admin": false,
+        "name": "Steven Joseph",
+        "company": "Stephcom",
+        "blog": "",
+        "location": "Bauchi State, Nigeria",
+        "email": null,
+        "hireable": true,
+        "bio": "Full Stack Engineer.\r\nI provide solutions to real life problems using web technologies ",
+        "twitter_username": null,
+        "notification_email": null,
+        "public_repos": 51,
+        "public_gists": 3,
+        "followers": 11,
+        "following": 10,
+        "created_at": "2020-06-08T23:43:31Z",
+        "updated_at": "2025-08-15T19:07:54Z",
+        "private_gists": 2,
+        "total_private_repos": 33,
+        "owned_private_repos": 33,
+        "disk_usage": 602477,
+        "collaborators": 4,
+        "two_factor_authentication": true,
+        "plan": {
+            "name": "free",
+            "space": 976562499,
+            "collaborators": 0,
+            "private_repos": 10000
+        }
+    },
+    "emails": [
+        {
+            "email": "stevolisisjoseph@gmail.com",
+            "primary": true,
+            "verified": true,
+            "visibility": "private"
+        },
+        {
+            "email": "66651054+Stevolisis@users.noreply.github.com",
+            "primary": false,
+            "verified": true,
+            "visibility": null
+        },
+        {
+            "email": "stevolisisjosephpur@gmail.com",
+            "primary": false,
+            "verified": true,
+            "visibility": null
+        }
+    ],
+    "totals": {
+        "totalStars": 5,
+        "totalForks": 0,
+        "totalWatchers": 5,
+        "totalPRs": 6,
+        "totalIssues": 6,
+        "languages": {
+            "TypeScript": 2671533,
+            "HTML": 541311,
+            "JavaScript": 3931079,
+            "Python": 6538,
+            "CSS": 67488,
+            "Shell": 2627,
+            "EJS": 100353,
+            "Rust": 66806,
+            "Solidity": 7022,
+            "Kotlin": 4202,
+            "SCSS": 167030,
+            "Procfile": 38
+        }
+    },
+    "results": [
+        {
+            "repo": "kokesa-frontend",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 1507937,
+                "HTML": 48410,
+                "JavaScript": 13004,
+                "Python": 6538,
+                "CSS": 5829,
+                "Shell": 2627
+            }
+        },
+        {
+            "repo": "Snipost",
+            "description": "SocialFi ecosystem for Solana Developers",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 586889,
+                "CSS": 5242,
+                "TypeScript": 1558
+            }
+        },
+        {
+            "repo": "easythrift-api",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 53996,
+                "EJS": 14271
+            }
+        },
+        {
+            "repo": "slide-editor",
+            "description": "Building a grahics editor with Konvajs and Nextjs",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 226892,
+                "JavaScript": 1961,
+                "CSS": 1332
+            }
+        },
+        {
+            "repo": "snipost-snap-editor",
+            "description": "An editor for designing visual explainers for solana developers",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 542141,
+                "CSS": 6064,
+                "JavaScript": 1685
+            }
+        },
+        {
+            "repo": "subs-smart-contract",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 14210,
+                "Rust": 13708
+            }
+        },
+        {
+            "repo": "subuddy",
+            "description": " Join families and share subscriptions.",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 98171,
+                "CSS": 2874,
+                "HTML": 406
+            }
+        },
+        {
+            "repo": "mechatronic-voting-portal",
+            "description": "Voting Tech",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 45957,
+                "CSS": 2781,
+                "HTML": 388
+            }
+        },
+        {
+            "repo": "snipost-api",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 291792,
+                "EJS": 14256
+            }
+        },
+        {
+            "repo": "snipost-fork",
+            "description": "Converting to PWA",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 576770,
+                "CSS": 5242,
+                "TypeScript": 1558
+            }
+        },
+        {
+            "repo": "whatsapp-green-api",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {}
+        },
+        {
+            "repo": "whatsapp-test",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "HTML": 211419,
+                "JavaScript": 2367
+            }
+        },
+        {
+            "repo": "green-mamba",
+            "description": "Crypto Blog built on Solidity and Next js",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 152645,
+                "JavaScript": 18418,
+                "Solidity": 7022,
+                "CSS": 2676
+            }
+        },
+        {
+            "repo": "Q1_25_Builder_Stevolisis",
+            "description": null,
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 102770,
+                "Rust": 43020
+            }
+        },
+        {
+            "repo": "oat-reels-mobile",
+            "description": "Movie app built with React native",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 60786,
+                "Kotlin": 4202,
+                "JavaScript": 2097
+            }
+        },
+        {
+            "repo": "kova_card_editor",
+            "description": "Card design Editor with Konva",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 28581,
+                "HTML": 361,
+                "CSS": 163
+            }
+        },
+        {
+            "repo": "landingpage",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 1802,
+                "CSS": 1184,
+                "HTML": 361
+            }
+        },
+        {
+            "repo": "solana-counter-program",
+            "description": "Building solana programs with anchor",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "Rust": 1185,
+                "TypeScript": 959
+            }
+        },
+        {
+            "repo": "green-mamba-api",
+            "description": "Api for web3 blog",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 4694
+            }
+        },
+        {
+            "repo": "PreReq_Steven_RiseIn",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 9611
+            }
+        },
+        {
+            "repo": "Prereq_Rust_RiseIn_Turbine3",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "Rust": 8893
+            }
+        },
+        {
+            "repo": "turbin3-steven-joseph-final-project",
+            "description": "WBA, Anchor, Solana, RPC",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 6760
+            }
+        },
+        {
+            "repo": "data-structures",
+            "description": "Data Structures Interview Practice- Arrays, Strings, Binary, Trees etc",
+            "stars": 2,
+            "forks": 0,
+            "watchers": 2,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 62828,
+                "TypeScript": 172
+            }
+        },
+        {
+            "repo": "turbine3-solana",
+            "description": "Turbine3 Assignments built with solana cli, rust and anchor",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 3774
+            }
+        },
+        {
+            "repo": "Stevolisis",
+            "description": "Config files for my GitHub profile.",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {}
+        },
+        {
+            "repo": "harmonic-web",
+            "description": "Selling of websites",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 81315,
+                "CSS": 1377
+            }
+        },
+        {
+            "repo": "carmachat",
+            "description": "A chat system for carmaguard",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 104074,
+                "HTML": 1721,
+                "CSS": 463
+            }
+        },
+        {
+            "repo": "eCommerceReact",
+            "description": "A React Redux based Application",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 6,
+            "issueCount": 6,
+            "languages": {
+                "JavaScript": 372389,
+                "SCSS": 68111,
+                "CSS": 930,
+                "HTML": 530
+            }
+        },
+        {
+            "repo": "techReveal",
+            "description": "A nextjs-based blog application",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 433702,
+                "HTML": 136543,
+                "SCSS": 49619,
+                "CSS": 407
+            }
+        },
+        {
+            "repo": "ecommerceBackend",
+            "description": "A Node js based backend for my react ecommerce website.",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 137986,
+                "EJS": 2902,
+                "CSS": 945,
+                "HTML": 573
+            }
+        },
+        {
+            "repo": "oatreels-media-api",
+            "description": "Nodejs Typescript media api",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 19892,
+                "EJS": 6488
+            }
+        },
+        {
+            "repo": "oatreels-api",
+            "description": "Node Typescript",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "TypeScript": 19868,
+                "EJS": 6488
+            }
+        },
+        {
+            "repo": "carmapay-api-docs",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "HTML": 730
+            }
+        },
+        {
+            "repo": "chatcam",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 7727
+            }
+        },
+        {
+            "repo": "carma-admin-api",
+            "description": "Admin Carmagard Api",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 33978,
+                "EJS": 14250,
+                "Procfile": 19
+            }
+        },
+        {
+            "repo": "cardterra_admin",
+            "description": "React Frontend For Cardterra Admin",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 64794,
+                "CSS": 3230,
+                "HTML": 361
+            }
+        },
+        {
+            "repo": "cardterra_student",
+            "description": "Nuesa Card Frontend for students",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 54897,
+                "CSS": 1817,
+                "HTML": 361
+            }
+        },
+        {
+            "repo": "cardterra-api-docs",
+            "description": "Documentation for Cardterra services",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "HTML": 730
+            }
+        },
+        {
+            "repo": "cardterra",
+            "description": "Node Backend Service for NUESA ID generation",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 44329,
+                "EJS": 8546
+            }
+        },
+        {
+            "repo": "test_carms",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 30414
+            }
+        },
+        {
+            "repo": "carma-review-rating",
+            "description": "Rating and review system for Carmagard",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 11633
+            }
+        },
+        {
+            "repo": "carmapay",
+            "description": "Payment api for carmagard",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 17762
+            }
+        },
+        {
+            "repo": "carmachatapi",
+            "description": "Api for carmagard chat",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 51584,
+                "EJS": 4864
+            }
+        },
+        {
+            "repo": "RNativeSanBlog",
+            "description": "React native App building and apk convert",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 879
+            }
+        },
+        {
+            "repo": "react-sanity",
+            "description": "React and Sanity based project",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 23686,
+                "CSS": 611,
+                "HTML": 389
+            }
+        },
+        {
+            "repo": "mechanic_app",
+            "description": null,
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 64414,
+                "EJS": 16652,
+                "Procfile": 19
+            }
+        },
+        {
+            "repo": "klusterthon_51",
+            "description": "Medical Adherence Project - Klusterthon 2023",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 165545,
+                "CSS": 23914,
+                "EJS": 5818,
+                "HTML": 755
+            }
+        },
+        {
+            "repo": "kluter_51_admin",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 400512,
+                "HTML": 136543,
+                "SCSS": 49300,
+                "CSS": 407
+            }
+        },
+        {
+            "repo": "klustmedics-api-docs",
+            "description": null,
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "HTML": 730
+            }
+        },
+        {
+            "repo": "klustmedics-api",
+            "description": "Nodejs based api for medical adherence project",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "pullRequestCount": 0,
+            "issueCount": 0,
+            "languages": {
+                "JavaScript": 38447,
+                "EJS": 5818
+            }
+        }
+    ]
+}

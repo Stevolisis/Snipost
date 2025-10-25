@@ -42,9 +42,9 @@ const Page = () => {
 
 
   const featuredSnaps = [
-    { id: 1, title: "Netflix", description:"Not just codes but illustrations", image: "https://ik.imagekit.io/snipost/artboard%20-%202025-10-25T102545.284.png", views: "2.4k", url: "/snaps/solana-program-anatomy" },
-    { id: 2, title: "Snipost Codes", description:"Simple code explaniers", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1752689068/cfdbp1br74zlvdbamlhu.png", views: "1.8k", url: "/snaps/wallet-integration" },
-    { id: 3, title: "Code and Infographics", description:"Elegant visual explainer template for devs.", image: "http://res.cloudinary.com/dwhkilbqk/image/upload/v1752706721/imxmgmgphavaa337z0yu.png", views: "3.1k", url: "/snaps/anchor-basics" }
+    { id: 1, title: "Netflix", description:"Not just codes but illustrations", image: "https://ik.imagekit.io/snipost/uploads/c12be05d07064c61a98688e0a6a13e8c_SVCQ-SH6B.png", views: "2.4k", url: "/snaps/solana-program-anatomy" },
+    { id: 2, title: "Snipost Codes", description:"Simple code explaniers", image: "https://ik.imagekit.io/snipost/uploads/05aeeb5e2ee648e69f5ec24e7cfa66e7_QG05hsQD2.png", views: "1.8k", url: "/snaps/wallet-integration" },
+    { id: 3, title: "Code and Infographics", description:"Elegant visual explainer template for devs.", image: "https://ik.imagekit.io/snipost/uploads/c0fc788ef5014163a958144758f315ee_0l7VIY8yi.png", views: "3.1k", url: "/snaps/anchor-basics" }
   ];
 
     
