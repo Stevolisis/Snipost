@@ -159,7 +159,7 @@ export default function LandingPage() {
               <Button size="lg" className="gap-2 text-sm md:text-base md:h-11" asChild>
                 <Link href="/feed/snippets">
                   <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Start Building Proof
+                  Get Started
                 </Link>
               </Button>
               <Button variant="outline" size="lg" className="gap-2 text-sm md:text-base md:h-11" asChild>
