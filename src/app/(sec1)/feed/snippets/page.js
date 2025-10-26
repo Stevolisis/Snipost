@@ -190,9 +190,9 @@ const Page = () => {
       
       {/* Enhanced Quick Actions Section */}
       <div className="w-full px-4 sm:px-6 my-8 mb-2">
-        <Card className="bg-muted/50 border">
-          <CardContent>
-            <div className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible">
+        <Card className="bg-muted/50 borderp py-3 sm:py-4">
+          <CardContent className="px-3 sm:px-4">
+            <div className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible">
               {cards.map((item, i) => (
                 <Link key={i} href={item.href} className="snap-start">
                   <Card className="bg-background border hover:shadow-md transition-shadow flex-shrink-0 w-[280px] sm:w-80 md:w-auto relative overflow-hidden">

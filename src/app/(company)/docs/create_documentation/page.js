@@ -342,7 +342,7 @@ const CreateDocumentation = () => {
   const selectedTemplateData = getSelectedTemplate()
 
   return (
-    <div className="w-full min-h-screen flex flex-col p-4">
+    <div className="w-full min-h-screen flex flex-col">
       <div className="bg-muted/10 rounded-2xl p-6 md:p-10 border border-zinc-800 mb-6">
         <h2 className="text-xl md:text-2xl font-semibold mb-6 text-white">
           Choose a Template
@@ -358,16 +358,16 @@ const CreateDocumentation = () => {
               <button
                 key={template.id}
                 onClick={() => handleTemplateSelect(template)}
-                className={`text-left rounded-xl border transition-all duration-200 cursor-pointer
+                className={`text-left flex items-start rounded-xl border transition-all duration-200 cursor-pointer
                   ${
                     active
                       ? "border-primary bg-zinc-800/50"
                       : "border-zinc-800 hover:border-primary hover:bg-zinc-800/30"
                   }`}
               >
-                <Card className="bg-transparent border-0 h-[120px] flex items-center">
-                  <CardContent className="flex items-start space-x-3 p-4">
-                    <div className="p-2 rounded-md bg-zinc-800">
+                <Card className="bg-transparent border-0 h-auto flex items-center ">
+                  <CardContent className="flex items-start justify-start">
+                    <div className="p-2 mr-2 rounded-md bg-zinc-800">
                       <Icon className="h-5 w-5 text-white" />
                     </div>
                     <div>
@@ -417,7 +417,7 @@ const CreateDocumentation = () => {
       {/* Submit Section */}
       {selectedTemplate && (
         <div className="mt-6 p-6 bg-muted/10 rounded-lg border border-zinc-800">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap sm:flex-nowrap gap-y-4 justify-between items-center">
             <div>
               <h3 className="font-semibold text-white">Ready to publish documentation?</h3>
               <p className="text-sm text-zinc-400">
@@ -428,7 +428,7 @@ const CreateDocumentation = () => {
             <Button
               onClick={handleSubmitDocumentation}
               disabled={!selectedTemplate || !editorContent}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 sm:w-auto w-full"
             >
               Publish Documentation
             </Button>

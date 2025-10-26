@@ -72,7 +72,7 @@ const CreateUpdate = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col p-4">
+    <div className="w-full min-h-screen flex flex-col">
       {/* Example Update Preview */}
       <div className="bg-muted/10 rounded-2xl p-6 md:p-10 border border-zinc-800">
         <div className="flex items-center gap-3 mb-6">
