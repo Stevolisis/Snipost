@@ -116,7 +116,7 @@ export default function CompanyProfileForm() {
       payload.append("founders", JSON.stringify(founders));
       payload.append("socialLinks", JSON.stringify(socialLinks));
 
-      if (logoFile) payload.append("logo", logoFile);
+      if (logoFile) payload.append("avatar", logoFile);
 
       const {data} = await api.post(`/complete-company-profile/${id}`, payload, {
           headers: { "Content-Type": "multipart/form-data" },

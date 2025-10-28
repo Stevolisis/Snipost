@@ -78,7 +78,7 @@ export function CompanyAppSidebar({ ...props }) {
                         alt={userData.avatar.public_id}
                         width={40}
                         height={40}
-                        className="object-cover"
+                        className="object-cover rounded-lg h-full w-full"
                       />
                     ) : (
                       <Image
@@ -86,7 +86,7 @@ export function CompanyAppSidebar({ ...props }) {
                         alt="Logo"
                         width={40}
                         height={40}
-                        className="object-cover"
+                        className="object-cover rounded-lg h-full w-full"
                       />
                     )}
                   </div>
