@@ -1,28 +1,31 @@
 # Snipost Frontend
 
-Snipost backend for colloseum 👇
+Snipost backend 👇
 [![Snipost Backend API](https://img.shields.io/badge/BACKEND_REPO-snipost--api-blue?style=for-the-badge&logo=github)](https://github.com/stevolisis/snipost-api)
 
-**The SocialFi Platform for Solana Developers**  
-*Learn • Share • Earn SOL*
+**The Proof-of-work layer for Developers**  
+*Build in public, build reputation*
 
 ## 🚀 Project Overview
 
-Snipost revolutionizes how Solana developers collaborate by combining:
-- **SOL Tipping** for code snippets
-- **Sponsored Code Battles** with crypto prizes
-- **On-Chain Reputation** via NFT badges
+Snipost revolutionizes how web3 developers build proof-of-work by combining:
+- **Docuemntation Tools** (Code snippet Editor & Visual Editors)
+- **Leadersboard** ( Devs earn Xp as they build reputation and are graded and ranked)
+- **SOL Tipping** Get tipped for recognition
+- **Bounties** Engage in Bounties published by companies to build reputation
 
-**Colosseum Submission Focus:**  
-✔️ Working SOL tipping system  
-✔️ Live code battle implementation  
-✔️ Wallet-based reputation tracking
+**Colosseum Cypherpunk Submission Focus:**  
+✔️ Comapny Authentication  
+
+✔️ Documentation Tools for companies to document their APIs and SDKs.
+
+✔️ Sourcing Talents from dashboard.
 
 ## 🔗 Repositories
 | Component | Stack | Link |
 |-----------|-------|------|
-| Frontend  | Next.js + Web3.js | [Current Repo](https://github.com/stevolisis/snipost) |
-| Backend   | Node.js + MongoDB | [snipost-api](https://github.com/stevolisis/snipost-api) |
+| Frontend  | Next.js + @solana/web3.js | [Current Repo](https://github.com/stevolisis/snipost) |
+| Backend   | Node.js + MongoDB + Imagekit | [snipost-api](https://github.com/stevolisis/snipost-api) |
 
 ## 🛠️ Frontend Tech Stack
 **Core:**
