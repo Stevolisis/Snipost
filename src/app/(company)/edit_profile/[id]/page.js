@@ -147,7 +147,7 @@ export default function CompanyProfileForm() {
       if (!id) return;
 
       try {
-        const { data } = await api.get(`/get-company/${id}`);
+        const { data } = await api.get(`/get-company-byslug/${id}`);
 
         if (data?.success) {
           const company = data.company;

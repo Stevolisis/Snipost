@@ -9,6 +9,7 @@ import search from './slices/search';
 import fork from './slices/fork';
 import notifications from './slices/notifications';
 import achievements from './slices/achievements';
+import documentations from './slices/documentations';
 
 const persistConfig = {
   key: 'root',
@@ -26,6 +27,7 @@ const combinedReducers = combineReducers({
   fork,
   notifications,
   achievements,
+  documentations
 });
 
 const persistedReducer = persistReducer(persistConfig, combinedReducers);

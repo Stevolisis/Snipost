@@ -1,12 +1,12 @@
-"use client"
-import React, { useEffect, useState } from 'react'
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Home,
   Plus,
   FileText,
   SquareCode,
   FolderSync,
-} from "lucide-react"
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,56 +21,57 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-} from "@/components/ui/sidebar"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useRouter } from 'next/navigation'
-import { useAppSelector } from '@/lib/redux/hooks'
+} from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/lib/redux/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function CompanyAppSidebar({ ...props }) {
-  const router = useRouter()
-  const [activeItem, setActiveItem] = useState({ url: '/dev_org/snippets' })
-  const { userData } = useAppSelector((state) => state.auth)
+  const router = useRouter();
+  const [activeItem, setActiveItem] = useState({ url: "/dev_org/snippets" });
+  const { userData } = useAppSelector((state) => state.auth);
+  const { docs, isLoading } = useAppSelector((state) => state.documentations);
 
   const data = {
     navMain: [
       { title: "Dashboard", url: "/dashboard", icon: Home },
-      { title: "Documentation", url: "/dev_org/documentation", icon: FileText },
+      { title: "Documentation", url: "/dev_org/documentations", icon: FileText },
       { title: "Code Examples", url: "/dev_org/snippets", icon: SquareCode },
       { title: "Updates", url: "/dev_org/updates", icon: FolderSync },
     ],
-    workspaces: [
-      { name: "Installation", url: "/dev_org/documentation/installation", emoji: "🏠" },
-      { name: "Program Structure", url: "/dev_org/documentation/programstructure", emoji: "💼" },
-      { name: "Typescript", url: "/dev_org/documentation/typescript", emoji: "🎨" },
-      { name: "Dependencies Free Composibility", url: "/dev_org/documentation/dependenciesfreecomposibility", emoji: "🏡" },
-      { name: "Release Notes", url: "/dev_org/documentation/releasenotes", emoji: "🧳" },
-    ],
     tags: [
       {
-        name: `#${userData?.username || 'solana'}`,
-        url: `/feed/tag/${userData?.username || 'solana'}`,
+        name: `#${userData?.username || "solana"}`,
+        url: `/feed/tag/${userData?.username || "solana"}`,
         emoji: "🚀",
       },
     ],
-  }
+  };
 
   useEffect(() => {
-    if (window) {
-      setActiveItem({ url: window.location.pathname })
+    if (typeof window !== "undefined") {
+      setActiveItem({ url: window.location.pathname });
     }
-  }, [])
+  }, []);
 
   return (
     <Sidebar className="border-r-0" {...props}>
+      {/* Header Section */}
       <SidebarHeader>
         <SidebarMenu>
           {userData && (
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
-                <Link href={`/dev_org/profile/${userData._id}/examples`}>
+                <Link href={`/dev_org/${userData.username}/examples`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {userData?.avatar?.url ? (
                       <Image
@@ -91,8 +92,12 @@ export function CompanyAppSidebar({ ...props }) {
                     )}
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{userData?.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">@{userData?.username}</span>
+                    <span className="truncate font-semibold">
+                      {userData?.name}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      @{userData?.username}
+                    </span>
                   </div>
                 </Link>
               </SidebarMenuButton>
@@ -123,50 +128,77 @@ export function CompanyAppSidebar({ ...props }) {
         </SidebarMenu>
       </SidebarHeader>
 
+      {/* Documentation Section */}
+      {!isLoading && docs.length > 0 && (
+        <SidebarContent
+          className="overflow-y-auto max-h-[300px]"
+          id="custom-scroll"
+        >
+          <SidebarGroup>
+            <SidebarGroupLabel>Documentation</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>📘 Docs</SidebarMenuButton>
+                  <SidebarMenuSub>
+                    <TooltipProvider>
+                      {docs.map((doc) => (
+                        <Tooltip key={doc._id}>
+                          <TooltipTrigger asChild>
+                            <SidebarMenuSubItem>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={activeItem.url.endsWith(doc.slug)}
+                                onClick={() =>
+                                  setActiveItem({
+                                    url: `/dev_org/${userData?.username}/documentations/${doc.slug}`,
+                                  })
+                                }
+                              >
+                                <Link
+                                  href={`/dev_org/${userData?.username}/documentations/${doc.slug}`}
+                                >
+                                  <span>📄</span>
+                                  <span className="truncate">{doc.title}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          </TooltipTrigger>
+                          <TooltipContent side="right">
+                            {doc.title}
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </TooltipProvider>
+                  </SidebarMenuSub>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      )}
 
-      <SidebarContent className="overflow-y-auto max-h-[300px]" id="custom-scroll">
-        <SidebarGroup>
-          <SidebarGroupLabel>Documentation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  📘 Docs
-                </SidebarMenuButton>
-                <SidebarMenuSub>
-                  <TooltipProvider>
-                    {data.workspaces.map((workspace) => (
-                      <Tooltip key={workspace.name}>
-                        <TooltipTrigger asChild>
-                          <SidebarMenuSubItem>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={activeItem.url === workspace.url}
-                              onClick={() => setActiveItem({ url: workspace.url })}
-                            >
-                              <Link href={workspace.url}>
-                                <span>{workspace.emoji}</span>
-                                <span className="truncate">{workspace.name}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">
-                          {workspace.name}
-                        </TooltipContent>
-                      </Tooltip>
-                    ))}
-                  </TooltipProvider>
-                </SidebarMenuSub>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
+      {/* Skeleton while loading */}
+      {isLoading && (
+        <SidebarContent className="overflow-y-auto max-h-[300px]" id="custom-scroll">
+          <SidebarGroup>
+            <SidebarGroupLabel>Documentation</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <div className="space-y-3">
+                {[...Array(5)].map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    className="h-6 w-[85%] mx-auto rounded-md bg-muted"
+                  />
+                ))}
+              </div>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      )}
 
-        </SidebarGroup>
-      </SidebarContent>
-
-      
-      <SidebarContent className="overflow-y-auto ">
+      {/* Tags Section */}
+      <SidebarContent className="overflow-y-auto">
         <SidebarGroup>
           <SidebarGroupLabel className="mt-4">tags</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -186,12 +218,11 @@ export function CompanyAppSidebar({ ...props }) {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
-          </SidebarGroupContent>            
+          </SidebarGroupContent>
         </SidebarGroup>
-
       </SidebarContent>
 
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

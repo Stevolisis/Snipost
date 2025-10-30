@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { toast } from "sonner"
 import api from "@/utils/axiosConfig"
 import { Skeleton } from '@/components/ui/skeleton'
+import { docsFailure, loadDocsStart, loadDocsSuccess } from "@/lib/redux/slices/documentations"
 
 
 // Navigation tabs structure
@@ -50,9 +51,9 @@ const similarCompanies = [
 ]
 
 export default function DevOrgLayout({ children }) {
-  const { id } = useParams()
+  const { username } = useParams()
   const pathname = usePathname()
-  const basePath = `/dev_org/profile/${id}`
+  const basePath = `/dev_org/${username}`
   const dispatch = useAppDispatch();
   const { profile, loading, error} = useAppSelector((state) => state.profile)
   const info= [
@@ -62,13 +63,14 @@ export default function DevOrgLayout({ children }) {
     { icon: Globe, label: profile?.company_website, isLink: true }
   ];
   const [similarCompanies, setsimilarCompanies] = useState([]);
+  const { userData } = useAppSelector((state) => state.auth);
 
   const fetchProfile = async () => {
     const loadingId=toast.loading('Loading profile...');
     try {
       console.log("start")
       dispatch(loadProfileStart())
-      const {data} = await api.get(`/get-company/${id}`)
+      const {data} = await api.get(`/get-company/${username}`)
       dispatch(loadProfileSuccess(data.company));
       toast.success('Profile loaded successfully', {id: loadingId})
     } catch (err) {
@@ -91,11 +93,24 @@ export default function DevOrgLayout({ children }) {
     }
   }
 
+  const fetchCompanyDocs = async () => {
+    try {
+      dispatch(loadDocsStart());
+      const { data } = await api.get(`get-company-documentations/${userData._id}`);
+      dispatch(loadDocsSuccess(data?.documentations || []));
+    } catch (err) {
+      console.log(err);
+      dispatch(docsFailure(err?.response?.data?.message || "Failed to load documentations"));
+      toast.error(err?.response?.data?.message || "Failed to load documentations");
+    }
+  };
+
   useEffect(() => {
-    console.log('Fetching profile for id:', id);
+    console.log('Fetching profile for id:', username);
     fetchProfile();
     fetchCompanies();
-  }, [id]);
+    fetchCompanyDocs();
+  }, [username]);
 
 
   if (loading) {
@@ -224,7 +239,7 @@ export default function DevOrgLayout({ children }) {
                 {similarCompanies.map((company, idx) => (
                   <Link 
                     key={idx} 
-                    href={`/dev_org/profile/${company._id}`}
+                    href={`/dev_org/${company.username}`}
                     className={cn(
                       "block p-3 rounded-lg border-2 transition-all group",
                       "bg-blue-500/10 border-blue-500/20 hover:border-blue-500/40"

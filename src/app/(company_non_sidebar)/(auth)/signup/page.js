@@ -21,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import api from "@/utils/axiosConfig";
+import slugify from "slugify";
 
 export default function SignupForm({ ...props }) {
   const router = useRouter();
@@ -43,10 +44,7 @@ export default function SignupForm({ ...props }) {
   // ✅ Auto-generate username from company name (replace spaces with underscores)
   useEffect(() => {
     if (form.name.trim()) {
-      const generated = form.name
-        .toLowerCase()
-        .replace(/\s+/g, "_") // 🔹 replace spaces with underscores
-        .replace(/[^a-z0-9_]/g, ""); // allow underscore, remove other special chars
+      const generated = slugify(form.name, { lower: true, strict: true });
       setForm((prev) => ({ ...prev, username: generated }));
     }
   }, [form.name]);
@@ -56,10 +54,7 @@ export default function SignupForm({ ...props }) {
 
     if (id === "username") {
       // ✅ enforce lowercase, replace spaces with underscore, allow underscore
-      const sanitized = value
-        .toLowerCase()
-        .replace(/\s+/g, "_")
-        .replace(/[^a-z0-9_]/g, "");
+      const sanitized = slugify(value, { lower: true, strict: true });
       setForm((prev) => ({ ...prev, username: sanitized }));
       return;
     }

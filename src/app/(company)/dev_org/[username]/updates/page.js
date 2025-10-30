@@ -14,6 +14,7 @@ import "@/components/appComponents/editor.css";
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import api from '@/utils/axiosConfig';
+import { useAppSelector } from '@/lib/redux/hooks';
 
 // Initialize syntax highlighter
 const lowlight = createLowlight();
@@ -25,13 +26,14 @@ const CompanyDocsUpdates = () => {
   const [loading, setLoading] = useState(true);
   const [expandedUpdate, setExpandedUpdate] = useState(null);
   const params = useParams();
-  const companyId = params.id; 
+  const companySlug = params.username; 
+  const { userData } = useAppSelector((state) => state.auth);
 
   // Fetch updates from API
   useEffect(() => {
     const fetchComapnyUpdates = async () => {
       try {
-        const {data} = await api.get(`get-company-updates/${companyId}`);
+        const {data} = await api.get(`get-company-updates/${userData?._id}`);
         console.log("Response data in CompanyDocsExamples:", data);
           setUpdates(data.updates || []);
           setLoading(false);
@@ -43,7 +45,7 @@ const CompanyDocsUpdates = () => {
     };
 
     fetchComapnyUpdates();
-  }, [companyId]);
+  }, [companySlug]);
 
 
   const UpdateCard = ({ update }) => {

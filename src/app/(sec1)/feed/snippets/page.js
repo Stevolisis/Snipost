@@ -317,7 +317,7 @@ const Page = () => {
                         }
                       </p>
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={`/dev_org/profile/${company._id}/documentations`}>Explore SDK</Link>
+                        <Link href={`/dev_org/${company.username}/documentations`}>Explore SDK</Link>
                       </Button>
                     </CardContent>
                   </Card>

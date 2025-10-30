@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function CompanyProfileDropDown({ children }) {
-  const { isConnected, walletAddress, jwtToken, userData, isLoading } = useAppSelector((state) => state.auth);
+  const { userData } = useAppSelector((state) => state.auth);
   const { disconnect } = useWallet();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -29,7 +29,7 @@ export function CompanyProfileDropDown({ children }) {
         {
           label: "Profile",
           icon: User,
-          href: `/dev_org/profile/${userData?._id}/examples`,
+          href: `/dev_org/${userData?.username}/examples`,
           shortcut: "⇧⌘P",
         },
         // {
@@ -47,7 +47,7 @@ export function CompanyProfileDropDown({ children }) {
         // {
         //   label: "Achievement",
         //   icon: Award,
-        //   href: `/profile/${userData?._id}/achievements`,
+        //   href: `/${userData?.username}/achievements`,
         //   shortcut: "⌘S",
         // },
       ],
@@ -62,7 +62,7 @@ export function CompanyProfileDropDown({ children }) {
         {
           label: "Settings",
           icon: Settings,
-          href: `/dev_org/settings/${userData?._id}`,
+          href: `/edit_profile/${userData?._id}`,
           shortcut: "⌘T",
         },
         {
