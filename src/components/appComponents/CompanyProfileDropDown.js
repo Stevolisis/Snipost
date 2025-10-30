@@ -68,7 +68,7 @@ export function CompanyProfileDropDown({ children }) {
         {
           label: "Support",
           icon: MessageCircle,
-          href: "/account/support",
+          href: "/support",
         },
       ],
     },
