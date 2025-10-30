@@ -31,17 +31,21 @@ import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { authenticateSuccess } from "@/lib/redux/slices/auth";
+import slugify from "slugify";
 
 export default function CompanyProfileForm() {
   const { id } = useParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
   const [founders, setFounders] = useState([{ email: "" }]);
-  const [socialLinks, setSocialLinks] = useState([
-    { platform: "twitter", url: "" },
-  ]);
+  const [socialLinks, setSocialLinks] = useState([{ platform: "twitter", url: "" }]);
   const [preview, setPreview] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
+
+  const [bannerPreview, setBannerPreview] = useState(null);
+  const [bannerFile, setBannerFile] = useState(null);
+
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -53,13 +57,9 @@ export default function CompanyProfileForm() {
   });
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     if (formData.name.trim()) {
-      const generated = formData.name
-        .toLowerCase()
-        .replace(/\s+/g, "_") // 🔹 replace spaces with underscores
-        .replace(/[^a-z0-9_]/g, ""); // allow underscore, remove other special chars
+      const generated = slugify(formData.name, { lower: true, strict: true });
       setFormData((prev) => ({ ...prev, username: generated }));
     }
   }, [formData.name]);
@@ -95,6 +95,21 @@ export default function CompanyProfileForm() {
     setLogoFile(null);
   };
 
+  const handleBannerChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setBannerFile(file);
+      const reader = new FileReader();
+      reader.onload = () => setBannerPreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleBannerRemove = () => {
+    setBannerPreview(null);
+    setBannerFile(null);
+  };
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -110,26 +125,26 @@ export default function CompanyProfileForm() {
       const payload = new FormData();
 
       Object.entries(formData).forEach(([key, value]) =>
-          payload.append(key, value)
+        payload.append(key, value)
       );
 
       payload.append("founders", JSON.stringify(founders));
       payload.append("socialLinks", JSON.stringify(socialLinks));
 
       if (logoFile) payload.append("avatar", logoFile);
+      if (bannerFile) payload.append("banner", bannerFile);
 
-      const {data} = await api.post(`/complete-company-profile/${id}`, payload, {
-          headers: { "Content-Type": "multipart/form-data" },
+      const { data } = await api.post(`/complete-company-profile/${id}`, payload, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (data.success) {
-          toast.success(data.message || "Profile submitted successfully! Awaiting verification.");
-          dispatch(authenticateSuccess(data));
-          return router.push("/dashboard");
+        toast.success(data.message || "Profile submitted successfully! Awaiting verification.");
+        dispatch(authenticateSuccess(data));
+        return router.push("/dashboard");
       } else {
-          toast.success(data.message || "Error submitting profile");
+        toast.error(data.message || "Error submitting profile");
       }
-
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || "Invalid or expired code. Please try again.";
@@ -139,8 +154,7 @@ export default function CompanyProfileForm() {
     }
   };
 
-  
-    // 🟢 Fetch existing company data on mount
+  // 🟢 Fetch existing company data on mount
   useEffect(() => {
     const loadingId = toast.loading("Loading company data...");
     const fetchCompanyData = async () => {
@@ -162,9 +176,8 @@ export default function CompanyProfileForm() {
             location: company.location || "",
           });
 
-          if (company.avatar) {
-            setPreview(company.avatar?.url);
-          }
+          if (company.avatar) setPreview(company.avatar?.url);
+          if (company.banner) setBannerPreview(company.banner?.url);
 
           if (Array.isArray(company.founders) && company.founders.length > 0) {
             setFounders(company.founders.map((f) => ({ email: f.email || "" })));
@@ -183,7 +196,7 @@ export default function CompanyProfileForm() {
         }
       } catch (err) {
         console.error(err);
-        const msg = err.response?.data?.message ||"Error loading company data";
+        const msg = err.response?.data?.message || "Error loading company data";
         toast.error(msg, { id: loadingId });
       } finally {
         toast.dismiss(loadingId);
@@ -194,8 +207,6 @@ export default function CompanyProfileForm() {
       fetchCompanyData();
     }
   }, [id]);
-
-
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -210,9 +221,7 @@ export default function CompanyProfileForm() {
 
         <Card>
           <CardHeader className="text-center mt-8 sm:mt-12">
-            <CardTitle className="text-2xl sm:text-3xl">
-              About your company
-            </CardTitle>
+            <CardTitle className="text-2xl sm:text-3xl">About your company</CardTitle>
             <CardDescription>
               Fill in your company details for verification and authenticity.
             </CardDescription>
@@ -221,6 +230,37 @@ export default function CompanyProfileForm() {
           <CardContent>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <FieldGroup>
+                {/* 🟢 Banner Upload */}
+                <Field>
+                  <FieldLabel>Company Banner</FieldLabel>
+                  {bannerPreview ? (
+                    <div className="relative w-full h-32 sm:h-40 border border-border rounded-md overflow-hidden">
+                      <Image
+                        src={bannerPreview}
+                        alt="Banner Preview"
+                        fill
+                        className="object-cover"
+                        priority
+                      />
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="destructive"
+                        className="absolute top-2 right-2 w-8 h-8 rounded-full"
+                        onClick={handleBannerRemove}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center w-full h-32 sm:h-40 border border-dashed text-muted-foreground text-sm rounded-md">
+                      <Upload className="w-5 h-5 mb-1" />
+                      Upload Banner
+                    </div>
+                  )}
+                  <Input type="file" accept="image/*" onChange={handleBannerChange} />
+                </Field>
+
                 {/* Logo Upload */}
                 <div className="flex items-center gap-4">
                   {preview ? (
@@ -251,7 +291,7 @@ export default function CompanyProfileForm() {
                   <Input type="file" accept="image/*" onChange={handleLogoChange} />
                 </div>
 
-                {/* Name + Username */}
+                {/* Company Name */}
                 <Field>
                   <FieldLabel>Company Name</FieldLabel>
                   <Input
@@ -262,6 +302,7 @@ export default function CompanyProfileForm() {
                   />
                 </Field>
 
+                {/* Username */}
                 <Field>
                   <FieldLabel>Username</FieldLabel>
                   <Input
@@ -270,9 +311,7 @@ export default function CompanyProfileForm() {
                     value={formData.username}
                     onChange={handleInputChange}
                   />
-                  <FieldDescription>
-                    Auto-generated from company name.
-                  </FieldDescription>
+                  <FieldDescription>Auto-generated from company name.</FieldDescription>
                 </Field>
 
                 {/* Email + Website */}
@@ -455,14 +494,8 @@ export default function CompanyProfileForm() {
 
                 {/* Submit */}
                 <Field>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loading}
-                  >
-                    {loading
-                      ? "Submitting..."
-                      : "Submit for Verification"}
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Submitting..." : "Submit for Verification"}
                   </Button>
                 </Field>
               </FieldGroup>

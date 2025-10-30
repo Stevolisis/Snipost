@@ -2,18 +2,18 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
-import { FileText, Code2, Bell, Zap, MapPin, Building2, Calendar, Globe, ArrowRight, Users } from "lucide-react"
+import { FileText, Code2, Bell, MapPin, Building2, Globe, Users, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 import { loadProfileFailure, loadProfileStart, loadProfileSuccess } from "@/lib/redux/slices/profile"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { toast } from "sonner"
 import api from "@/utils/axiosConfig"
-import { Skeleton } from '@/components/ui/skeleton'
 import { docsFailure, loadDocsStart, loadDocsSuccess } from "@/lib/redux/slices/documentations"
-
+import Image from "next/image"
 
 // Navigation tabs structure
 const navigationTabs = [
@@ -55,41 +55,31 @@ export default function DevOrgLayout({ children }) {
   const pathname = usePathname()
   const basePath = `/dev_org/${username}`
   const dispatch = useAppDispatch();
-  const { profile, loading, error} = useAppSelector((state) => state.profile)
-  const info= [
-    { icon: MapPin, label: profile?.location || "Location not specified" },
-    { icon: Building2, label: profile?.company_size },
-    { icon: Users, label: profile?.followers?.length + " followers" || "No followers yet" },
-    { icon: Globe, label: profile?.company_website, isLink: true }
-  ];
-  const [similarCompanies, setsimilarCompanies] = useState([]);
+  const { profile, loading, error } = useAppSelector((state) => state.profile)
   const { userData } = useAppSelector((state) => state.auth);
+  const [similarCompanies, setSimilarCompanies] = useState([]);
 
   const fetchProfile = async () => {
-    const loadingId=toast.loading('Loading profile...');
+    const loadingId = toast.loading('Loading profile...');
     try {
-      console.log("start")
       dispatch(loadProfileStart())
-      const {data} = await api.get(`/get-company/${username}`)
+      const { data } = await api.get(`/get-company/${username}`)
       dispatch(loadProfileSuccess(data.company));
-      toast.success('Profile loaded successfully', {id: loadingId})
+      toast.success('Profile loaded successfully', { id: loadingId })
     } catch (err) {
-      console.log(err);
       dispatch(loadProfileFailure(err.response?.data?.message || 'Failed to load profile'));
-      toast.error(err.response?.data?.message || 'Failed to load profile', {id: loadingId})
+      toast.error(err.response?.data?.message || 'Failed to load profile', { id: loadingId })
     }
   }
 
   const fetchCompanies = async () => {
-    const loadingId=toast.loading('Loading companies...');
+    const loadingId = toast.loading('Loading companies...');
     try {
-      const {data} = await api.get(`/get-all-companies?limit=${7}`)
-      // setsimilarCompanies(data.companies.filter((comp) => comp._id !== id).slice(0,4));
-      setsimilarCompanies(data.companies);
-      toast.success("Companies loaded succesfully",{ id: loadingId });
+      const { data } = await api.get(`/get-all-companies?limit=${7}`)
+      setSimilarCompanies(data.companies);
+      toast.success("Companies loaded successfully", { id: loadingId });
     } catch (err) {
-      console.log(err);
-      toast.error(err.response?.data?.message || 'Failed to load profile', {id: loadingId})
+      toast.error(err.response?.data?.message || 'Failed to load companies', { id: loadingId })
     }
   }
 
@@ -99,19 +89,16 @@ export default function DevOrgLayout({ children }) {
       const { data } = await api.get(`get-company-documentations/${userData._id}`);
       dispatch(loadDocsSuccess(data?.documentations || []));
     } catch (err) {
-      console.log(err);
       dispatch(docsFailure(err?.response?.data?.message || "Failed to load documentations"));
       toast.error(err?.response?.data?.message || "Failed to load documentations");
     }
   };
 
   useEffect(() => {
-    console.log('Fetching profile for id:', username);
     fetchProfile();
     fetchCompanies();
     fetchCompanyDocs();
   }, [username]);
-
 
   if (loading) {
     return (
@@ -139,57 +126,85 @@ export default function DevOrgLayout({ children }) {
       </div>
     )
   }
-  console.log('Profile data:', profile);
 
   return (
     <div className="min-h-screen bg-background">
       <div className="px-6 md:px-20 py-8 space-y-10">
-        {/* Header Section with gradient background */}
-        <Card className="border-none bg-gradient-to-br from-primary/5 via-primary/10 to-secondary/30 shadow-lg overflow-hidden relative">
-          <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.5))]" />
-          <CardContent className="pt-6 pb-8 relative">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 mb-2">
-                  <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-xs font-medium text-primary">Active Platform</span>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-primary">
-                  {profile?.name}
-                </h1>
-                <p className="text-sm md:text-base text-muted-foreground max-w-2xl line-clamp-5">
-                  {profile?.about}
-                </p>
-                <div className="flex flex-wrap items-center gap-3 pt-2">
-                  {info.map((item, index) => {
-                    const Icon = item.icon
-                    return (
-                      <div key={index} className="flex items-center gap-6">
-                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                          <Icon className="h-4 w-4 text-primary" />
-                          {item.isLink ? (
-                            <Link href="#" className="text-primary hover:underline font-medium">
-                              {item.label}
-                            </Link>
-                          ) : (
-                            <span>{item.label}</span>
-                          )}
-                        </div>
-                        {index < info.length - 1 && (
-                          <Separator orientation="vertical" className="h-4" />
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
+
+        {/* Header Section - Plain Banner with User Info */}
+        <section className="relative w-full">
+          {/* Banner Image */}
+          <div className="relative h-40 w-full rounded-t-xl overflow-hidden">
+            <Image
+              src={profile?.banner?.url || ""}
+              alt="Profile banner"
+              fill
+              className="object-cover"
+              priority
+            />
+            {/* Optional overlay for readability */}
+            <div className="absolute inset-0 bg-black/20" />
+          </div>
+
+          {/* Profile Info Card */}
+          <div className="absolute bottom-0 left-6 transform translate-y-1/2 flex items-end gap-4">
+            {/* Avatar Box */}
+            <div className="flex items-center justify-center w-24 h-24 rounded-md bg-background shadow-md border border-border overflow-hidden">
+              <Image
+                src={userData?.avatar?.url || "/placeholder.svg"}
+                alt={`${userData?.name || "User"} avatar`}
+                width={96}
+                height={96}
+                className="object-contain"
+              />
             </div>
-          </CardContent>
-        </Card>
+
+            {/* User Info */}
+            <div className="flex flex-col space-y-2 mt-18">
+              <h1 className="text-2xl font-semibold text-foreground">
+                {userData?.name}
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
+                  <span>{profile?.location || "Unknown"}</span>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <Building2 className="h-4 w-4" />
+                  <span>{profile?.company_size || "N/A"}</span>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <Users className="h-4 w-4" />
+                  <span>{profile?.followers?.length || 0} followers</span>
+                </div>
+
+                {profile?.company_website && (
+                  <Link
+                    href={profile.company_website}
+                    target="_blank"
+                    className="flex items-center gap-1 hover:text-primary transition-colors"
+                  >
+                    <Globe className="h-4 w-4" />
+                    <span>Website</span>
+                  </Link>
+                )}
+              </div>
+
+              {profile?.description && (
+                <p className="text-sm text-muted-foreground max-w-xl mt-2">
+                  {profile.description}
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
 
         {/* Tabs and Main Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
-          <div className="">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 mt-30 sm:mt-28">
+          <div>
             {/* Navigation Tabs */}
             <div className="relative mb-8">
               <div className="absolute bottom-0 left-0 w-full h-px bg-border" />
@@ -224,8 +239,6 @@ export default function DevOrgLayout({ children }) {
 
           {/* Sidebar */}
           <aside className="space-y-6">
-
-            {/* Similar Companies Card */}
             <Card className="border bg-card shadow-sm">
               <CardHeader>
                 <CardTitle className="text-sm font-semibold flex items-center justify-between">
