@@ -149,7 +149,7 @@ export default function DevOrgLayout({ children }) {
           {/* Profile Info Card */}
           <div className="absolute bottom-0 left-3 sm:left-6 transform translate-y-1/2 flex items-end gap-4">
             {/* Avatar Box */}
-            <div className="flex items-center justify-center w-24 h-24 max-w-24 max-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
+            <div className="flex items-center justify-center w-24 h-24 min-w-24 min-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
               <Image
                 src={userData?.avatar?.url || "/placeholder.svg"}
                 alt={`${userData?.name || "User"} avatar`}
