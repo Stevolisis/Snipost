@@ -111,7 +111,7 @@ const Page = () => {
     
   useEffect(() => {
     fetchAllUsers();
-    fetchAllCompanies();
+    // fetchAllCompanies();
   }, []);
 
   const fetchTrends = async () => {
@@ -226,7 +226,7 @@ const Page = () => {
         {(developers.length > 0 || loadingDevs) && (
           <section>
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-xl font-bold">Snip Developers on Snipost</h2>
+              <h2 className="text-xl font-bold">Developers on Snipost</h2>
               <Button variant="ghost" size="sm" className="text-xs" asChild>
                 <Link href="/snipdevs">View all</Link>
               </Button>

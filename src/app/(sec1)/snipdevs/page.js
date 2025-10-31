@@ -384,8 +384,8 @@ const DevelopersPage = () => {
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-50% to-purple-600 bg-clip-text text-transparent">
-          SnipPost Developers
+        <h1 className="text-4xl font-bold text-white">
+          Snipost Developers
         </h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
           Discover talented Web3 developers, contributors, and innovators building the future of decentralized development
