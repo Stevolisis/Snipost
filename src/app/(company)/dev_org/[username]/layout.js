@@ -147,9 +147,9 @@ export default function DevOrgLayout({ children }) {
           </div>
 
           {/* Profile Info Card */}
-          <div className="absolute bottom-0 left-6 transform translate-y-1/2 flex items-end gap-4">
+          <div className="absolute bottom-0 left-3 sm:left-6 transform translate-y-1/2 flex items-end gap-4">
             {/* Avatar Box */}
-            <div className="flex items-center justify-center w-24 h-24 rounded-md bg-background shadow-md border border-border overflow-hidden">
+            <div className="flex items-center justify-center w-24 h-24 max-w-24 max-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
               <Image
                 src={userData?.avatar?.url || "/placeholder.svg"}
                 alt={`${userData?.name || "User"} avatar`}
@@ -166,18 +166,18 @@ export default function DevOrgLayout({ children }) {
               </h1>
 
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
+                <div className="flex items-center text-sm sm:text-base gap-1">
+                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>{profile?.location || "Unknown"}</span>
                 </div>
 
-                <div className="flex items-center gap-1">
-                  <Building2 className="h-4 w-4" />
+                <div className="flex items-center text-sm sm:text-base gap-1">
+                  <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>{profile?.company_size || "N/A"}</span>
                 </div>
 
-                <div className="flex items-center gap-1">
-                  <Users className="h-4 w-4" />
+                <div className="flex items-center text-sm sm:text-base gap-1">
+                  <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>{profile?.followers?.length || 0} followers</span>
                 </div>
 
@@ -185,9 +185,9 @@ export default function DevOrgLayout({ children }) {
                   <Link
                     href={profile.company_website}
                     target="_blank"
-                    className="flex items-center gap-1 hover:text-primary transition-colors"
+                    className="flex items-center text-sm sm:text-base gap-1 hover:text-primary transition-colors"
                   >
-                    <Globe className="h-4 w-4" />
+                    <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span>Website</span>
                   </Link>
                 )}
