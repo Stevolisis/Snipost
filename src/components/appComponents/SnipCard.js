@@ -179,8 +179,8 @@ const SnipCard = ({snippet, fix}) => {
                     </div>
                 </div>
                 
-                <div className='-mb-6 py-3'  onClick={()=> router.push(`/snippet/${snippet._id}`)}>
-                    <Link href={`/snippet/${snippet._id}`} className="text-2xl line-clamp-2 text-foreground 
+                <div className='-mb-6 py-3'  onClick={()=> router.push(`/snippet/${snippet.slug}`)}>
+                    <Link href={`/snippet/${snippet.slug}`} className="text-2xl line-clamp-2 text-foreground 
                         font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
                         {snippet.title || 'Untitled Snippet'}
                     </Link>
@@ -195,17 +195,17 @@ const SnipCard = ({snippet, fix}) => {
             </CardHeader>
 
             <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-3" onClick={()=> router.push(`/snippet/${snippet._id}`)}>
+                <p className="text-sm text-muted-foreground line-clamp-3" onClick={()=> router.push(`/snippet/${snippet.slug}`)}>
                     {snippet.description || 'No description available'}
                 </p>
 
-                <div className="mt-2 flex flex-wrap gap-2" onClick={()=> router.push(`/snippet/${snippet._id}`)}>
+                <div className="mt-2 flex flex-wrap gap-2" onClick={()=> router.push(`/snippet/${snippet.slug}`)}>
                     {(snippet.tags || []).map((tag, i) => (
                     <Button variant="outline" size={"sm"} key={i} className='text-xs text-muted-foreground'>#{tag}</Button>
                     ))}
                 </div>
 
-                <div className='pt-4 cursor-default!'  onClick={()=> router.push(`/snippet/${snippet._id}`)}>
+                <div className='pt-4 cursor-default!'  onClick={()=> router.push(`/snippet/${snippet.slug}`)}>
                     {snippet.codeBlocks?.[0]?.content ? (
                     <SyntaxHighlighter
                         language={(snippet.codeBlocks[0].language || 'javascript').toLowerCase()}
@@ -274,7 +274,7 @@ const SnipCard = ({snippet, fix}) => {
                     </div>
 
                     <div>
-                        <Button variant={"outline"} onClick={()=>router.push(`/snippet/${snippet._id}#comment`)}> 
+                        <Button variant={"outline"} onClick={()=>router.push(`/snippet/${snippet.slug}#comment`)}> 
                         <MessageCircle/> 
                         <p>{snippet.commentNo || 0}</p>
                         </Button>

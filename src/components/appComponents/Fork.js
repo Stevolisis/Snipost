@@ -32,7 +32,7 @@ export const Fork = ({ snippet, contentType, hasForked }) => {
     setIsLoading(true)
     try {
       const response = await api.post(
-        `/fork-content/${contentType}/${snippet._id}`,
+        `/fork-content/${contentType}/${snippet._id}/${snippet.slug}`,
         {},
         {
           headers: {

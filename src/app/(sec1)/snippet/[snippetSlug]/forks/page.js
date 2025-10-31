@@ -12,11 +12,10 @@ import api from '@/utils/axiosConfig'
 import { format } from 'date-fns'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import Link from 'next/link';
 
 export default function SnippetForksPage({ params }) {
-  const { snippetId } = use(params)
+  const { snippetSlug } = use(params)
   const router = useRouter()
   const dispatch = useAppDispatch();
   const { forks, loading } = useAppSelector((state) => state.fork)
@@ -25,7 +24,7 @@ export default function SnippetForksPage({ params }) {
     const fetchForks = async () => {
       try {
         dispatch(fetchForksStart())
-        const response = await api.get(`/get-forks/Snippet/${snippetId}`)
+        const response = await api.get(`/get-forks/Snippet/${snippetSlug}`)
         dispatch(fetchForksSuccess(response.data.forks));
       } catch (error) {
         dispatch(fetchForksFailure(error.message))
@@ -33,7 +32,7 @@ export default function SnippetForksPage({ params }) {
       }
     }
     fetchForks();
-  }, [snippetId, dispatch]);
+  }, [snippetSlug, dispatch]);
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
@@ -49,7 +48,7 @@ export default function SnippetForksPage({ params }) {
           </h1>
         </div>
         <Button 
-          onClick={() => router.push(`/snippet/${snippetId}`)}
+          onClick={() => router.push(`/snippet/${snippetSlug}`)}
           variant="outline"
           size="sm"
         >
@@ -82,7 +81,7 @@ export default function SnippetForksPage({ params }) {
               Be the first to fork this snippet and create your own version.
             </p>
             <Button 
-              onClick={() => router.push(`/snippet/${snippetId}`)}
+              onClick={() => router.push(`/snippet/${snippetSlug}`)}
               className='bg-[#A246FD] text-gray-900'
             >
               Back to Snippet

@@ -41,12 +41,13 @@ const SyntaxHighlighter = dynamic(
 
 
 const Page = ({params}) => {
-  const { snippetId } = use(params);
+  const { snippetSlug } = use(params);
   const router = useRouter();
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
   const { userData, visitorId, jwtToken, disconnect } = useAppSelector((state) => state.auth)
   const { snippet, isLoading } = useAppSelector((state) => state.snippets);
+  const snippetId = snippet?._id;
   const commentState = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
@@ -62,7 +63,7 @@ const Page = ({params}) => {
       rootMargin: '-40% 0px -40% 0px'
     }
   });
-
+  
   // Check if current user is already following the target user
   const isFollowing = userData?.following?.some(
     follow => follow.entity === targetUser?._id
@@ -227,6 +228,32 @@ const Page = ({params}) => {
         // Note: Automatic rollback isn't needed since we'll refetch snippets later
     }
   };
+
+  
+
+  const fetchSnippetCommentData = async () => {
+    try {
+      dispatch(loadCommentsStart());
+      const response = await api.get(`get-comments?contentId=${snippetId}&contentType=Snippet`,{
+        headers:{
+          Authorization: `Bearer ${jwtToken}`
+        }
+      });
+      dispatch(loadCommentsSuccess(response.data.comments || []))
+    } catch (err) {
+      dispatch(commentsFailure());
+      if (err.response?.status === 401) {
+        // Handle unauthorized error
+        dispatch(disconnectWallet());
+        disconnect();
+        toast("Uh oh! Something went wrong.", {
+          description: "Connect your wallet"
+        })
+      }
+      toast.error("Something went wrong. Try again");
+    }
+  };
+
     
   useEffect(() => {
     // Check hash after component mounts
@@ -242,7 +269,7 @@ const Page = ({params}) => {
     const fetchSnippetData = async () => {
       try {
         dispatch(loadSnippetStart());
-        const response = await api.get(`/get-snippet/${snippetId}`,{
+        const response = await api.get(`/get-snippet/${snippetSlug}`,{
           headers:{
             Authorization: `Bearer ${jwtToken}`
           }
@@ -263,39 +290,20 @@ const Page = ({params}) => {
       }
     };
 
-
-    const fetchSnippetCommentData = async () => {
-      try {
-        dispatch(loadCommentsStart());
-        const response = await api.get(`get-comments?contentId=${snippetId}&contentType=Snippet`,{
-          headers:{
-            Authorization: `Bearer ${jwtToken}`
-          }
-        });
-        dispatch(loadCommentsSuccess(response.data.comments || []))
-      } catch (err) {
-        dispatch(commentsFailure());
-        if (err.response?.status === 401) {
-          // Handle unauthorized error
-          dispatch(disconnectWallet());
-          disconnect();
-          toast("Uh oh! Something went wrong.", {
-            description: "Connect your wallet"
-          })
-        }
-        toast.error("Something went wrong. Try again");
-      }
-    };
-
     fetchSnippetData();
-    fetchSnippetCommentData();
-  }, [snippetId, dispatch]);
+  }, [snippetSlug, dispatch]);
 
   useEffect(() => {
     if (!visitorId) {
       dispatch(setVisitorId());
     }
   }, [visitorId, dispatch]);
+
+  useEffect(() => {
+    if (snippetId) {
+      fetchSnippetCommentData();
+    }
+  }, [snippetId]);
 
   useEffect(() => {
     if(isVisible){

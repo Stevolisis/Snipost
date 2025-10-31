@@ -260,6 +260,7 @@ const CommentBox = () => {
         try {
             const commentData = {
                 contentId: snippet._id,
+                contentSlug: snippet.slug,
                 contentType: snippet.codeBlocks ? "Snippet" : "Snap",
                 text: comment,
                 snippetOwnerId: snippet.user._id,
