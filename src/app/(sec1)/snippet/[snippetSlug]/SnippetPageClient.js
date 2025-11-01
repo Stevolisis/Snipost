@@ -40,13 +40,12 @@ const SyntaxHighlighter = dynamic(
 
 
 
-const SnippetPageClient = ({params, snippet }) => {
-    console.log("Initial Snippet:", snippet);
+const SnippetPageClient = ({params, initialSnippet }) => {
   const [error, setError] = useState(null);
   const [copiedBlocks, setCopiedBlocks] = useState({});
   const { userData, visitorId, jwtToken, disconnect } = useAppSelector((state) => state.auth)
-  const { isLoading } = useAppSelector((state) => state.snippets);
-  const snippetId = snippet?._id;
+  const { isLoading, snippet } = useAppSelector((state) => state.snippets);
+  const snippetId = initialSnippet?._id;
   const commentState = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
@@ -264,37 +263,9 @@ const SnippetPageClient = ({params, snippet }) => {
   });
 
   useEffect(() => { 
-    dispatch(loadSnippetSuccess(snippet));
+    dispatch(loadSnippetSuccess(initialSnippet));
   }, [snippet, dispatch]);
 
-
-//   useEffect(() => {
-//     const fetchSnippetData = async () => {
-//       try {
-//         dispatch(loadSnippetStart());
-//         const response = await api.get(`/get-snippet/${snippetSlug}`,{
-//           headers:{
-//             Authorization: `Bearer ${jwtToken}`
-//           }
-//         });
-//         dispatch(loadSnippetSuccess(response.data.snippet));
-//       } catch (err) {
-//         if (err.response?.status === 401) {
-//           // Handle unauthorized error
-//           dispatch(disconnectWallet());
-//           disconnect();
-//           toast("Uh oh! Something went wrong.", {
-//             description: "Connect your wallet"
-//           })
-//         }
-//         toast.error("Something went wrong. Try again");
-//       } finally {
-//         dispatch(snippetsFailure());
-//       }
-//     };
-
-//     fetchSnippetData();
-//   }, [snippetSlug, dispatch]);
 
   useEffect(() => {
     if (!visitorId) {

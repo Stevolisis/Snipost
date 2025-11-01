@@ -64,5 +64,5 @@ export async function generateMetadata({ params }) {
 export default async function SnippetPage({ params }) {
   const { snippetSlug } = await params;
   const snippet = await fetchSnippet(snippetSlug);
-  return <SnippetPageClient snippet={snippet} params={{ snippetSlug }} />;
+  return <SnippetPageClient initialSnippet={snippet} params={{ snippetSlug }} />;
 }
