@@ -153,7 +153,7 @@ const SnipCard = ({snippet, fix}) => {
                     <div className='flex items-center gap-x-2'>
                         <Button 
                             variant={"outline"}
-                            onClick={() => handleCopy(`https://snipost.vercel.app/snippet/${snippet?._id}`)}
+                            onClick={() => handleCopy(`https://snipost.vercel.app/snippet/${snippet?.slug}`)}
                             className={`gap-1
                                 ${copied ? "border-white!" : "border-white"}
                                 hover:bg-accent/50  // Subtle hover
