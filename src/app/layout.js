@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from "@/components/appComponents/WalletContextProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const geist = Geist({
   variable: "--font-geist",
