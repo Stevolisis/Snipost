@@ -103,7 +103,7 @@ const MyCodeExamples = () => {
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            💻 Your Code Examples
+            Company Code Examples
           </CardTitle>
         </CardHeader>
 

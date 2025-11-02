@@ -106,7 +106,7 @@ const MyDocumentaions = () => {
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            📄 My Documentations
+            Company Documentations
           </CardTitle>
         </CardHeader>
 
