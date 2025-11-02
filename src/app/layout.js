@@ -89,6 +89,7 @@ export default function Layout({ children }) {
                   <Toaster />
                     <main className="font-[var(--font-geist)] w-full">
                       {children}
+                      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
                     </main>
               </ReduxStateProvider>          
             </WalletContextProvider>          
