@@ -42,7 +42,6 @@ export default function OTPPage() {
     try {
       setLoading(true);
       const res = await api.post("/verify-company-email", { id, code: Number(otp) });
-      console.log(res);
       toast.success(res?.data?.message || "Verification successful!");
       router.push(`/complete_profile/${id}`);
     } catch (err) {

@@ -102,7 +102,6 @@ export default function SignupForm({ ...props }) {
         email: form.email,
         password: form.password,
       });
-      console.log(res.data?.company);
       toast.success(res.data?.message || "Account created successfully!");
       router.push(`/otp/${res.data?.company?.id}`);
 
