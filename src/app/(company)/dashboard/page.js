@@ -150,7 +150,7 @@ const Dashboard = () => {
       icon: Trophy,
       title: "Create Bounties",
       subtitle: "Promote your tool through bounties",
-      href: "/#",
+      href: "#",
     },
   ];
 
