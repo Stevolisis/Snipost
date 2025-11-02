@@ -15,7 +15,7 @@ async function fetchSnippet(slug) {
 }
 
 export async function generateMetadata({ params }) {
-   const { snippetSlug } =  params;
+  const { snippetSlug } = await params; // ✅ correct in Next.js 15+
   const snippet = await fetchSnippet(snippetSlug);
   
   if (!snippet) {

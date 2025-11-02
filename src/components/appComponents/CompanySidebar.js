@@ -45,7 +45,7 @@ export function CompanyAppSidebar({ ...props }) {
     navMain: [
       { title: "Dashboard", url: "/dashboard", icon: Home },
       { title: "Documentation", url: "/my-documentations", icon: FileText },
-      { title: "Code Examples", url: "/my-snippets", icon: SquareCode },
+      { title: "Code Examples", url: "/my-examples", icon: SquareCode },
       { title: "Updates", url: "/my-updates", icon: FolderSync },
     ],
     tags: [

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
-import { Book, Plug, FileText, Shield, GraduationCap, ClipboardList } from "lucide-react"
+import { Book, Plug, FileText, Shield, GraduationCap, ClipboardList, FileEdit } from "lucide-react"
 import DocsEditor from "@/components/appComponents/DocsEditor"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -396,11 +396,20 @@ const EditDocumentation = () => {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col">
-      <div className="bg-muted/10 rounded-2xl p-6 md:p-10 border border-zinc-800 mb-6">
-        <h2 className="text-xl md:text-2xl font-semibold mb-6 text-white">
-          Choose a Template
-        </h2>
+    <div className="w-full min-h-screen flex flex-col p-4 sm:p-6 lg:p-8">
+      {/* Header Section */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <FileEdit className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">Edit Documentation</h1>
+            <p className="text-muted-foreground">Update your existing Doc</p>
+          </div>
+        </div>
+      </div>
+      <div className="bg-muted/10 rounded-2xl p-4 md:p-6 border border-zinc-800 mb-6">
 
         {/* Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
