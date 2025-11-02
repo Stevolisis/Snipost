@@ -39,7 +39,6 @@ const MyDocumentaions = () => {
       })
       setDocs(response.data.documentations || []);
     } catch (err) {
-      console.error('Failed to fetch transactions:', err)
       toast.error('Failed to load transaction history')
     }
   }

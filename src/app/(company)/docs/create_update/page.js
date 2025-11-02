@@ -35,7 +35,6 @@ const CreateUpdate = () => {
   // Handle editor content changes
   const handleEditorChange = (content) => {
     setEditorContent(content);
-    console.log('Current editor content:', content);
   };
 
   // Submit the final form
@@ -50,8 +49,6 @@ const CreateUpdate = () => {
       content: editorContent?.html,
       wordCount: editorContent?.wordCount || 0,
     };
-
-    console.log('Submitting update:', updateData);
     
     // Here you would make your API call
     try {
@@ -60,13 +57,10 @@ const CreateUpdate = () => {
           Authorization: `Bearer ${jwtToken}`
         }
       });
-      console.log('Update created successfully:', data);
       setTitle("");
       setEditorContent(null);
-      // For now, just log to console
       toast.success(data?.message || 'Update created successfully');
     } catch (error) {
-      console.error('Error submitting update:', error);
       toast.error('Error creating update');
     }
   };

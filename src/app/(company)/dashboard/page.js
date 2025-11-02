@@ -16,6 +16,7 @@ import {
   Laptop,
   RefreshCw,
   UserPlus,
+  Trophy,
 } from "lucide-react";
 import SearchDevelopers from "@/components/appComponents/SearchDevelopers";
 import Recents from "@/components/appComponents/RecentDocumentations";
@@ -29,7 +30,6 @@ const Dashboard = () => {
   const { earned } = useAppSelector((state) => state.profile);
   const [comments, setComments] = useState([]);
   const [docs, setDocs] = useState([]);
-  console.log("Snippets in dashboard:", snippets);
 
   const fetchSnippets = async () => {
     try {
@@ -85,22 +85,6 @@ const Dashboard = () => {
     }
   };
 
-  
-  const deleteDocs = async(id) => {
-    const loadingId= toast.loading("Deleting documentation...");
-    try{
-      const {data}= await api.delete(`/delete-documentation/${id}`,{
-        headers:{
-          Authorization: `Bearer ${jwtToken}`
-        }
-      });
-      await fetchDocs();
-      toast.success(data?.message || 'Documentation deleted successfully', {id: loadingId});
-    }catch(err){
-      toast.error(err.response?.data?.message || 'Failed to delete documentation', {id: loadingId});
-    }
-  }
-
   useEffect(() => {
     if (jwtToken) {
       fetchUser();
@@ -119,26 +103,26 @@ const Dashboard = () => {
   const stats = [
     {
       label: "Total Views",
-      value: "24.8K",
-      change: "+12.5% from last month",
+      value: "0",
+      change: "",
       icon: Eye,
     },
     {
-      label: "Total Upvotes",
-      value: "3.2K",
-      change: "+8.3% from last month",
-      icon: Star,
+      label: "Total Bounties",
+      value: "0",
+      change: "",
+      icon: Trophy,
     },
     {
       label: "Followers",
       value: userData?.followers?.length || "0",
-      change: "+15.2% from last month",
+      change: "",
       icon: Users,
     },
     {
       label: "Earned (SOL)",
       value: earned?.reduce((sum, tx) => sum + tx.amount, 0).toFixed(2) || "0.00",
-      change: "+23.1% from last month",
+      change: "",
       icon: Coins,
     },
   ];
@@ -163,9 +147,9 @@ const Dashboard = () => {
       href: "/docs/create_update",
     },
     {
-      icon: UserPlus,
-      title: "Invite Team Member",
-      subtitle: "Collaborate together",
+      icon: Trophy,
+      title: "Create Bounties",
+      subtitle: "Promote your tool through bounties",
       href: "/#",
     },
   ];
@@ -181,7 +165,7 @@ const Dashboard = () => {
           className="bg-primary text-primary-foreground hover:bg-primary/90 transition font-medium"
           asChild
         >
-          <Link href="/content/new">+ New Content</Link>
+          <Link href="/docs/create_documentation">+ New Content</Link>
         </Button>
       </div>
 
@@ -192,7 +176,7 @@ const Dashboard = () => {
           return (
             <Card
               key={i}
-              className="bg-muted/30 border border-border hover:border-primary/60 hover:shadow-md transition"
+              className="py-2 bg-muted/30 border border-border hover:border-primary/60 hover:shadow-md transition"
             >
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
@@ -234,7 +218,14 @@ const Dashboard = () => {
       </div>
       <SearchDevelopers/>
 
-      <Recents snippets={snippets} comments={comments} docs={docs} deleteDocs={deleteDocs}/>
+      <Recents 
+        fetchSnippets={fetchSnippets} 
+        snippets={snippets} 
+        comments={comments} 
+        docs={docs} 
+        fetchDocs={fetchDocs}
+        jwtToken={jwtToken}
+      />
     </div>
   );
 };

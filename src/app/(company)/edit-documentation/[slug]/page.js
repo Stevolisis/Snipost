@@ -317,7 +317,6 @@ const EditDocumentation = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching documentation:', error)
       toast.error('Failed to load documentation')
       router.push('/docs')
     } finally {
@@ -328,7 +327,6 @@ const EditDocumentation = () => {
   // Handle editor content changes
   const handleEditorChange = (content) => {
     setEditorContent(content)
-    console.log('Current editor content:', content)
   }
 
   // Handle template selection
@@ -358,8 +356,6 @@ const EditDocumentation = () => {
       content: editorContent?.html,
       wordCount: editorContent?.wordCount,
     }
-
-    console.log('Updating documentation:', documentationData)
     
     try {
       setUpdating(true)
@@ -372,7 +368,6 @@ const EditDocumentation = () => {
       toast.success(data?.message || 'Documentation updated successfully')
       router.push('/my-documentations')
     } catch (error) {
-      console.error('Error updating documentation:', error)
       toast.error(error.response?.data?.message || 'Error updating documentation')
     } finally {
       setUpdating(false)
