@@ -690,7 +690,7 @@ const streakCount = profile?.streak?.count || 0;
                     <Card key={snippet._id} className="hover:border-primary transition-colors group">
                       <CardHeader>
                         <div className="flex justify-between items-start">
-                          <Link href={`/snippet/${snippet._id}`} className="hover:underline">
+                          <Link href={`/snippet/${snippet.slug}`} className="hover:underline">
                             <CardTitle>{snippet.title}</CardTitle>
                           </Link>
                           {isOwner && (

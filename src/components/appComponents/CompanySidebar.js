@@ -44,9 +44,9 @@ export function CompanyAppSidebar({ ...props }) {
   const data = {
     navMain: [
       { title: "Dashboard", url: "/dashboard", icon: Home },
-      { title: "Documentation", url: "/dev_org/documentations", icon: FileText },
-      { title: "Code Examples", url: "/dev_org/snippets", icon: SquareCode },
-      { title: "Updates", url: "/dev_org/updates", icon: FolderSync },
+      { title: "Documentation", url: "/my-documentations", icon: FileText },
+      { title: "Code Examples", url: "/my-snippets", icon: SquareCode },
+      { title: "Updates", url: "/my-updates", icon: FolderSync },
     ],
     tags: [
       {

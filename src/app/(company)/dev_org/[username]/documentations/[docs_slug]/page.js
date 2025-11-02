@@ -9,6 +9,12 @@ import "@/components/appComponents/editor.css";
 import { useParams } from "next/navigation";
 import { formatPublishedDate } from "@/utils/formatPublishedDate";
 import { toast } from "sonner";
+import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
+import { TableKit } from '@tiptap/extension-table';
+import Highlight from '@tiptap/extension-highlight';
+import Link from '@tiptap/extension-link';
 
 // Register languages
 import css from "highlight.js/lib/languages/css";
@@ -75,10 +81,40 @@ const EachDocPage = () => {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
-      CodeBlockLowlight.configure({
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+        history: {
+          depth: 100,
+        },
+      }),
+      HorizontalRule,
+      Underline,
+      Highlight.configure({ multicolor: true }),
+      TextAlign.configure({ 
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right']
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { 
+          class: 'text-primary underline cursor-pointer',
+        },
+      }),
+      TableKit.configure({
+        table: { 
+          resizable: true,
+          HTMLAttributes: {
+            class: 'tiptap-table',
+          },
+        },
+      }),
+      CodeBlockLowlight.configure({ 
         lowlight,
-        HTMLAttributes: { class: "code-block" },
+        HTMLAttributes: {
+          class: 'code-block',
+        },
       }),
     ],
     content: "",
