@@ -12,13 +12,14 @@ import SnipCard from '@/components/appComponents/SnipCard';
 const CompanyDocsExamples = () => {
   const dispatch = useAppDispatch();
   const { snippets = [], isLoading, error } = useAppSelector((state) => state.snippets);
-  const { userData, jwtToken } = useAppSelector((state) => state.auth);
+  const { jwtToken } = useAppSelector((state) => state.auth);
+  const { profile} = useAppSelector((state) => state.profile)
 
   useEffect(() => {
     const fetchTrendingSnippets = async () => {
       try {
         dispatch(loadSnippetsStart());
-        const response = await api.get(`get-user-snippets/${userData?._id}`,{
+        const response = await api.get(`get-user-snippets/${profile?._id}`,{
             headers:{
                 Authorization: `Bearer ${jwtToken}`
             }
@@ -41,7 +42,7 @@ const CompanyDocsExamples = () => {
     };
 
     fetchTrendingSnippets();
-  }, [dispatch, userData?._id]);
+  }, [dispatch, profile?._id, jwtToken]);
   
   if (isLoading && snippets.length === 0) {
     return (

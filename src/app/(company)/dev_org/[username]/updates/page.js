@@ -27,13 +27,13 @@ const CompanyDocsUpdates = () => {
   const [expandedUpdate, setExpandedUpdate] = useState(null);
   const params = useParams();
   const companySlug = params.username; 
-  const { userData } = useAppSelector((state) => state.auth);
+  const { profile } = useAppSelector((state) => state.profile)
 
   // Fetch updates from API
   useEffect(() => {
     const fetchComapnyUpdates = async () => {
       try {
-        const {data} = await api.get(`get-company-updates/${userData?._id}`);
+        const {data} = await api.get(`get-company-updates/${profile?._id}`);
         console.log("Response data in CompanyDocsExamples:", data);
           setUpdates(data.updates || []);
           setLoading(false);
@@ -49,8 +49,6 @@ const CompanyDocsUpdates = () => {
 
 
   const UpdateCard = ({ update }) => {
-    const [localEditor, setLocalEditor] = useState(null);
-
     const editor = useEditor({
       immediatelyRender: false,
       extensions: [

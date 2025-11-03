@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { loadDocsStart, loadDocsSuccess } from "@/lib/redux/slices/documentations";
+import { docsFailure, loadDocsStart, loadDocsSuccess } from "@/lib/redux/slices/documentations";
 
 const DocsLayout = ({ children }) => {
   const { docs, isLoading, error } = useAppSelector((state) => state.documentations);
@@ -19,12 +19,13 @@ const DocsLayout = ({ children }) => {
   const router = useRouter();
   const companyUserName = params.username;
   const dispatch = useAppDispatch();
+  const { profile } = useAppSelector((state) => state.profile)
 
   useEffect(() => {
     const fetchCompanyDocs = async () => {
       try {
         dispatch(loadDocsStart());
-        const { data } = await api.get(`get-company-documentations/${userData._id}`);
+        const { data } = await api.get(`get-company-documentations/${profile._id}`);
         dispatch(loadDocsSuccess(data?.documentations || []));
       } catch (err) {
         console.log(err);
@@ -32,8 +33,8 @@ const DocsLayout = ({ children }) => {
         toast.error(err?.response?.data?.message || "Failed to load documentations");
       }
     };
-    fetchCompanyDocs();
-  }, [companyUserName, pathname, router]);
+    profile && fetchCompanyDocs();
+  }, [companyUserName, profile, router]);
 
   const scrollLeft = () => {
     const container = document.getElementById("docs-scroll-container");
@@ -83,7 +84,7 @@ const DocsLayout = ({ children }) => {
               key={doc._id}
               href={`/dev_org/${companyUserName}/documentations/${doc.slug}`}
               className={`flex-shrink-0 w-80 text-left p-4 rounded-xl border transition-all duration-200 ${
-                pathname.endsWith(doc._id)
+                pathname.endsWith(doc.slug)
                   ? "border-primary bg-primary/10 text-white"
                   : "border-zinc-800 hover:border-primary/50 hover:bg-zinc-800/30 text-zinc-300"
               }`}

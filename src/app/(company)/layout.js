@@ -5,6 +5,7 @@ import { CompanyProfilePrompt } from "@/components/appComponents/CompanyProfileP
 import CompanyHeader from "@/components/appComponents/CompanyHeader";
 import { CompanyAppSidebar } from "@/components/appComponents/CompanySidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import RouteProtector from "./RouteProtector";
 
 
 const geist = Geist({
@@ -14,18 +15,21 @@ const geist = Geist({
 
 
 export default function CompanyLayout({ children }) {
+
   return (
     <>
-      <CompanyProfilePrompt />
-      <CompanyHeader/>
-      <SidebarProvider>
-        <CompanyAppSidebar className="mt-18"/>
-        <Toaster />
-        <main className="font-[var(--font-geist)] w-full">
-          <SidebarTrigger size={30}/>
-          {children}
-        </main> 
-      </SidebarProvider>
+      <RouteProtector>
+        <CompanyProfilePrompt />
+        <CompanyHeader/>
+        <SidebarProvider>
+          <CompanyAppSidebar className="mt-18"/>
+          <Toaster />
+          <main className="font-[var(--font-geist)] w-full">
+            <SidebarTrigger size={30}/>
+            {children}
+          </main> 
+        </SidebarProvider>
+      </RouteProtector>
     </>
   );
 }

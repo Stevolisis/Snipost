@@ -18,7 +18,6 @@ export default function DocsDefaultPage() {
     if (!isLoading && docs.length > 0) {
       router.replace(`/dev_org/${username}/documentations/${docs[0].slug}`);
     } else if (!isLoading && docs.length === 0) {
-      // keep toast but we still show the empty UI
       toast.info("No documentations found.");
     }
   }, [docs, isLoading, username, router]);

@@ -175,8 +175,6 @@ const SnippetPageClient = ({params, initialSnippet }) => {
               }
           });
 
-          console.log("Api: ", response);
-
           type === "upvote" ? dispatch(upvoteSnippetApiSuccess(response.data.snippet)) 
           : dispatch(downvoteSnippetApiSuccess(response.data.snippet))
           
@@ -315,7 +313,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
         <div className='flex-grow md:flex-[2]'>
           <Skeleton className="h-[620px] w-full" />
         </div>
-        <div className='md:flex-[1] md:max-w-[400px] flex flex-col gap-y-3'>
+        <div className='md:flex-1 md:max-w-[400px] flex flex-col gap-y-3'>
           <Skeleton className="h-[380px] w-full"/>
         </div>
       </div>
@@ -579,7 +577,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
             ))}
           </div>
 
-          <div className='md:flex-[1] md:max-w-[400px] flex flex-col gap-y-3'>
+          <div className='md:flex-1 md:max-w-[400px] flex flex-col gap-y-3'>
             <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
               <CardHeader>
                 <div className="flex items-center gap-2">

@@ -56,7 +56,6 @@ export default function DevOrgLayout({ children }) {
   const basePath = `/dev_org/${username}`
   const dispatch = useAppDispatch();
   const { profile, loading, error } = useAppSelector((state) => state.profile)
-  const { userData } = useAppSelector((state) => state.auth);
   const [similarCompanies, setSimilarCompanies] = useState([]);
 
   const fetchProfile = async () => {
@@ -86,9 +85,10 @@ export default function DevOrgLayout({ children }) {
   const fetchCompanyDocs = async () => {
     try {
       dispatch(loadDocsStart());
-      const { data } = await api.get(`get-company-documentations/${userData._id}`);
+      const { data } = await api.get(`get-company-documentations/${profile._id}`);
       dispatch(loadDocsSuccess(data?.documentations || []));
     } catch (err) {
+      console.log(err);
       dispatch(docsFailure(err?.response?.data?.message || "Failed to load documentations"));
       toast.error(err?.response?.data?.message || "Failed to load documentations");
     }
@@ -97,8 +97,8 @@ export default function DevOrgLayout({ children }) {
   useEffect(() => {
     fetchProfile();
     fetchCompanies();
-    fetchCompanyDocs();
-  }, [username]);
+    profile && fetchCompanyDocs();
+  }, [username, profile?._id]);
 
   if (loading) {
     return (
@@ -134,38 +134,38 @@ export default function DevOrgLayout({ children }) {
         {/* Header Section - Plain Banner with User Info */}
         <section className="relative w-full">
           {/* Banner Image */}
-          <div className="relative h-40 w-full rounded-t-xl overflow-hidden">
-            <Image
-              src={profile?.banner?.url || ""}
-              alt="Profile banner"
-              fill
-              className="object-cover"
-              priority
-            />
-            {/* Optional overlay for readability */}
-            <div className="absolute inset-0 bg-black/20" />
-          </div>
+        <div className="relative h-40 w-full rounded-t-xl overflow-hidden">
+          <Image
+            src={profile?.banner?.url || ""}
+            alt="Profile banner"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* Gradient overlay from bottom to top */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+        </div>
 
           {/* Profile Info Card */}
-          <div className="absolute bottom-0 left-3 sm:left-6 transform translate-y-1/2 flex items-end gap-4">
+          <div className="absolute bottom-0 top-12 sm:top-0 left-3 sm:left-6 transform translate-y-1/2 flex items-end gap-4">
             {/* Avatar Box */}
-            <div className="flex items-center justify-center w-24 h-24 min-w-24 min-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
+            <div className="flex items-center justify-center w-18 h-18 min-w-18 min-h-18 sm:w-24 sm:h-24 sm:min-w-24 sm:min-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
               <Image
-                src={userData?.avatar?.url || "/placeholder.svg"}
-                alt={`${userData?.name || "User"} avatar`}
+                src={profile?.avatar?.url || "/placeholder.svg"}
+                alt={`${profile?.name || "User"} avatar`}
                 width={96}
                 height={96}
-                className="object-contain"
+                className="object-contain "
               />
             </div>
 
             {/* User Info */}
-            <div className="flex flex-col space-y-2 mt-18">
+            <div className="flex flex-col space-y-2 -mb-2 sm:mb-2">
               <h1 className="text-2xl font-semibold text-foreground">
-                {userData?.name}
+                {profile?.name}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center text-sm sm:text-base gap-1">
                   <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>{profile?.location || "Unknown"}</span>
