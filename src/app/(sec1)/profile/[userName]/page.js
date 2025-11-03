@@ -31,7 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function ProfilePage({ params }) {
-  const { userId } = use(params);
+  const { userName } = use(params);
   const [bookmarks, setBookmarks] = useState([]);
   const authState = useAppSelector((state) => state.auth)
   const userData = authState?.userData || null
@@ -41,7 +41,7 @@ export default function ProfilePage({ params }) {
   const dispatch = useAppDispatch()
   const [activeTab, setActiveTab] = useState('snippets')
 
-  const isOwner = userData?._id === userId
+  const isOwner = userData?.userName === userName
   const isFollowing = userData?.following?.some(
     follow => follow.entity.toString() === profile?._id.toString()
   )
@@ -49,7 +49,7 @@ export default function ProfilePage({ params }) {
   const fetchProfile = async () => {
     try {
       dispatch(loadProfileStart())
-      const response = await api.get(`/get-user/${userId}`)
+      const response = await api.get(`/get-user/${userName}`)
       dispatch(loadProfileSuccess(response.data.user))
     } catch (err) {
       dispatch(loadProfileFailure(err.response?.data?.message || 'Failed to load profile'))
@@ -86,7 +86,7 @@ export default function ProfilePage({ params }) {
   const fetchSnippets = async () => {
     try {
       dispatch(loadSnippetsStart())
-      const response = await api.get(`/get-user-snippets/${userId}?limit=10`)
+      const response = await api.get(`/get-user-snippets/${profile._id}?limit=10`)
       const snippets = response.data.snippets || []
       dispatch(loadSnippetsSuccess(snippets))
     } catch (err) {
@@ -212,13 +212,18 @@ export default function ProfilePage({ params }) {
 
   useEffect(() => {
     fetchProfile()
-    fetchSnippets()
     if (isOwner) {
       fetchTransactions()
       fetchEarningSummary()
       fetchBookmarks()
     }
-  }, [userId])
+  }, [userName]);
+
+  useEffect(() => {
+    if (profile) {
+      fetchSnippets()
+    }
+  }, [profile]);
 
   if (loading) {
     return (
@@ -546,7 +551,7 @@ const streakCount = profile?.streak?.count || 0;
                   <Award className="h-5 w-5" />
                   <span>Achievements</span>
                 </div>
-                <Link href={`/profile/${profile._id}/achievements`} className='underline text-sm text-muted-foreground hover:text-primary transition-colors duration-150'>
+                <Link href={`/profile/${profile.userName}/achievements`} className='underline text-sm text-muted-foreground hover:text-primary transition-colors duration-150'>
                   View all
                 </Link>
               </CardTitle>
@@ -596,7 +601,7 @@ const streakCount = profile?.streak?.count || 0;
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Your Bookmarks</span>
-                  <Link href={`/profile/${profile._id}/bookmark`} className='underline text-sm text-muted-foreground hover:text-primary transition-colors duration-150'>View all</Link>
+                  <Link href={`/profile/${profile.userName}/bookmark`} className='underline text-sm text-muted-foreground hover:text-primary transition-colors duration-150'>View all</Link>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -605,7 +610,7 @@ const streakCount = profile?.streak?.count || 0;
                     {bookmarks.slice(0, 3).map((bookmark, i) => (
                       <Link 
                         key={i} 
-                        href={`/snippet/${bookmark?.entity?._id}`}
+                        href={`/snippet/${bookmark?.entity?.slug}`}
                         className="block p-2 hover:bg-muted rounded transition-colors"
                       >
                         <p className="font-medium line-clamp-1">{bookmark?.entity?.title}</p>

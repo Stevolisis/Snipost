@@ -20,9 +20,7 @@ import { bookmarkSnippetApiSuccess, bookmarkSnippetSuccess, downvoteSnippetApiSu
 import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/redux/slices/comments';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Fork } from '@/components/appComponents/Fork';
-import { useRouter } from 'next/navigation';
 import { useIntersectionObserver } from 'react-haiku';
-import Head from 'next/head';
 
 const SyntaxHighlighter = dynamic(
   () => import('react-syntax-highlighter').then((mod) => {
@@ -338,7 +336,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
       {
         snippet && 
         <div className='px-5 flex flex-col md:flex-row gap-5'>
-          <div className='flex-grow md:flex-[2]'>
+          <div className='w-full md:w-[60vw]'>
             <Card className="w-full bg-transparent hover:border-gray-600 transition-colors duration-200">
               <CardHeader>
                 <div className='-mb-8 py-3'>
@@ -469,7 +467,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
                     </div>
                   </CardHeader>
 
-                  <CardContent>
+                  <CardContent className="px-0 sm:px-6">
                     <div className='pt-4'>
                       <SyntaxHighlighter
                         language={code.language.toLowerCase()}
@@ -593,7 +591,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
                     className="rounded-full"
                   />
                   <div>
-                    <Link href={userData?.role === "developer" ? `/profile/${snippet.user?._id}` :"/dev_org"} className="text-sm font-semibold text-foreground hover:underline">
+                    <Link href={userData?.role === "developer" ? `/profile/${snippet.user?.userName}` :"/dev_org"} className="text-sm font-semibold text-foreground hover:underline">
                       <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
                         {snippet.user?.name || 'Unknown User'}
                       </CardTitle>

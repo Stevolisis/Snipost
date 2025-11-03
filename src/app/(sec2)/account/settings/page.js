@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { updateUserData } from '@/lib/redux/slices/auth'
 import api from '@/utils/axiosConfig'
 import { toast } from "sonner"
+import slugify from 'slugify'
 
 const allTags = [
   // Frameworks & Libraries
@@ -172,9 +173,19 @@ const page = () => {
   },[])
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormValues(prev => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+
+    if (name === "userName") {
+      // ✅ enforce lowercase, replace spaces with underscore, allow underscore
+      const sanitized = slugify(value, { lower: true, strict: true });
+      setFormValues((prev) => ({ ...prev, userName: sanitized }));
+      return;
+    }
+
+    setFormValues((prev) => ({ ...prev, [name]: value }));
+
+  };
+
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {

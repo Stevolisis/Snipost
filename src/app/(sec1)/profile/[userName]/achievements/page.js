@@ -19,7 +19,7 @@ import api from '@/utils/axiosConfig';
 import { Achievements } from '@/constants/achievements';
 
 export default function AchievementPage({params}) {
-  const { userId } = use(params);
+  const { userName } = use(params);
   const [selectedAchievement, setSelectedAchievement] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [user, setUser] = useState(null);
@@ -32,6 +32,7 @@ export default function AchievementPage({params}) {
     unclaimed,
     isLoading
   } = useAppSelector((state) => state.achievements);
+  const isOwner = userData?.userName === userName
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -53,7 +54,7 @@ export default function AchievementPage({params}) {
 
   const fetchUser = async () => {
     try {
-      const response = await api.get(`/get-user/${userId}`);
+      const response = await api.get(`/get-user/${userName}`);
       setUser(response.data.user);
     } catch (err) {
       toast.error(err.message)
@@ -157,7 +158,7 @@ export default function AchievementPage({params}) {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 text-foreground">
-            {userData?._id === userId && "Your"} Achievements
+            {isOwner && "Your"} Achievements
           </h1>
           <p className="text-muted-foreground mb-6">
             Unlock achievements by being active in the Snipost community
@@ -180,7 +181,7 @@ export default function AchievementPage({params}) {
 
           {unclaimed.length > 0 && (
             <div className="mb-6">
-              {(userId === userData?._id) && (<Button 
+              {(isOwner) && (<Button 
                 variant="default"
                 onClick={handleClaimAllAchievements}
               >
@@ -202,8 +203,8 @@ export default function AchievementPage({params}) {
                 e.stopPropagation();
                 handleClaimAchievement(achievement.key);
               }}
-              userId={userId}
-              authId={userData?._id}
+              userName={userName}
+              authUserName={userData?._id}
             />
           ))}
         </div>
@@ -237,7 +238,7 @@ export default function AchievementPage({params}) {
                   </div>
                 </div>
                 
-                {(userId === userData?._id) && (unlocked.includes(selectedAchievement.key) && 
+                {(isOwner) && (unlocked.includes(selectedAchievement.key) && 
                   (claimed.includes(selectedAchievement.key) ? 
                   <Button 
                     className="w-full"
@@ -287,7 +288,7 @@ export default function AchievementPage({params}) {
                   </div>
                 </div>
                 
-                {(userId === userData?._id) && (unlocked.includes(selectedAchievement.key) && 
+                {(isOwner) && (unlocked.includes(selectedAchievement.key) && 
                   (claimed.includes(selectedAchievement.key) ? 
                     <Button 
                         className="w-full"
@@ -314,7 +315,7 @@ export default function AchievementPage({params}) {
   );
 }
 
-const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim, userId, authId }) => {
+const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim, userName, authUserName }) => {
   return (
     <Card 
       className={`cursor-pointer hover:shadow-md hover:border-gray-600 transition-colors duration-200 ${
@@ -348,7 +349,7 @@ const AchievementCard = ({ achievement, isEarned, isClaimed, onClick, onClaim, u
               <span>+{achievement.xp} XP</span>
             </div>
             
-            {(userId === authId) && (isEarned && 
+            {(userName === authUserName) && (isEarned && 
               isClaimed ? 
               <Button 
                 size="sm" 

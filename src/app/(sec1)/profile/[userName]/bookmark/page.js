@@ -132,7 +132,7 @@ const page = () => {
                             className="rounded-full min-h-[25px] aspect-square object-cover"
                         />
                         <div>
-                        <Link href={`/profile/${snippet?.entity?.user?.entity?._id}`} className="text-sm font-semibold text-foreground hover:underline">
+                        <Link href={`/profile/${snippet?.entity?.user?.entity?.userName}`} className="text-sm font-semibold text-foreground hover:underline">
                             <CardTitle className="text-sm text-gray-400 line-clamp-2 hover:underline">
                             {(snippet?.entity?.user?.entity?.name) || 'Unknown User'}
                             </CardTitle>
@@ -158,7 +158,7 @@ const page = () => {
                 </div>
                 
                 <div className='-mb-6 py-3'>
-                    <Link href={`/snippet/${snippet?.entity?._id}`} className="text-2xl line-clamp-2 text-foreground 
+                    <Link href={`/snippet/${snippet?.entity?.slug}`} className="text-2xl line-clamp-2 text-foreground 
                     font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
                     {snippet?.entity?.title || 'Untitled Snippet'}
                     </Link>

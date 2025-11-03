@@ -228,7 +228,7 @@ export function AppSidebar({ ...props }) {
           <SidebarMenu>
             {userData && <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
-                <Link href={userData?.role === "developer" ? `/profile/${userData._id}` : `/dashboard`}>
+                <Link href={userData?.role === "developer" ? `/profile/${userData.userName}` : `/dashboard`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {
                       userData?.avatar?.url ? 

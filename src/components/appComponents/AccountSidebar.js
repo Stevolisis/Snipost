@@ -39,7 +39,7 @@ export function AccountSidebar({ ...props }) {
   navMain: [
     {
       title: "My Account",
-      url: `/profile/${userData?._id}`,
+      url: `/profile/${userData?.userName}`,
       icon: User,
       isActive: false,
     },
@@ -58,7 +58,7 @@ export function AccountSidebar({ ...props }) {
     {
       title: "Achievement",
       icon: Award,
-      url: `/profile/${userData?._id}/achievements`,
+      url: `/profile/${userData?.userName}/achievements`,
       isActive: true
     },
     {
@@ -104,7 +104,7 @@ export function AccountSidebar({ ...props }) {
             {userData && 
               <SidebarMenuItem>
                 <SidebarMenuButton size="lg" asChild>
-                  <Link href={`/profile/${userData._id}`}>
+                  <Link href={`/profile/${userData.userName}`}>
                     <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {
                       userData?.avatar?.url ? 
