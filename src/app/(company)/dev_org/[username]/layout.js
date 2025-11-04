@@ -191,7 +191,7 @@ export default function DevOrgLayout({ children }) {
   {/* Banner Image */}
   <div className="relative h-40 w-full rounded-t-xl overflow-hidden">
     <Image
-      src={profile?.banner?.url || ""}
+      src={profile?.banner?.url || "/default_avatar.png"}
       alt="Profile banner"
       fill
       className="object-cover"
@@ -206,7 +206,7 @@ export default function DevOrgLayout({ children }) {
     {/* Avatar Box */}
     <div className="flex items-center justify-center w-18 h-18 min-w-18 min-h-18 sm:w-24 sm:h-24 sm:min-w-24 sm:min-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
       <Image
-        src={profile?.avatar?.url || "/placeholder.svg"}
+        src={profile?.avatar?.url || "/default_avatar.png"}
         alt={`${profile?.name || "User"} avatar`}
         width={96}
         height={96}

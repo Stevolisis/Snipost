@@ -24,7 +24,6 @@ const CompanyDocsExamples = () => {
                 Authorization: `Bearer ${jwtToken}`
             }
         });
-        console.log("Response data in CompanyDocsExamples:", response.data);
         const snippets = response.data.snippets || [];
         dispatch(loadSnippetsSuccess(snippets));
       } catch (err) {

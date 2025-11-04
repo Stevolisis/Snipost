@@ -127,13 +127,11 @@ const Header = () => {
     }
   }
 
-  // console.log(connected , walletAddress , jwtToken , userData , isConnected)
   useEffect(() => {
     if (jwtToken) {
       getNotifications();
     }
   }, [jwtToken]);
-  // console.log("wjak: ", wallet?.adapter?.name, publicKey);
 
 const called = useRef(false);
   useEffect(() => {
@@ -145,14 +143,12 @@ const called = useRef(false);
         try {
           const response = await fetch(`/api/github?code=${code}`);
           const data = await response.json();
-          console.log("GitHub OAuth Data:", data);
         } catch (error) {
           console.error("Error fetching GitHub profile:", error);
         }
       };
       fetchData();
     } else {
-      console.log(code+" - no code");
       setprofile2("Sign in with Github")
     }
   }, [code]);
