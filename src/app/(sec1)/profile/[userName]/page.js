@@ -128,7 +128,7 @@ export default function ProfilePage({ params }) {
         (async()=> {  
           const response = api.put('/follow-user', {
             followId: profile._id,
-            role: userData.role
+            role: profile.role
           }, {
             headers: { Authorization: `Bearer ${jwtToken}` }
           });
@@ -157,7 +157,7 @@ export default function ProfilePage({ params }) {
         (async()=> {
           const response = api.put('/unfollow-user', {
             followId: profile._id,
-            role: userData.role
+            role: profile.role
           }, {
             headers: { Authorization: `Bearer ${jwtToken}` }
           });

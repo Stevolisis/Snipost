@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
-import { FileText, Code2, Bell, MapPin, Building2, Globe, Users, ArrowRight } from "lucide-react"
+import { FileText, Code2, Bell, MapPin, Building2, Globe, Users, ArrowRight, Check, UserPlus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +14,8 @@ import { toast } from "sonner"
 import api from "@/utils/axiosConfig"
 import { docsFailure, loadDocsStart, loadDocsSuccess } from "@/lib/redux/slices/documentations"
 import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { updateUserData } from "@/lib/redux/slices/auth"
 
 // Navigation tabs structure
 const navigationTabs = [
@@ -55,9 +57,14 @@ export default function DevOrgLayout({ children }) {
   const pathname = usePathname()
   const basePath = `/dev_org/${username}`
   const dispatch = useAppDispatch();
-  const { profile, loading, error } = useAppSelector((state) => state.profile)
+  const { profile, loading, error } = useAppSelector((state) => state.profile);
+  const { userData, jwtToken } = useAppSelector((state) => state.auth)
   const [similarCompanies, setSimilarCompanies] = useState([]);
+  const isFollowing = userData?.following?.some(
+    follow => follow.entity.toString() === profile?._id.toString()
+  );
 
+  
   const fetchProfile = async () => {
     const loadingId = toast.loading('Loading profile...');
     try {
@@ -93,6 +100,54 @@ export default function DevOrgLayout({ children }) {
       toast.error(err?.response?.data?.message || "Failed to load documentations");
     }
   };
+
+  const fetchUser = async () => {
+    try {
+      const response = await api.get("/me", {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`
+        }
+      })
+      dispatch(updateUserData(response.data.user))
+    } catch (err) {
+      toast.error(err.message)
+    }
+  }
+
+    const handleFollow = async () => {
+      const loadingId = toast.loading('Following...');
+      try {
+        const {data} = await api.put('/follow-user', {
+          followId: profile._id,
+          role: profile.role
+        }, {
+          headers: { Authorization: `Bearer ${jwtToken}` }
+        });
+        await fetchUser();
+        toast.success(data.message||'Followed successfully!', { id: loadingId });
+      } catch (err) {
+        console.error('Follow error:', err)
+        toast.error(err.response?.data?.message || 'Failed to load companies', { id: loadingId });
+      }
+    }
+  
+    const handleUnfollow = async () => {
+      const loadingId = toast.loading('Unfollowing...');
+      try {
+        const response = await api.put('/unfollow-user', {
+          followId: profile._id,
+          role: profile.role
+        }, {
+          headers: { Authorization: `Bearer ${jwtToken}` }
+        });
+        await fetchUser();
+        toast.success(data.message||'Followed successfully!', { id: loadingId });
+      } catch (err) {
+        console.error('Unfollow error:', err)
+        toast.error(err.response?.data?.message || 'Failed to load companies', { id: loadingId });
+      }
+    }
+
 
   useEffect(() => {
     fetchProfile();
@@ -132,75 +187,100 @@ export default function DevOrgLayout({ children }) {
       <div className="px-6 md:px-20 py-8 space-y-10">
 
         {/* Header Section - Plain Banner with User Info */}
-        <section className="relative w-full">
-          {/* Banner Image */}
-        <div className="relative h-40 w-full rounded-t-xl overflow-hidden">
-          <Image
-            src={profile?.banner?.url || ""}
-            alt="Profile banner"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Gradient overlay from bottom to top */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+<section className="relative w-full">
+  {/* Banner Image */}
+  <div className="relative h-40 w-full rounded-t-xl overflow-hidden">
+    <Image
+      src={profile?.banner?.url || ""}
+      alt="Profile banner"
+      fill
+      className="object-cover"
+      priority
+    />
+    {/* Gradient overlay from bottom to top */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+  </div>
+
+  {/* Profile Info Card */}
+  <div className="absolute bottom-0 top-12 sm:top-0 left-3 sm:left-6 transform translate-y-1/2 flex items-end gap-4 w-[calc(100%-2rem)]">
+    {/* Avatar Box */}
+    <div className="flex items-center justify-center w-18 h-18 min-w-18 min-h-18 sm:w-24 sm:h-24 sm:min-w-24 sm:min-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
+      <Image
+        src={profile?.avatar?.url || "/placeholder.svg"}
+        alt={`${profile?.name || "User"} avatar`}
+        width={96}
+        height={96}
+        className="object-contain"
+      />
+    </div>
+
+    {/* User Info */}
+    <div className="flex flex-col space-y-2 -mb-2 sm:mb-2 w-full">
+      <div className="flex items-center justify-between w-full">
+        <h1 className="text-2xl font-semibold text-foreground">
+          {profile?.name}
+        </h1>
+
+        {/* 🔹 Follow Button */}
+    {/* User Info */}
+    <Button
+      onClick={isFollowing ? handleUnfollow : handleFollow}
+      variant={isFollowing ? "secondary" : "default"}
+      className={`rounded-full px-4 sm:px-6 h-7 sm:h-8 text-xs sm:text-sm flex items-center gap-1.5 transition-all duration-200 ${
+        isFollowing ? "bg-muted hover:bg-muted/80" : "bg-primary hover:bg-primary/90"
+      }`}
+    >
+      {isFollowing ? (
+        <>
+          <Check className="h-3.5 w-3.5" />
+          Following
+        </>
+      ) : (
+        <>
+          <UserPlus className="h-3.5 w-3.5" />
+          Follow
+        </>
+      )}
+    </Button>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center text-sm sm:text-base gap-1">
+          <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+          <span>{profile?.location || "Unknown"}</span>
         </div>
 
-          {/* Profile Info Card */}
-          <div className="absolute bottom-0 top-12 sm:top-0 left-3 sm:left-6 transform translate-y-1/2 flex items-end gap-4">
-            {/* Avatar Box */}
-            <div className="flex items-center justify-center w-18 h-18 min-w-18 min-h-18 sm:w-24 sm:h-24 sm:min-w-24 sm:min-h-24 aspect-square rounded-md bg-background shadow-md border border-border overflow-hidden">
-              <Image
-                src={profile?.avatar?.url || "/placeholder.svg"}
-                alt={`${profile?.name || "User"} avatar`}
-                width={96}
-                height={96}
-                className="object-contain "
-              />
-            </div>
+        <div className="flex items-center text-sm sm:text-base gap-1">
+          <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
+          <span>{profile?.company_size || "N/A"}</span>
+        </div>
 
-            {/* User Info */}
-            <div className="flex flex-col space-y-2 -mb-2 sm:mb-2">
-              <h1 className="text-2xl font-semibold text-foreground">
-                {profile?.name}
-              </h1>
+        <div className="flex items-center text-sm sm:text-base gap-1">
+          <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+          <span>{profile?.followers?.length || 0} followers</span>
+        </div>
 
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center text-sm sm:text-base gap-1">
-                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>{profile?.location || "Unknown"}</span>
-                </div>
+        {profile?.company_website && (
+          <Link
+            href={profile.company_website}
+            target="_blank"
+            className="flex items-center text-sm sm:text-base gap-1 hover:text-primary transition-colors"
+          >
+            <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span>Website</span>
+          </Link>
+        )}
+      </div>
 
-                <div className="flex items-center text-sm sm:text-base gap-1">
-                  <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>{profile?.company_size || "N/A"}</span>
-                </div>
+      {profile?.description && (
+        <p className="text-sm text-muted-foreground max-w-xl mt-2">
+          {profile.description}
+        </p>
+      )}
+    </div>
+  </div>
+</section>
 
-                <div className="flex items-center text-sm sm:text-base gap-1">
-                  <Users className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>{profile?.followers?.length || 0} followers</span>
-                </div>
-
-                {profile?.company_website && (
-                  <Link
-                    href={profile.company_website}
-                    target="_blank"
-                    className="flex items-center text-sm sm:text-base gap-1 hover:text-primary transition-colors"
-                  >
-                    <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Website</span>
-                  </Link>
-                )}
-              </div>
-
-              {profile?.description && (
-                <p className="text-sm text-muted-foreground max-w-xl mt-2">
-                  {profile.description}
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
 
         {/* Tabs and Main Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 mt-30 sm:mt-28">
