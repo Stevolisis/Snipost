@@ -47,6 +47,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer"
 import Link from 'next/link';
+import { trackCodePublished } from '@/lib/analytics';
 
 const allTags = [
   // Frameworks & Libraries
@@ -218,6 +219,7 @@ const CreateExamples = () => {
       });
 
       toast.success(response.data.message || "Snippet published!", { id });
+      trackCodePublished(title, codeBlocks[0]?.language || 'unknown');
       setIsLoading(false);
       setTitle("");
       setDescription("");

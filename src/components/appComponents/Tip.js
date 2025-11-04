@@ -19,6 +19,7 @@ import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from "@solana
 import { useState } from "react"
 import { useAppSelector } from "@/lib/redux/hooks"
 import api from "@/utils/axiosConfig"
+import { trackTip } from "@/lib/analytics"
 
 export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiverType }) {
   const { connection } = useConnection()
@@ -110,60 +111,63 @@ export function Tip({ walletAddress, snippetId, snippetTitle, receiverId, receiv
 
       // ✍️ Sign & send transaction
       const signature = await sendTransaction(transaction, connection);
+      const toastId = toast.loading("Processing transaction...");
 
-      toast.promise(
-        (async () => {
-          try {
-            const confirmation = await connection.confirmTransaction(
-              {
-                signature,
-                blockhash,
-                lastValidBlockHeight,
-              },
-              "confirmed"
-            );
+      try {
+        const confirmation = await connection.confirmTransaction(
+          {
+            signature,
+            blockhash,
+            lastValidBlockHeight,
+          },
+          "confirmed"
+        );
 
-            if (confirmation.value.err) {
-              throw new Error("Transaction failed");
-            }
-
-            // 📩 Record tip
-            await recordTransaction(signature, amount, platformFee / 1e9);
-
-            return (
-              <div className="flex flex-col gap-2">
-                <p>Tip sent successfully!</p>
-                <p className="text-sm text-gray-500">
-                  {platformFee / 1e9} SOL fee collected by Snipost
-                </p>
-                <a
-                  href={`https://explorer.solana.com/tx/${signature}?cluster=mainnet`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
-                >
-                  View transaction on Explorer
-                </a>
-              </div>
-            );
-          } catch (err) {
-            console.error("Confirmation error:", err);
-            throw new Error("Transaction confirmation failed");
-          }
-        })(),
-        {
-          loading: "Processing transaction...",
-          success: (data) => data,
-          error: (err) => err?.message || "Failed to complete transaction",
-          duration: 5000,
+        if (confirmation.value.err) {
+          throw new Error("Transaction failed");
         }
-      );
+
+        // 📩 Record tip
+        await recordTransaction(signature, amount, platformFee / 1e9);
+        setIsOpen(false);
+
+        toast.success(
+          <div className="flex flex-col gap-2">
+            <p>Tip sent successfully!</p>
+            <p className="text-sm text-gray-500">
+              {platformFee / 1e9} SOL fee collected by Snipost
+            </p>
+            <a
+              href={`https://explorer.solana.com/tx/${signature}?cluster=mainnet`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              View transaction on Explorer
+            </a>
+          </div>,
+          {
+            id: toastId,
+            duration: 5000,
+          }
+        );
+
+        trackTip(snippetTitle, amount);
+      } catch (err) {
+        console.error("Confirmation error:", err);
+        toast.error(
+          err?.message || "Failed to complete transaction",
+          {
+            id: toastId,
+            duration: 5000,
+          }
+        );
+      }
     } catch (error) {
       console.error("Tip error:", error);
       toast.error(error?.message || "An error occurred while sending tip");
     } finally {
       setIsLoading(false);
-      setIsOpen(false);
     }
   };
 

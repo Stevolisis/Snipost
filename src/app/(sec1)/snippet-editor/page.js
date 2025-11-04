@@ -47,6 +47,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer"
 import Link from 'next/link';
+import { trackCodePublished } from '@/lib/analytics';
 
 const allTags = [
   // Frameworks & Libraries
@@ -162,7 +163,7 @@ const SnippetEditor = () => {
   const [codeBlocks, setCodeBlocks] = useState([
     { name: "", language: "javascript", content: "" }
   ]);
-  const [folder, setFolder] = useState("");
+  // const [folder, setFolder] = useState("");
   const [type, setType] = useState("public");
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [limitErrorMessage, setLimitErrorMessage] = useState("");
@@ -217,7 +218,8 @@ const SnippetEditor = () => {
       });
       toast("Success", {
         description: response.data.message,
-      })
+      });
+      trackCodePublished(title, codeBlocks[0].language);
       setIsLoading(false);
       setTitle("");
       setDescription("");

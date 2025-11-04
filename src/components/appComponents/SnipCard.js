@@ -23,6 +23,7 @@ import api from '@/utils/axiosConfig';
 import { toast } from 'sonner';
 import { Fork } from './Fork';
 import { formatPublishedDate } from '@/utils/formatPublishedDate';
+import { trackDownvote, trackUpvote } from '@/lib/analytics';
 
 
 
@@ -50,11 +51,13 @@ const SnipCard = ({snippet, fix}) => {
                 snippetId: id, 
                 userId: userData._id,
             }));
+            trackUpvote(snippet.title);
         } else {
             dispatch(downvoteSnippetSuccess({
                 snippetId: id,
                 userId: userData._id, 
             }));
+            trackDownvote(snippet.title);
         }
 
         try {

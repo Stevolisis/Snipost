@@ -12,6 +12,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { renderText } from '@/utils/renderText';
 import Image from 'next/image';
+import { trackReplies } from '@/lib/analytics';
 
 const ReplyBox = ({comment, setShowReplyBox}) => {
     const [reply, setReply] = useState("");
@@ -24,6 +25,7 @@ const ReplyBox = ({comment, setShowReplyBox}) => {
     const textareaRef = useRef(null);
     const { jwtToken } = useAppSelector((state) => state.auth)
     const dispatch = useAppDispatch();
+    const { snippet } = useAppSelector((state) => state.snippets);
 
     const fetchMentionedUsers = useCallback(async (query) => {
         try {
@@ -153,56 +155,51 @@ const ReplyBox = ({comment, setShowReplyBox}) => {
             return;
         }
 
+        const replyData = {
+            text: reply,
+            replyToUserId: comment.author.entity._id,
+            replyToUserType: comment.author.entity.role,
+            mentions: [{
+                entity: comment.author.entity._id,
+                model: comment.author.entity.role
+            },
+            ...mentions]
+        };
+
+        const toastId = toast.loading('Posting your reply...');
+        
         try {
-            const replyData = {
-                text: reply,
-                replyToUserId: comment.author.entity._id,
-                replyToUserType: comment.author.entity.role,
-                mentions: [{
-                    entity: comment.author.entity._id,
-                    model: comment.author.entity.role
-                },
-                ...mentions
-            ]
-            }
-
-            await toast.promise(
-                (async () => {
-                    dispatch(loadCommentsStart());
-                    const response = await api.post(`/reply-comment/${comment._id}`, replyData, {
-                        headers: {
-                            Authorization: `Bearer ${jwtToken}`
-                        }
-                    });
-                    
-                    dispatch(updateCommentAfterVote(response.data.comment));
-                    setReply("");
-                    setMentions([]);
-                    return response.data;
-                })(),
-                {
-                    loading: 'Posting your comment...',
-                    success: (data) => data.message || 'Comment posted successfully!',
-                    error: (err) => {
-
-                        // Handle 401 specifically
-                        console.log("ttttttttt: ", err);
-                        if (err.response?.status === 401) {
-                            dispatch(disconnectWallet()); // Clear auth state
-                            // disconnect(); // Wallet disconnect logic
-                            return 'Session expired. Please reconnect your wallet.';
-                        }
-                        
-                        dispatch(commentsFailure(err.message));
-                        return err.response?.data?.message || 'Failed to post comment';
-                    }
+            dispatch(loadCommentsStart());
+            const response = await api.post(`/reply-comment/${comment._id}`, replyData, {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`
                 }
-            );
+            });
+            
+            dispatch(updateCommentAfterVote(response.data.comment));
+            setReply("");
+            setMentions([]);
             setShowReplyBox(false);
             
+            toast.success(response.data.message || 'Reply posted successfully!', {
+                id: toastId
+            });
+            trackReplies(snippet.title);
+            
         } catch (err) {
-            console.error('Comment error:', err);
-            // The toast.promise will have already handled the error display
+            console.error('Reply error:', err);
+            
+            if (err.response?.status === 401) {
+                dispatch(disconnectWallet());
+                toast.error('Session expired. Please reconnect your wallet.', {
+                    id: toastId
+                });
+            } else {
+                dispatch(commentsFailure(err.message));
+                toast.error(err.response?.data?.message || 'Failed to post reply', {
+                    id: toastId
+                });
+            }
         }
     };
 

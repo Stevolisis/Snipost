@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { trackFork } from '@/lib/analytics'
 
 export const Fork = ({ snippet, contentType, hasForked }) => {
   const [open, setOpen] = useState(false)
@@ -41,7 +42,8 @@ export const Fork = ({ snippet, contentType, hasForked }) => {
         }
       )
       
-      toast.success('Content forked successfully!')
+      toast.success('Content forked successfully!');
+      trackFork(snippet.title);
       router.push(`/edit-snippet/${response.data.fork._id}`)
     } catch (error) {
       toast.error('Failed to fork content')

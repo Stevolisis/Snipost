@@ -29,6 +29,7 @@ import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { trackFollow, trackUnfollow } from '@/lib/analytics'
 
 export default function ProfilePage({ params }) {
   const { userName } = use(params);
@@ -138,6 +139,7 @@ export default function ProfilePage({ params }) {
           loading: 'Following...',
           success: async (data) => {
             await fetchUser();
+            trackFollow(profile.name);
             return data?.message || 'Followed successfully!'
           },
           error: (err) =>{
@@ -167,6 +169,7 @@ export default function ProfilePage({ params }) {
           loading: 'Unfollowing...',
           success: async (data) => {
             await fetchUser();
+            trackUnfollow(profile.name);
             return data?.message || 'Unfollowed successfully!'
           },
           error: (err) =>{

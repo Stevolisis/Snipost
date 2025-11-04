@@ -21,6 +21,7 @@ import { loadCommentsSuccess, loadCommentsStart, commentsFailure } from '@/lib/r
 import { Skeleton } from '@/components/ui/skeleton';
 import { Fork } from '@/components/appComponents/Fork';
 import { useIntersectionObserver } from 'react-haiku';
+import { trackDownvote, trackFollow, trackUnfollow, trackUpvote } from '@/lib/analytics';
 
 const SyntaxHighlighter = dynamic(
   () => import('react-syntax-highlighter').then((mod) => {
@@ -102,6 +103,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
           loading: 'Following user...',
           success: async(data) => {
             await fetchUser();
+            trackFollow(targetUser.name);
             return data?.message || 'Followed successfully!';
           },
           error: (err) => {
@@ -137,6 +139,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
           loading: 'Unfollowing user...',
           success: async(data) => {
             await fetchUser();
+            trackUnfollow(targetUser.name);
             return data?.message || 'Unfollowed successfully!';
           },
           error: (err) => {
@@ -161,11 +164,13 @@ const SnippetPageClient = ({params, initialSnippet }) => {
               snippetId: id, 
               userId: userData._id,
           }));
+          trackUpvote(snippet.title);
       } else {
           dispatch(downvoteSnippetSuccess({
               snippetId: id,
               userId: userData._id, 
           }));
+          trackDownvote(snippet.title);
       }
 
       try {

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import api from "@/utils/axiosConfig"
 import { useAppSelector } from "@/lib/redux/hooks"
 import { toast } from "sonner"
+import { trackDocsCreated } from "@/lib/analytics"
 
 const templates = [
   {
@@ -283,7 +284,7 @@ const CreateDocumentation = () => {
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [editorContent, setEditorContent] = useState(null)
   const [currentTemplateContent, setCurrentTemplateContent] = useState("");
-  const { jwtToken } = useAppSelector((state) => state.auth);
+  const { jwtToken, userData } = useAppSelector((state) => state.auth);
 
   // Handle editor content changes
   const handleEditorChange = (content) => {
@@ -333,6 +334,8 @@ const CreateDocumentation = () => {
       setEditorContent(null);
       setCurrentTemplateContent("");
       toast.success(data?.message||'Documentation created successfully');
+      trackDocsCreated(userData?.username,template.title, title);
+
     } catch (error) {
       console.error('Error submitting documentation:', error)
       toast.error('Error creating documentation')

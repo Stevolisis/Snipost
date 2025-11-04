@@ -28,6 +28,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import Link from 'next/link';
+import { trackComment } from '@/lib/analytics';
 
 const CommentBox = () => {
     const [comment, setComment] = useState("");
@@ -257,65 +258,64 @@ const CommentBox = () => {
             return;
         }
 
-        try {
-            const commentData = {
-                contentId: snippet._id,
-                contentSlug: snippet.slug,
-                contentType: snippet.codeBlocks ? "Snippet" : "Snap",
-                text: comment,
-                snippetOwnerId: snippet.user._id,
-                snippetOwnerType: snippet.user.role,
-                mentions: [
-                    // Include the snippet creator
-                    {
-                        entity: snippet.user._id,
-                        model: snippet.user.role === "developer" ? "User" : "Company"
-                    },
-                    // Include any other mentioned users
-                    ...mentions]
-            };
-
-            await toast.promise(
-                (async () => {
-                    dispatch(loadCommentsStart());
-                    const response = await api.post("/create-comment", commentData, {
-                        headers: {
-                            Authorization: `Bearer ${jwtToken}`
-                        }
-                    });
-                    
-                    dispatch(addCommentSuccess(response.data.comment));
-                    setComment("");
-                    setMentions([]);
-                    return response.data;
-                })(),
+        const commentData = {
+            contentId: snippet._id,
+            contentSlug: snippet.slug,
+            contentType: snippet.codeBlocks ? "Snippet" : "Snap",
+            text: comment,
+            snippetOwnerId: snippet.user._id,
+            snippetOwnerType: snippet.user.role,
+            mentions: [
                 {
-                    loading: 'Posting your comment...',
-                    success: (data) => data.message || 'Comment posted successfully!',
-                    error: (err) => {
-                        // Check for LimitExceeded error
-                        if (err.response?.data?.message?.includes('LimitExceeded')) {
-                            setLimitErrorMessage(err.response.data.message);
-                            setShowLimitModal(true);
-                            return 'Limit exceeded. Please upgrade to continue.';
-                        }
+                    entity: snippet.user._id,
+                    model: snippet.user.role === "developer" ? "User" : "Company"
+                },
+                ...mentions
+            ]
+        };
 
-                        // Handle 401 specifically
-                        if (err.response?.status === 401) {
-                            dispatch(disconnectWallet()); // Clear auth state
-                            // disconnect(); // Wallet disconnect logic
-                            return 'Session expired. Please reconnect your wallet.';
-                        }
-                        
-                        dispatch(commentsFailure(err.message));
-                        return err.response?.data?.message || 'Failed to post comment';
-                    }
+        const toastId = toast.loading('Posting your comment...');
+        
+        try {
+            dispatch(loadCommentsStart());
+            const response = await api.post("/create-comment", commentData, {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`
                 }
-            );
+            });
+            
+            dispatch(addCommentSuccess(response.data.comment));
+            setComment("");
+            setMentions([]);
+            
+            // Track comment in background
+            trackComment(snippet.title);
+            
+            toast.success(response.data.message || 'Comment posted successfully!', {
+                id: toastId
+            });
             
         } catch (err) {
             console.error('Comment error:', err);
-            // The toast.promise will have already handled the error display
+            
+            // Handle specific errors
+            if (err.response?.data?.message?.includes('LimitExceeded')) {
+                setLimitErrorMessage(err.response.data.message);
+                setShowLimitModal(true);
+                toast.error('Limit exceeded. Please upgrade to continue.', {
+                    id: toastId
+                });
+            } else if (err.response?.status === 401) {
+                dispatch(disconnectWallet());
+                toast.error('Session expired. Please reconnect your wallet.', {
+                    id: toastId
+                });
+            } else {
+                dispatch(commentsFailure(err.message));
+                toast.error(err.response?.data?.message || 'Failed to post comment', {
+                    id: toastId
+                });
+            }
         }
     };
 

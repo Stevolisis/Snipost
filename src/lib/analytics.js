@@ -15,15 +15,46 @@ export const trackCodePublished = (title, language) => {
 }
 
 export const trackUpvote = (title) => {
-  sendGAEvent('event', 'upvote', {
+  sendGAEvent('event', 'upvotes', {
     category: 'engagement', 
     label: title,
     value: 1
   })
 }
 
+export const trackDownvote = (title) => {
+  sendGAEvent('event', 'downvotes', {
+    category: 'engagement', 
+    label: title,
+    value: 1
+  })
+}
+
+export const trackFollow = (name) => {
+  sendGAEvent('event', 'follows', {
+    category: 'engagement', 
+    label: name,
+    value: 1
+  })
+}
+export const trackUnfollow = (name) => {
+  sendGAEvent('event', 'unfollows', {
+    category: 'engagement', 
+    label: name,
+    value: 1
+  })
+}
+
 export const trackComment = (title) => {
-  sendGAEvent('event', 'comment', {
+  sendGAEvent('event', 'comments', {
+    category: 'engagement',
+    label: title,
+    value: 1
+  })
+}
+
+export const trackReplies = (title) => {
+  sendGAEvent('event', 'replies', {
     category: 'engagement',
     label: title,
     value: 1
@@ -31,26 +62,9 @@ export const trackComment = (title) => {
 }
 
 export const trackFork = (title) => {
-  sendGAEvent('event', 'fork', {
+  sendGAEvent('event', 'forks', {
     category: 'engagement',
     label: title, 
-    value: 1
-  })
-}
-
-export const trackCompanySignup = (companyName) => {
-  sendGAEvent('event', 'company_signup', {
-    category: 'conversion',
-    label: companyName,
-    value: 1
-  })
-}
-
-export const trackDocsCreated = (docType, title) => {
-  sendGAEvent('event', 'docs_created', {
-    category: 'content',
-    label: title,
-    doc_type: docType,
     value: 1
   })
 }
@@ -62,3 +76,31 @@ export const trackTip = (title, amount) => {
     value: amount
   })
 }
+
+export const trackCompanySignup = (companyName) => {
+  sendGAEvent('event', 'company_signup', {
+    category: 'conversion',
+    label: companyName,
+    value: 1
+  })
+}
+
+export const trackDocsCreated = (company, docType, title) => {
+  sendGAEvent('event', 'docs_created', {
+    category: 'content',
+    label: title,
+    company: company,
+    doc_type: docType,
+    value: 1
+  })
+}
+
+export const trackUpdatesCreated = (company, title) => {
+  sendGAEvent('event', 'update_created', {
+    category: 'content',
+    label: title,
+    company: company,
+    value: 1
+  })
+}
+

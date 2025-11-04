@@ -22,6 +22,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import api from "@/utils/axiosConfig";
 import slugify from "slugify";
+import { trackCompanySignup } from "@/lib/analytics";
 
 export default function SignupForm({ ...props }) {
   const router = useRouter();
@@ -103,6 +104,7 @@ export default function SignupForm({ ...props }) {
         password: form.password,
       });
       toast.success(res.data?.message || "Account created successfully!");
+      trackCompanySignup(form.name);
       router.push(`/otp/${res.data?.company?.id}`);
 
     } catch (error) {

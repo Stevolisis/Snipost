@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import api from '@/utils/axiosConfig';
 import { useAppSelector } from '@/lib/redux/hooks';
 import { toast } from 'sonner';
+import { trackUpdatesCreated } from '@/lib/analytics';
 
 const exampleUpdate = {
   version: "v2.4.0 - Major Update",
@@ -29,7 +30,7 @@ const exampleUpdate = {
 const CreateUpdate = () => {
   const [title, setTitle] = useState("");
   const [editorContent, setEditorContent] = useState(null);
-  const { jwtToken } = useAppSelector((state) => state.auth)
+  const { jwtToken, userData } = useAppSelector((state) => state.auth);
 
   
   // Handle editor content changes
@@ -60,6 +61,7 @@ const CreateUpdate = () => {
       setTitle("");
       setEditorContent(null);
       toast.success(data?.message || 'Update created successfully');
+      trackUpdatesCreated(userData?.username, title);
     } catch (error) {
       toast.error('Error creating update');
     }
