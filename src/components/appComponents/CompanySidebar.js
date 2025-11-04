@@ -40,6 +40,8 @@ export function CompanyAppSidebar({ ...props }) {
   const [activeItem, setActiveItem] = useState({ url: "/dev_org/snippets" });
   const { userData } = useAppSelector((state) => state.auth);
   const { docs, isLoading } = useAppSelector((state) => state.documentations);
+  const { profile } = useAppSelector((state) => state.profile);
+  const isOwner = userData?._id === profile?._id;
 
   const data = {
     navMain: [
@@ -50,8 +52,8 @@ export function CompanyAppSidebar({ ...props }) {
     ],
     tags: [
       {
-        name: `#${userData?.username || "solana"}`,
-        url: `/feed/tag/${userData?.username || "solana"}`,
+        name: `#${profile?.username || "solana"}`,
+        url: `/feed/tag/${profile?.username || "solana"}`,
         emoji: "🚀",
       },
     ],
@@ -68,15 +70,15 @@ export function CompanyAppSidebar({ ...props }) {
       {/* Header Section */}
       <SidebarHeader>
         <SidebarMenu>
-          {userData && (
+          {profile && (
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
-                <Link href={`/dev_org/${userData.username}/examples`}>
+                <Link href={`/dev_org/${profile.username}/examples`}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    {userData?.avatar?.url ? (
+                    {profile?.avatar?.url ? (
                       <Image
-                        src={userData.avatar.url}
-                        alt={userData.avatar.public_id}
+                        src={profile.avatar.url}
+                        alt={profile.avatar.public_id}
                         width={40}
                         height={40}
                         className="object-cover rounded-lg h-full w-full"
@@ -93,10 +95,10 @@ export function CompanyAppSidebar({ ...props }) {
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {userData?.name}
+                      {profile?.name}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
-                      @{userData?.username}
+                      @{profile?.username}
                     </span>
                   </div>
                 </Link>
@@ -105,12 +107,12 @@ export function CompanyAppSidebar({ ...props }) {
           )}
         </SidebarMenu>
 
-        <Button onClick={() => router.push("/docs/create_documentation")}>
+        {isOwner && <Button onClick={() => router.push("/docs/create_documentation")}>
           <Plus />
           <p>Create Content</p>
-        </Button>
+        </Button>}
 
-        <SidebarMenu>
+        {isOwner && <SidebarMenu>
           {data.navMain.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
@@ -125,7 +127,7 @@ export function CompanyAppSidebar({ ...props }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
-        </SidebarMenu>
+        </SidebarMenu>}
       </SidebarHeader>
 
       {/* Documentation Section */}
@@ -151,12 +153,12 @@ export function CompanyAppSidebar({ ...props }) {
                                 isActive={activeItem.url.endsWith(doc.slug)}
                                 onClick={() =>
                                   setActiveItem({
-                                    url: `/dev_org/${userData?.username}/documentations/${doc.slug}`,
+                                    url: `/dev_org/${profile?.username}/documentations/${doc.slug}`,
                                   })
                                 }
                               >
                                 <Link
-                                  href={`/dev_org/${userData?.username}/documentations/${doc.slug}`}
+                                  href={`/dev_org/${profile?.username}/documentations/${doc.slug}`}
                                 >
                                   <span>📄</span>
                                   <span className="truncate">{doc.title}</span>
@@ -198,7 +200,7 @@ export function CompanyAppSidebar({ ...props }) {
       )}
 
       {/* Tags Section */}
-      <SidebarContent className="overflow-y-auto">
+      {/* <SidebarContent className="overflow-y-auto">
         <SidebarGroup>
           <SidebarGroupLabel className="mt-4">tags</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -220,7 +222,7 @@ export function CompanyAppSidebar({ ...props }) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-      </SidebarContent>
+      </SidebarContent> */}
 
       <SidebarRail />
     </Sidebar>

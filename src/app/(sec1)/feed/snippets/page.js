@@ -111,7 +111,7 @@ const Page = () => {
     
   useEffect(() => {
     fetchAllUsers();
-    // fetchAllCompanies();
+    fetchAllCompanies();
   }, []);
 
   const fetchTrends = async () => {
@@ -274,7 +274,7 @@ const Page = () => {
         )}
 
         {/* === SDK / Company Slider Section - Only show if data exists === */}
-        {/* {(companies.length > 0 || loadingCompanies) && (
+        {(companies.length > 0 || loadingCompanies) && (
           <section>
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-xl font-bold">Discover SDKs & Companies</h2>
@@ -325,7 +325,7 @@ const Page = () => {
               )}
             </div>
           </section>
-        )} */}
+        )}
       </div>
 
       <div className="w-full px-4 sm:px-6 py-4">

@@ -252,7 +252,7 @@ export default function DevOrgLayout({ children }) {
                 {similarCompanies.map((company, idx) => (
                   <Link 
                     key={idx} 
-                    href={`/dev_org/${company.username}`}
+                    href={`/dev_org/${company.username}/examples`}
                     className={cn(
                       "block p-3 rounded-lg border-2 transition-all group",
                       "bg-blue-500/10 border-blue-500/20 hover:border-blue-500/40"

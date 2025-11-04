@@ -29,11 +29,13 @@ const CompanyHeader = () => {
   const { setVisible, visible } = useWalletModal();
   const [userInitiatedConnection, setUserInitiatedConnection] = useState(false);
   const [prevVisible, setPrevVisible] = useState(false);
-  const [profile, setprofile] = useState("Sign in with Google");
+  // const [profile, setprofile] = useState("Sign in with Google");
   const [profile2, setprofile2] = useState("Sign in with Github");
   const searchParams = useSearchParams();
   const code = searchParams.get("code"); 
   const called = useRef(false);
+  const { profile } = useAppSelector((state) => state.profile);
+  const isOwner = userData?._id === profile?._id;
 
   // const handleWalletClick = useCallback(async () => {
   //   try {
@@ -222,75 +224,88 @@ const CompanyHeader = () => {
   // }
 
   return (
-    <header className="sticky top-0 z-[50] flex items-center justify-between px-3 md:px-9 py-4 bg-background border-b border-border shadow-sm">
-      <Link href="/start">
-        <div className="text-xl font-bold text-white flex gap-x-1 items-center">
-          <Image
-            src="/logo.svg"
-            alt="Snipost Logo"
-            width={30}
-            height={30}
-            className='sm:h-[30px]! sm:w-[30px]! h-[23px] w-[23px]'
-          />
-          <h2 className='text-xl sm:text-2xl text-primary'>Snipost</h2>
-        </div>
-      </Link>
-
-      <SearchComponent />
-      {/* <WalletMultiButtonDynamic> */}
-
-
-      {(jwtToken && userData) ? 
-        <CompanyProfileDropDown>
-          <Button variant="muted" className="gap-2 py-2! text-xs sm:text-sm border border-zinc-700" onClick={() => handleWalletClick()}>
+    <>
+      <header className="sticky top-0 z-[50] flex items-center justify-between px-3 md:px-9 py-4 bg-background border-b border-border shadow-sm">
+        <Link href="/start">
+          <div className="text-xl font-bold text-white flex gap-x-1 items-center">
             <Image
-              src={userData?.avatar?.url || "/default_avatar.png"}
-              alt="Profile"
-              width={27}
-              height={27}
-              className='h-6 w-6 rounded-full object-cover aspect-square'
+              src="/logo.svg"
+              alt="Snipost Logo"
+              width={30}
+              height={30}
+              className='sm:h-[30px]! sm:w-[30px]! h-[23px] w-[23px]'
             />
-            {userData?.name?.length > 8 ? `${userData.name.slice(0, 8)}...` : userData.name}
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </CompanyProfileDropDown>
-        :
-        <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => router.push("/signin")}>
-          <CircleUser className="h-7 w-7" />
-          {connecting ? "Connecting..." : "Sign in"}
-        </Button>
-      }  
+            <h2 className='text-xl sm:text-2xl text-primary'>Snipost</h2>
+          </div>
+        </Link>
+
+        <SearchComponent />
+        {/* <WalletMultiButtonDynamic> */}
+
+
+        {userData?.role === "company" ? ((jwtToken && userData ) ? 
+          <CompanyProfileDropDown>
+            <Button variant="muted" className="gap-2 py-2! text-xs sm:text-sm border border-zinc-700" onClick={() => handleWalletClick()}>
+              <Image
+                src={userData?.avatar?.url || "/default_avatar.png"}
+                alt="Profile"
+                width={27}
+                height={27}
+                className='h-6 w-6 rounded-full object-cover aspect-square'
+              />
+              {userData?.name?.length > 8 ? `${userData.name.slice(0, 8)}...` : userData.name}
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </CompanyProfileDropDown>
+          :
+          <Button variant="default" className="gap-2 py-1! text-xs sm:text-base" onClick={() => router.push("/signin")}>
+            <CircleUser className="h-7 w-7" />
+            {connecting ? "Connecting..." : "Sign in"}
+          </Button>) :
+            <Button variant="muted" className="gap-2 py-2! text-xs sm:text-sm border border-zinc-700" onClick={() => router.push(`/profile/${userData?.userName}`)}>
+              <Image
+                src={userData?.avatar?.url || "/default_avatar.png"}
+                alt="Profile"
+                width={27}
+                height={27}
+                className='h-6 w-6 rounded-full object-cover aspect-square'
+              />
+              {userData?.name?.length > 8 ? `${userData?.name.slice(0, 8)}...` : userData?.name}
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+        }  
 
 
 
 
-      
-      {/* </WalletMultiButtonDynamic> */}
-      {/* <Button
-        variant="default"
-        className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md"
-        onClick={profile === "Sign in with Google" ? login : logout}
-      >
-        { profile === "Sign in with Google" ? 
-          <LogIn className="h-4 w-4" /> : 
-          <LogOut className="h-4 w-4" />
-        }
-        {profile}
-      </Button> */}
+        
+        {/* </WalletMultiButtonDynamic> */}
+        {/* <Button
+          variant="default"
+          className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+          onClick={profile === "Sign in with Google" ? login : logout}
+        >
+          { profile === "Sign in with Google" ? 
+            <LogIn className="h-4 w-4" /> : 
+            <LogOut className="h-4 w-4" />
+          }
+          {profile}
+        </Button> */}
 
-      {/* <Button
-        variant="default"
-        className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-black-600 hover:bg-black-700 text-white shadow-md"
-        onClick={profile === "Sign in with Google" ? loginWithGitHub : ()=>alert("Logout")}
-      >
-        { profile === "Sign in with Google" ? 
-          <LogIn className="h-4 w-4" /> : 
-          <LogOut className="h-4 w-4" />
-        }
-        {profile}
-      </Button> */}
+        {/* <Button
+          variant="default"
+          className=" cursor-pointer gap-2 py-1 px-3 rounded-xl bg-black-600 hover:bg-black-700 text-white shadow-md"
+          onClick={profile === "Sign in with Google" ? loginWithGitHub : ()=>alert("Logout")}
+        >
+          { profile === "Sign in with Google" ? 
+            <LogIn className="h-4 w-4" /> : 
+            <LogOut className="h-4 w-4" />
+          }
+          {profile}
+        </Button> */}
 
-    </header>
+      </header>
+    </>
   )
 }
 

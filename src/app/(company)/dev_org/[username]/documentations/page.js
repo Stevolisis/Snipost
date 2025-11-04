@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { toast } from "sonner";
 import { FileText, PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function DocsDefaultPage() {

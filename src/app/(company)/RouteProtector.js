@@ -9,13 +9,13 @@ const RouteProtector = ({children}) => {
     const pathname = usePathname();
     
     useEffect(() => {
-        // Wait until Redux state is hydrated
-        if (!userData) return;
-        if (pathname.includes("dev_org")) return;
+        //Wait until Redux state is hydrated
+        // if (!userData) return;
+        // if (pathname.includes("dev_org")) return;
 
-        if (userData.role !== "company") {
-            router.replace(`/feed/snippets`);
-        }
+        // if (userData.role !== "company") {
+        //     router.push(`/feed/snippets`);
+        // }
     }, [userData, router]);
 
 

@@ -21,6 +21,9 @@ import {
 import SearchDevelopers from "@/components/appComponents/SearchDevelopers";
 import Recents from "@/components/appComponents/RecentDocumentations";
 import { loadSnippetsStart, loadSnippetsSuccess, snippetsFailure } from "@/lib/redux/slices/snippets";
+import { docsFailure, loadDocsStart, loadDocsSuccess } from "@/lib/redux/slices/documentations";
+import { commentsFailure, loadCommentsStart, loadCommentsSuccess } from "@/lib/redux/slices/comments";
+import { loadProfileSuccess } from "@/lib/redux/slices/profile";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -28,8 +31,8 @@ const Dashboard = () => {
   const isOwner = userData?._id;
   const { snippets } = useAppSelector((state) => state.snippets);
   const { earned } = useAppSelector((state) => state.profile);
-  const [comments, setComments] = useState([]);
-  const [docs, setDocs] = useState([]);
+  const {comments} = useAppSelector((state) => state.comments);
+  const { docs } = useAppSelector((state) => state.documentations);
 
   const fetchSnippets = async () => {
     try {
@@ -46,11 +49,13 @@ const Dashboard = () => {
     if (!isOwner) return
     
     try {
-      const response = await api.get(`get-company-documentations/${isOwner}`)
-      setDocs(response.data.documentations || [])
+      dispatch(loadDocsStart());
+      const {data} = await api.get(`get-company-documentations/${isOwner}`);
+      dispatch(loadDocsSuccess(data?.documentations || []));
     } catch (err) {
-      console.error('Failed to fetch transactions:', err)
-      toast.error('Failed to load transaction history')
+      console.error('Failed to fetch transactions:', err);
+      dispatch(docsFailure(err?.response?.data?.message || "Failed to load documentations"));
+      toast.error('Failed to load documentation history')
     }
   }
 
@@ -61,6 +66,7 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
       dispatch(updateUserData(data.user));
+      dispatch(loadProfileSuccess(data.user));
     } catch (err) {
       console.log(err);
       const msg =
@@ -74,13 +80,14 @@ const Dashboard = () => {
 
   const fetchComments = async () => {
     try {
-      const response = await api.get(`/get-recent-comments?limit=7`, {
+      dispatch(loadCommentsStart());
+      const {data} = await api.get(`/get-recent-comments?limit=7`, {
         headers: { Authorization: `Bearer ${jwtToken}` }
       });
-      console.log("Fetched comments:", response.data.comments);
-      setComments(response.data.comments || []);
+      dispatch(loadCommentsSuccess(data.comments || []))
     } catch (err) {
       console.error("Failed to fetch comments:", err);
+      dispatch(commentsFailure());
       toast.error("Failed to load recent comments");
     }
   };
