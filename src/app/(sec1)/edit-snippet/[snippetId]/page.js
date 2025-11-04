@@ -161,6 +161,29 @@ export default function EditSnippetPage() {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [limitErrorMessage, setLimitErrorMessage] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [companies, setCompanies] = useState([]);
+
+
+  
+  
+  const fetchAllCompanies = async () => {
+    try {
+      const {data} = await api.get('/get-all-companies?limit=1000&sortByXp=true');
+      const formattedCompanies = data?.companies?.map(company => ({
+        value: company._id || company.id, // Use the company ID as value
+        label: company.name || company.username || company.companyName // Use company name
+      })) || [];
+      setCompanies(formattedCompanies);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.error('Failed to load developers');
+    }
+  };
+
+  useEffect(() => {
+    fetchAllCompanies();
+  }, []);
+
 
   // Check if device is mobile
   useEffect(() => {
@@ -328,6 +351,7 @@ export default function EditSnippetPage() {
             variant="inverted"
             animation={2}
             maxCount={3}
+            companies={companies}
         />
         
         {formData.codeBlocks.map((block, index) => (

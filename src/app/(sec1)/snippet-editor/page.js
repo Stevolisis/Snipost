@@ -163,7 +163,7 @@ const SnippetEditor = () => {
   const [codeBlocks, setCodeBlocks] = useState([
     { name: "", language: "javascript", content: "" }
   ]);
-  // const [folder, setFolder] = useState("");
+  const [companies, setCompanies] = useState([]);
   const [type, setType] = useState("public");
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [limitErrorMessage, setLimitErrorMessage] = useState("");
@@ -199,6 +199,25 @@ const SnippetEditor = () => {
     newCodeBlocks[index][field] = value;
     setCodeBlocks(newCodeBlocks);
   };
+
+  
+  const fetchAllCompanies = async () => {
+    try {
+      const {data} = await api.get('/get-all-companies?limit=1000&sortByXp=true');
+      const formattedCompanies = data?.companies?.map(company => ({
+        value: company._id || company.id, // Use the company ID as value
+        label: company.name || company.username || company.companyName // Use company name
+      })) || [];
+      setCompanies(formattedCompanies);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.error('Failed to load developers');
+    }
+  };
+
+  useEffect(() => {
+    fetchAllCompanies();
+  }, []);
 
   const handlePublish = async() => {
     setIsLoading(true);
@@ -344,15 +363,16 @@ const SnippetEditor = () => {
         </div>
 
         <div className="">
-            <MultiSelect
-                options={allTags}
-                onValueChange={setTags}
-                defaultValue={tags}
-                placeholder="Select Tag"
-                variant="inverted"
-                animation={2}
-                maxCount={3}
-            />
+          <MultiSelect
+              options={allTags}
+              onValueChange={setTags}
+              defaultValue={tags}
+              placeholder="Select Tag"
+              variant="inverted"
+              animation={2}
+              maxCount={3}
+              companies={companies}
+          />
         </div>
 
         <div className="">

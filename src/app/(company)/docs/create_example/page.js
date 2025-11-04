@@ -169,6 +169,7 @@ const CreateExamples = () => {
   const [limitErrorMessage, setLimitErrorMessage] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const { jwtToken, userData } = useAppSelector((state) => state.auth)
+  const [companies, setCompanies] = useState([]);
 
   // Check if device is mobile
   useEffect(() => {
@@ -199,6 +200,27 @@ const CreateExamples = () => {
     newCodeBlocks[index][field] = value;
     setCodeBlocks(newCodeBlocks);
   };
+
+  
+  
+  const fetchAllCompanies = async () => {
+    try {
+      const {data} = await api.get('/get-all-companies?limit=1000&sortByXp=true');
+      const formattedCompanies = data?.companies?.map(company => ({
+        value: company._id || company.id, // Use the company ID as value
+        label: company.name || company.username || company.companyName // Use company name
+      })) || [];
+      setCompanies(formattedCompanies);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.error('Failed to load developers');
+    }
+  };
+
+  useEffect(() => {
+    fetchAllCompanies();
+  }, []);
+
 
   const handlePublish = async() => {
     const id = toast.loading("Publishing snippet...");
@@ -351,6 +373,7 @@ const CreateExamples = () => {
                 variant="inverted"
                 animation={2}
                 maxCount={3}
+                companies={companies}
             />
         </div>
 

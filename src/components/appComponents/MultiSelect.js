@@ -6,6 +6,8 @@ import {
   ChevronDown,
   XIcon,
   WandSparkles,
+  Building,
+  Tag,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -26,6 +28,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const multiSelectVariants = cva(
   "m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300",
@@ -48,6 +51,7 @@ export const MultiSelect = React.forwardRef(
   (
     {
       options,
+      companies = [], // New prop for companies
       onValueChange,
       variant,
       defaultValue = [],
@@ -64,6 +68,10 @@ export const MultiSelect = React.forwardRef(
     const [selectedValues, setSelectedValues] = React.useState(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
+    const [activeTab, setActiveTab] = React.useState("tags");
+
+    // Combine all options for selection logic
+    const allOptions = [...options, ...companies];
 
     const handleInputKeyDown = (event) => {
       if (event.key === "Enter") {
@@ -100,13 +108,55 @@ export const MultiSelect = React.forwardRef(
     };
 
     const toggleAll = () => {
-      if (selectedValues.length === options.length) {
-        handleClear();
+      const currentTabOptions = activeTab === "tags" 
+        ? options.map(opt => opt.value)
+        : companies.map(comp => comp.value);
+        
+      if (selectedValues.length === currentTabOptions.length) {
+        // Deselect all from current tab
+        const otherTabValues = activeTab === "tags" 
+          ? selectedValues.filter(val => companies.some(comp => comp.value === val))
+          : selectedValues.filter(val => options.some(opt => opt.value === val));
+        setSelectedValues(otherTabValues);
+        onValueChange(otherTabValues);
       } else {
-        const allValues = options.map((option) => option.value);
-        setSelectedValues(allValues);
-        onValueChange(allValues);
+        // Select all from current tab, keep existing selections
+        const newSelectedValues = [...new Set([...selectedValues, ...currentTabOptions])];
+        setSelectedValues(newSelectedValues);
+        onValueChange(newSelectedValues);
       }
+    };
+
+    const renderOptions = (optionsArray, showIcons = true) => {
+      return optionsArray.map((option) => {
+        const isSelected = selectedValues.includes(option.value);
+        return (
+          <CommandItem
+            key={option.value}
+            onSelect={() => toggleOption(option.value)}
+            className="cursor-pointer"
+          >
+            <div
+              className={cn(
+                "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                isSelected
+                  ? "bg-primary text-primary-foreground"
+                  : "opacity-50 [&_svg]:invisible"
+              )}
+            >
+              <CheckIcon className="h-4 w-4" />
+            </div>
+            {showIcons && option.icon && (
+              <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            )}
+            <span>{option.label}</span>
+          </CommandItem>
+        );
+      });
+    };
+
+    const getCurrentTabOptions = () => {
+      return activeTab === "tags" ? options : companies;
     };
 
     return (
@@ -129,7 +179,7 @@ export const MultiSelect = React.forwardRef(
               <div className="flex justify-between items-center w-full">
                 <div className="flex flex-wrap items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
-                    const option = options.find((o) => o.value === value);
+                    const option = allOptions.find((o) => o.value === value);
                     const IconComponent = option?.icon;
                     return (
                       <Badge
@@ -210,51 +260,69 @@ export const MultiSelect = React.forwardRef(
               onKeyDown={handleInputKeyDown}
             />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup>
-                <CommandItem
-                  key="all"
-                  onSelect={toggleAll}
-                  className="cursor-pointer"
-                >
-                  <div
-                    className={cn(
-                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                      selectedValues.length === options.length
-                        ? "bg-primary text-primary-foreground"
-                        : "opacity-50 [&_svg]:invisible"
-                    )}
-                  >
-                    <CheckIcon className="h-4 w-4" />
-                  </div>
-                  <span>(Select All)</span>
-                </CommandItem>
-                {options.map((option) => {
-                  const isSelected = selectedValues.includes(option.value);
-                  return (
+              <Tabs defaultValue="tags" className="w-full" onValueChange={setActiveTab}>
+                <div className="px-2 pt-2">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="tags" className="flex items-center gap-2">
+                      <Tag className="h-3 w-3" />
+                      Tags
+                    </TabsTrigger>
+                    <TabsTrigger value="companies" className="flex items-center gap-2">
+                      <Building className="h-3 w-3" />
+                      Companies
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+                
+                <TabsContent value="tags" className="mt-0">
+                  <CommandGroup>
                     <CommandItem
-                      key={option.value}
-                      onSelect={() => toggleOption(option.value)}
+                      key="all-tags"
+                      onSelect={toggleAll}
                       className="cursor-pointer"
                     >
                       <div
                         className={cn(
                           "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                          isSelected
+                          selectedValues.filter(val => options.some(opt => opt.value === val)).length === options.length
                             ? "bg-primary text-primary-foreground"
                             : "opacity-50 [&_svg]:invisible"
                         )}
                       >
                         <CheckIcon className="h-4 w-4" />
                       </div>
-                      {option.icon && (
-                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                      )}
-                      <span>{option.label}</span>
+                      <span>(Select All Tags)</span>
                     </CommandItem>
-                  );
-                })}
-              </CommandGroup>
+                    {renderOptions(options)}
+                  </CommandGroup>
+                </TabsContent>
+
+                <TabsContent value="companies" className="mt-0">
+                  <CommandGroup>
+                    <CommandItem
+                      key="all-companies"
+                      onSelect={toggleAll}
+                      className="cursor-pointer"
+                    >
+                      <div
+                        className={cn(
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          selectedValues.filter(val => companies.some(comp => comp.value === val)).length === companies.length
+                            ? "bg-primary text-primary-foreground"
+                            : "opacity-50 [&_svg]:invisible"
+                        )}
+                      >
+                        <CheckIcon className="h-4 w-4" />
+                      </div>
+                      <span>(Select All Companies)</span>
+                    </CommandItem>
+                    {renderOptions(companies)}
+                  </CommandGroup>
+                </TabsContent>
+              </Tabs>
+
+              <CommandEmpty>No results found.</CommandEmpty>
+              
               <CommandSeparator />
               <CommandGroup>
                 <div className="flex items-center justify-between">
