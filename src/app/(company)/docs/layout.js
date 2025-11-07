@@ -25,8 +25,8 @@ const tabs = [
 
 export default function Layout({ children }) {
   const pathname = usePathname()
-    console.log("Current pathname:", pathname);
-    return (
+
+  return (
       <div className="px-6 md:px-24 py-6 sm:py-10">
         {/* Header */}
         <div className="space-y-2">

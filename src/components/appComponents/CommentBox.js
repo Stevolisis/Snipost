@@ -66,10 +66,10 @@ const CommentBox = () => {
                 // Transform API response to match our expected format
                 const formattedUsers = response.data.users.map(user => ({
                     id: user._id,
-                    username: user.userName,
+                    username: user.userName || user.username,
                     name: user.name,
                     entity: { _id: user._id },
-                    model: "User",
+                    model: user.model,
                     avatar: user.avatar?.url
                 }));
                 setUsers(formattedUsers);
@@ -273,6 +273,7 @@ const CommentBox = () => {
                 ...mentions
             ]
         };
+        console.log('Submitting comment data:', commentData);
 
         const toastId = toast.loading('Posting your comment...');
         

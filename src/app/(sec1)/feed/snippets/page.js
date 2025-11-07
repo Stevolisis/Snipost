@@ -98,8 +98,7 @@ const Page = () => {
           Authorization: `Bearer ${jwtToken}`
         }
       });
-      
-        setCompanies(response?.data?.companies);
+      setCompanies(response?.data?.companies);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Failed to load developers');
