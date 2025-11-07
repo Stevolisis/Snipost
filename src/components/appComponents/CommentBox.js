@@ -273,7 +273,6 @@ const CommentBox = () => {
                 ...mentions
             ]
         };
-        console.log('Submitting comment data:', commentData);
 
         const toastId = toast.loading('Posting your comment...');
         

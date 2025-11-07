@@ -265,7 +265,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
 
   useEffect(() => { 
     dispatch(loadSnippetSuccess(initialSnippet));
-  }, [snippet, dispatch]);
+  }, []);
 
 
   useEffect(() => {
