@@ -136,7 +136,7 @@ export default function Recents({fetchSnippets, snippets, comments, docs, fetchD
                   <TableCell>{formatPublishedDate(doc?.updatedAt)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Link href={`/docs/edit/${doc?._id}`}>
+                      <Link href={`/edit-documentation/${doc?.slug}`}>
                         <Button variant="outline" size="sm">Edit</Button>
                       </Link>
                       <Button 

@@ -191,19 +191,15 @@ const EditUpdate = () => {
 
   return (
     <div className="w-full min-h-screen flex flex-col p-4 sm:p-6 lg:p-8">
-      {/* Example Update Preview */}
-      <div className="bg-muted/10 rounded-2xl p-6 md:p-10 border border-zinc-800">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-blue-500/10">
-            <Megaphone className="h-6 w-6 text-blue-400" />
+      {/* Header Section */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-blue-400/10 rounded-lg">
+            <Megaphone className="w-7 h-7 text-blue-400" />
           </div>
           <div>
-            <h2 className="text-xl md:text-2xl font-semibold text-white">
-              Edit Update & Changelog
-            </h2>
-            <p className="text-sm text-zinc-400 mt-1">
-              Update and modify your project changes, improvements, and bug fixes
-            </p>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">Edit Documentation</h1>
+            <p className="text-muted-foreground">Update your existing Doc</p>
           </div>
         </div>
 
@@ -216,9 +212,9 @@ const EditUpdate = () => {
       </div>
 
       {/* Your Update Form */}
-      <div className="w-full mt-5">
-        <Card className="bg-transparent w-full border-zinc-800">
-          <CardContent className="p-6">
+      <div className="w-full">
+        <Card className="bg-transparent w-full border-zinc-800 border-0 sm:border">
+          <CardContent className="p-0 sm:p-6">
             <div className="mb-6">
               <Label>Title</Label>
               <Input

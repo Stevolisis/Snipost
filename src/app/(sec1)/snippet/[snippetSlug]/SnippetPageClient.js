@@ -90,7 +90,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
 
           const response = api.put('/follow-user', {
             followId: targetUser._id,
-            role: userData?.role
+            role: targetUser?.role
           }, {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -363,7 +363,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
                   </div>
                 }
 
-                <div style={{ whiteSpace: 'pre-line' }}>
+                <div style={{ whiteSpace: 'pre-line' }} className=' break-all'>
                   {snippet.description}
                 </div>
 

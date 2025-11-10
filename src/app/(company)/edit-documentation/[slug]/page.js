@@ -447,8 +447,8 @@ const EditDocumentation = () => {
       {/* Documentation Editor */}
       {selectedTemplate && (
         <div className="w-full">
-          <Card className="bg-transparent w-full border-zinc-800">
-            <CardContent className="p-6">
+          <Card className="bg-transparent w-full border-zinc-800 border-0 sm:border">
+            <CardContent className="p-0 sm:p-6">
               <div className="mb-6">
                 <Label>Title</Label>
                 <Input

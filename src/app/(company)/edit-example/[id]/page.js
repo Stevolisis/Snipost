@@ -454,7 +454,7 @@ const EditExample = () => {
         </div>
       </div>
 
-      <Card className="px-6 py-6 bg-transparent w-full border-zinc-800">
+      <Card className="px-0 sm:px-6 py-6 bg-transparent w-full border-zinc-800 border-0 sm:border">
         <div className="space-y-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-white">Title</label>

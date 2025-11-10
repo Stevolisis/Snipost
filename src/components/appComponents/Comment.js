@@ -305,7 +305,7 @@ const Comment = ({comment}) => {
               </div>
             </div>
 
-          <CardTitle className=' break-all'>{renderText(comment.text, comment.mentions)}</CardTitle>
+          <CardTitle style={{ whiteSpace: 'pre-line' }}  className=' break-all'>{renderText(comment.text, comment.mentions)}</CardTitle>
             <div className='flex gap-x-2 items-center justify-between pt-3'>
               <div className='flex gap-x-2 items-center'>
                 <div className='flex items-center gap-x-2'>
