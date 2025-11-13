@@ -194,7 +194,7 @@ export default function DevOrgLayout({ children }) {
           {/* Banner Image */}
           <div className="relative h-40 w-full rounded-t-xl overflow-hidden">
             <Image
-              src={profile?.banner?.url || "/default_avatar.png"}
+              src={profile?.banner?.url || "/banner_default.jpg"}
               alt="Profile banner"
               fill
               className="object-cover"
