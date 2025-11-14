@@ -110,7 +110,7 @@ function ForkCard({ fork }) {
         {/* Main content column */}
         <div className="flex-1">
             <div className="flex items-center text-white">
-                <Link href={`/profile/${fork?.forkedBy?.entity?._id}`} className="font-medium hover:underline hover:text-primary transition-colors duration-100 cursor-pointer">
+                <Link href={`/profile/${fork?.forkedBy?.entity?.userName||fork?.forkedBy?.entity?.username}`} className="font-medium hover:underline hover:text-primary transition-colors duration-100 cursor-pointer">
                     {fork?.forkedBy?.entity?.name || 'Anonymous'}
                 </Link>
                 <span className="mx-1">•</span>
@@ -126,7 +126,7 @@ function ForkCard({ fork }) {
                 className="flex items-center"
                 onClick={(e) => {
                   e.stopPropagation();
-                  router.push(`/snippet/${fork?.content?.entity?._id}`);
+                  router.push(`/snippet/${fork?.content?.entity?.slug}`);
                 }}
               >
                 <Code className="h-3.5 w-3.5 mr-1" />

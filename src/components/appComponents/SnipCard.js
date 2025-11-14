@@ -182,7 +182,7 @@ const SnipCard = ({snippet, fix}) => {
                     </div>
                 </div>
                 
-                <div className='-mb-6 py-3'  onClick={()=> router.push(`/snippet/${snippet.slug}`)}>
+                <div className='-mb-6 py-3'>
                     <Link href={`/snippet/${snippet.slug}`} className="text-2xl line-clamp-2 text-foreground 
                         font-bold hover:underline hover:underline-primary hover:text-primary transition-colors duration-150">
                         {snippet.title || 'Untitled Snippet'}
