@@ -581,7 +581,7 @@ export default function DocsEditor({ onContentChange, initialContent, templateNa
   const [wordCount, setWordCount] = useState(0);
   const [maxWordsReached, setMaxWordsReached] = useState(false);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
-  const maxWordTreshold = 500;
+  const maxWordTreshold = 1050;
 
   useEffect(() => {
     setIsClient(true);

@@ -392,7 +392,7 @@ export default function EditSnippetPage() {
                 )}
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="max-w-full md:max-w-[70vw]">
               <CodeEditor
                 value={block.content}
                 onChange={(value) => {

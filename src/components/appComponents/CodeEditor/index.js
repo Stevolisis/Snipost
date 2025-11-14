@@ -5,6 +5,9 @@ import { getExtentions } from './getExtensions';
 import { getThemes } from './getThemes';
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), { ssr: false });
 import { EditorView } from '@uiw/react-codemirror';
+import { IBM_Plex_Mono } from "next/font/google";
+const sourceCodePro = IBM_Plex_Mono({   weight: "400",
+subsets: ["latin"] });
 
 function CodeEditor({ value, onChange, language = "javascript" }) {
   const extensions = useMemo(() => getExtentions(language), [language]);
@@ -12,8 +15,8 @@ function CodeEditor({ value, onChange, language = "javascript" }) {
 
   const fontTheme = useMemo(() => {
     return EditorView.theme({
-      ".cm-scroller": {
-        fontFamily: "Inter !important",
+      ".cm-editor, .cm-scroller, .cm-content, .cm-line, .cm-gutters": {
+        fontFamily: `${sourceCodePro.style.fontFamily}, monospace !important`,
       },
     });
   }, []);

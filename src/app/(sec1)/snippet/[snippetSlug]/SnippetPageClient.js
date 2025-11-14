@@ -22,6 +22,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Fork } from '@/components/appComponents/Fork';
 import { useIntersectionObserver } from 'react-haiku';
 import { trackDownvote, trackFollow, trackUnfollow, trackUpvote } from '@/lib/analytics';
+import { usePathname } from 'next/navigation';
 
 const SyntaxHighlighter = dynamic(
   () => import('react-syntax-highlighter').then((mod) => {
@@ -49,6 +50,7 @@ const SnippetPageClient = ({params, initialSnippet }) => {
   const dispatch = useAppDispatch();
   const geeksForGeeksRef = useRef(null);
   const targetUser = snippet?.user;
+  const pathname = usePathname();
   const hasUpvoted = snippet?.upvotes?.some(v => (v.entity?._id || v.entity ) === userData?._id);
   const hasDownvoted = snippet?.downvotes?.some(v => (v.entity?._id || v.entity ) === userData?._id);
   const hasBookmark = snippet?.bookmarkedBy?.some(v => (v.entity?._id || v.entity ) === userData?._id);
@@ -292,6 +294,28 @@ const SnippetPageClient = ({params, initialSnippet }) => {
       recordView();
     }
   },[isVisible]);
+
+  
+  //Scroll to comment if hash exists
+  useEffect(() => {
+    if (!commentState.comments || commentState.comments.length === 0) return; // wait until comments exist
+
+    const hash = window.location.hash;
+    if (!hash) return;
+
+    const id = hash.replace("#", "");
+    const el = document.querySelector(`#\\3${id[0]} ${id.slice(1)}`);
+
+    console.log("Scrolling to comment ID:", id, el);
+
+    if (el) {
+      // small timeout to ensure DOM is fully painted
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [commentState, pathname]);
+
 
   async function handleCopy(content, blockId) {
     try {

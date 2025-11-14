@@ -422,7 +422,7 @@ const SnippetEditor = () => {
               </div>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className="max-w-full md:max-w-[70vw]">
               <div className='pt-4'>
                 <CodeEditor
                   value={block.content}

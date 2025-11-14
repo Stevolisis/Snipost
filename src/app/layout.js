@@ -4,6 +4,7 @@ import ReduxStateProvider from "@/lib/redux/ReduxStateProvider";
 import WalletContextProvider from "@/components/appComponents/WalletContextProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleAnalytics } from '@next/third-parties/google'
+import ScrollToTop from "./ScrollToTop";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -89,7 +90,9 @@ export default function Layout({ children }) {
               <ReduxStateProvider>
                   <Toaster />
                     <main className="font-[var(--font-geist)] w-full">
-                      {children}
+                      <ScrollToTop>
+                        {children}
+                      </ScrollToTop> 
                       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
                     </main>
               </ReduxStateProvider>          
